@@ -22,7 +22,7 @@ function App() {
     <div className={darkMode ? "dark" : ""}>
       <main className=' bg-white px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
-         <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white px-4 py-2 rounded-xl ml-8'>GGA</h1>
+         <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
               <li>
                 <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/>
@@ -91,18 +91,18 @@ function App() {
                   <p className=' py-1'>Used OpenWeather API to fetch<br/>weather of typed user query.</p>
             </div>
             <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={polybay} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Polybay</h3>
-                  <p className='py-2'>Smart Contract Engineer</p>
-                  <h4 className='py-4 text-teal-600'>Solidity & Hardhat</h4>
-                  <p className=' py-1'>First phase of an NFT Marketplace<br/>using Polygon blockchain.</p>
-            </div>
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
                   <img src={wave} className='mx-auto'/>
                   <h3 className='text-lg font-medium pt-8 pb-2'>Wave-at-Me</h3>
                   <p className='py-2'>Full Stack Engineer</p>
                   <h4 className='py-4 text-teal-600'>React, Ethers, Solidity, <br/>Hardhat & Rinkeby</h4>
                   <p className=' py-1'>Simple web3 app that allowed <br/>any user to connect with their<br/>Metamask account and send a 'wave'<br/>attached with a message<br/> to an ever-public timeline.</p>
+            </div>
+            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
+                  <img src={polybay} className='mx-auto'/>
+                  <h3 className='text-lg font-medium pt-8 pb-2'>Polybay</h3>
+                  <p className='py-2'>Smart Contract Engineer</p>
+                  <h4 className='py-4 text-teal-600'>Solidity & Hardhat</h4>
+                  <p className=' py-1'>First phase of an NFT Marketplace<br/>using Polygon blockchain.</p>
             </div>
             <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
                   <img src={imgsrc} className='mx-auto'/>
