@@ -16,7 +16,7 @@ import ucf from './public/ucf.png'
 import { useState } from 'react'
 
 function App() {
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
 
   return (
     <div className={darkMode ? "dark" : ""}>
