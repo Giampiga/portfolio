@@ -54,7 +54,7 @@ function App() {
             </h3>
             <p className='text-lg py-2 leading-8 text-gray-800 dark:text-white'>
               Computer Science graduate from University of Central Florida looking for opportunities and services for programming or other engineering tech needs. 
-              Ready to work anywhere in the USA. Yearning to start my career and contribute to society lmfao. Become a part of my journey, don't hesitate to contact me!
+              Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
             <div className='flex justify-center'>
               <h1 className='text-4xl mt-auto py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/>
