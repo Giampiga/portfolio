@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className=' bg-white px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
+      <main className=' bg-white text-neutral-950 px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
@@ -34,7 +34,7 @@ function App() {
           <div className="text-center p-10">
             <p className='text-3xl'>Hello, world! :) I am</p>
             <h2 className='text-5xl py-2 bg-gradient-to-r from-teal-600 to-indigo-500 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
-            <h3 className='text-2xl py -2 md:text-3xl'>a Software Engineer</h3>
+            <h3 className='text-2xl py-2 md:text-3xl'>a Software Engineer</h3>
           </div>
           <div className='text-5xl flex justify-center gap-16 py-3 text-gray-600'>
             <a href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
