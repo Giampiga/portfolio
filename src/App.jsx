@@ -41,7 +41,7 @@ function App() {
             <a href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
             <a href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
             <a href='https://www.github.com/giampiga'><AiFillGithub /></a>
-            <a href='public/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
+            <a href='./public/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
           </div>
           <div className='relative mx-auto bg-gradient-to-b from-teal-500 rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
              <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
