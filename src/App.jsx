@@ -20,7 +20,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(true)
 
   return (
-    <div className={darkMode ? "dark overflow-hidden" : "overflow-hidden"}>
+    <div className={darkMode ? "dark" : ""}>
       <main className=' bg-white text-neutral-950 px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
@@ -32,7 +32,7 @@ function App() {
             </ul>
         </nav>
 
-        <section className="min-h-screen">
+        <section>
           <div className="text-center p-10">
             <p className='text-3xl'>Hello, world! :) I am</p>
             <h2 className='text-5xl py-2 bg-gradient-to-r from-teal-600 to-indigo-500 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
