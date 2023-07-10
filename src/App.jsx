@@ -19,7 +19,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(true)
 
   return (
-    <div className={darkMode ? "dark xs:w-0" : ""}>
+    <div className={darkMode ? "dark" : ""}>
       <main className=' bg-white text-neutral-950 px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
