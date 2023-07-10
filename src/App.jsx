@@ -1,5 +1,5 @@
 import './App.css'
-import {BsFillMoonStarsFill} from 'react-icons/bs'
+import {BsFillMoonStarsFill, BsFillSunFill} from 'react-icons/bs'
 import {AiFillLinkedin, AiFillGithub, AiFillMail, AiFillHtml5} from 'react-icons/ai'
 import {FaFileDownload, FaHardHat, FaJava, FaPython, FaReact} from 'react-icons/fa'
 import {TbBrandOpenai, TbBrandVscode} from  'react-icons/tb'
@@ -20,12 +20,12 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className=' bg-white px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
+      <main className=' bg-white px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
               <li>
-                <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/>
+                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
               </li>
             </ul>
         </nav>
