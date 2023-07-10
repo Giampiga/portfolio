@@ -19,13 +19,14 @@ function App() {
   const [darkMode, setDarkMode] = useState(true)
 
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div className={darkMode ? "dark md:px-20 sm:px-10" : "md:px-20 sm:px-10"}>
       <main className=' bg-white text-neutral-950 px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
               <li>
-                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
+                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> 
+                : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
               </li>
             </ul>
         </nav>
