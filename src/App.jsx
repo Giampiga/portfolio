@@ -33,8 +33,8 @@ function App() {
             </ul>
         </nav>
 
-        <section>
-          <div className="text-center p-10">
+        <section className='h-screen'>
+          <div className='text-center p-10'>
             <p className='text-3xl'>Hello, world! :) I am</p>
             <h2 className='text-5xl py-2 bg-gradient-to-r from-teal-600 to-indigo-500 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
             <h3 className='text-2xl py-2 md:text-3xl'>a Software Engineer</h3>
@@ -50,7 +50,7 @@ function App() {
           </div>
         </section>
         
-        <section>
+        <section className='h-screen'>
           <div>
             <h3 className='flex justify-center text-6xl py-6'>
               About Me
