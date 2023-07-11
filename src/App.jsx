@@ -20,17 +20,17 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className='scrollbar-hide bg-white px-10 md:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
+      <main className='min-w-fit bg-white px-10 sm:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
               <li>
-                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
+                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
               </li>
             </ul>
         </nav>
 
-        <section className="min-w-fit">
+        <section>
           <div className="text-center p-10">
             <p className='text-3xl'>Hello, world! :) I am</p>
             <h2 className='text-5xl py-2 bg-gradient-to-r from-teal-600 to-indigo-500 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
@@ -47,7 +47,7 @@ function App() {
           </div>
         </section>
         
-        <section className="min-w-fit">
+        <section>
           <div>
             <h3 className='flex justify-center text-6xl py-6'>
               About Me
@@ -56,8 +56,8 @@ function App() {
               Computer Science graduate from University of Central Florida looking for opportunities and services for programming or other engineering tech needs. 
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
-            <div className='flex justify-center'>
-              <h1 className='text-4xl mt-auto py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/>
+            <div className='flex justify-center mt-auto'>
+              {/* <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/> */}
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-teal-600' />
@@ -118,7 +118,7 @@ function App() {
                   <h4 className='py-4 text-teal-600'>React & Material-UI</h4>
                   <p className=' py-1'>A music based social media app<br/>that brings freestyle to the<br/>public by allowing to share creations.</p>
             </div>
-              <p className='flex flex-col-reverse'>.. and this website! Made with Vite + React + Tailwind. :)</p>
+              <p className='flex flex-col-reverse'>.. and this website! <br/><br/> Made with Vite + React + Tailwind :)<br/> and deployed via Vercel</p>
           </div>
         </section>
 
