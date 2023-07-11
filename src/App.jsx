@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className='min-w-fit bg-white px-10 sm:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
+      <main className='min-w-fit overflow-hidden bg-white px-10 sm:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
@@ -57,7 +57,8 @@ function App() {
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
             <div className='flex justify-center mt-auto'>
-              {/* <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/> */}
+              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8 md:h-96 md:w-96 lg:ml-0 lg:mr-auto lg:mt-0 lg:mb-auto"
+'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-teal-600' />
