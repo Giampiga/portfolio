@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className='min-w-fit overflow-hidden bg-white px-10 sm:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
+      <main className='min-w-fit bg-white px-10 sm:px-20 lg:px-40 dark:bg-gray-900 dark:text-gray-200 text-neutral-950'>
         <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-white dark:bg-gray-900'>
          <h1 className='bg-gradient-to-r from-cyan-300 to-teal-500 text-white text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
@@ -36,12 +36,12 @@ function App() {
             <h2 className='text-5xl py-2 bg-gradient-to-r from-teal-600 to-indigo-500 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
             <h3 className='text-2xl py -2 md:text-3xl'>a Software Engineer</h3>
           </div>
-          <div className='text-5xl flex justify-center gap-16 py-3 text-gray-600'>
+          {/* <div className='text-5xl flex justify-center gap-16 py-3 text-gray-600'>
             <a href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
             <a href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
             <a href='https://www.github.com/giampiga'><AiFillGithub /></a>
             <a href='/Users/giampi/Desktop/Resumes/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
-          </div>
+          </div> */}
           <div className='relative mx-auto bg-gradient-to-b from-teal-500 rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
              <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
           </div>
@@ -57,8 +57,7 @@ function App() {
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
             <div className='flex justify-center mt-auto'>
-              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8 md:h-96 md:w-96 lg:ml-0 lg:mr-auto lg:mt-0 lg:mb-auto"
-'/>
+              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-teal-600' />
