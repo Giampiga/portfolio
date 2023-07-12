@@ -36,7 +36,7 @@ function App() {
             <h2 className='text-5xl py-2 bg-gradient-to-r from-custom-flame to-red-600 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
             <h3 className='text-2xl py -2 md:text-3xl'>a Software Engineer</h3>
           </div>
-          <div className='text-5xl flex justify-center gap-16 py-3 mx-8 bg-custom-flame'>
+          <div className='text-5xl flex justify-center gap-16 py-3 -mx-8 bg-custom-flame'>
             <a href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
             <a href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
             <a href='https://www.github.com/giampiga'><AiFillGithub /></a>
