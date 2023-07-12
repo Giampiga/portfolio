@@ -21,9 +21,9 @@ function App() {
   return (
     <div className={darkMode ? "dark" : ""}>
       <main className=' bg-custom-powder px-10 sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
-        <nav className='sticky lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space'>
+        <nav className='sticky -m-10 lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space'>
          <h1 className='bg-gradient-to-r from-red-400 to-custom-flame text-custom-powder dark:text-custom-space text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
-            <ul className='flex items-center'>
+            <ul className='flex items-center mr-8'>
               <li>
                 {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
               </li>
@@ -42,7 +42,7 @@ function App() {
             <a href='https://www.github.com/giampiga'><AiFillGithub /></a>
             <a href='/Users/giampi/Desktop/Resumes/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
           </div> */}
-          <div className='relative mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
+          <div className='mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
              <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
           </div>
         </section>
@@ -56,8 +56,8 @@ function App() {
               Computer Science graduate from University of Central Florida looking for opportunities and services for programming or other engineering tech needs. 
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
-            <div className='flex justify-center mt-auto'>
-              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-56 py-4 ml-8'/>
+            <div className='flex justify-center mx-8'>
+              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-64  py-4 ml-8'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-custom-flame' />
@@ -81,7 +81,7 @@ function App() {
               Projects
             </h2>
           </div>
-          <div className='flex flex-wrap justify-center gap-10 py-10 lg:flex-row lg:flex-wrap'>
+          <div className='flex flex-wrap justify-center gap-10 py-10 lg:flex-row'>
             {/* <div className='basis-1/3 flex-1'><img src={web1} className='rounded-lg object-cover' /></div> */}
             <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
                   <img src={weather} className='mx-auto'/>
