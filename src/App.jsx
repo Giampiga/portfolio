@@ -20,9 +20,9 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className=' bg-custom-powder px-10 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
-        <nav className='sticky top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space'>
-         <h1 className='bg-gradient-to-r from-red-400 to-custom-flame text-bg-custom-1 text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
+      <main className=' bg-custom-powder px-10 sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
+        <nav className='sticky w-screen lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space'>
+         <h1 className='bg-gradient-to-r from-red-400 to-custom-flame text-custom-powder dark:text-custom-space text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
             <ul className='flex items-center'>
               <li>
                 {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
