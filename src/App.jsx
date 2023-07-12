@@ -6,7 +6,7 @@ import {TbBrandOpenai, TbBrandVscode} from  'react-icons/tb'
 import {SiJavascript, SiTailwindcss} from 'react-icons/si'
 import {BiGitBranch} from 'react-icons/bi'
 import {DiCss3} from 'react-icons/di'
-import dev from './public/dev-wave.png'
+import dev from './public/animepfp1.png'
 import groov from './public/groov.png'
 import polybay from './public/polybay.png'
 import weather from './public/weather.png'
@@ -22,7 +22,7 @@ function App() {
     <div className={darkMode ? "dark" : ""}>
       <main className=' bg-custom-powder px-10 sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
         <nav className='sticky -m-10 lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space'>
-         <h1 className='bg-gradient-to-r from-red-400 to-custom-flame text-custom-powder dark:text-custom-space text-sm px-4 py-2 rounded-xl ml-8'>GGA</h1>
+         <a href='/' className='bg-gradient-to-r from-red-400 to-custom-flame text-transparent bg-clip-text text-custom-flame text-2xl px-4 ml-8'>GGA</a>
             <ul className='flex items-center mr-8'>
               <li>
                 {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
@@ -81,7 +81,8 @@ function App() {
               Projects
             </h2>
           </div>
-          <div className='flex flex-wrap justify-center gap-10 py-10 lg:flex-row'>
+          <div className='grid md:grid-cols-2 lg:flex flex-wrap justify-center gap-10 py-10'>
+             {/* lg:flex-row'> */}
             {/* <div className='basis-1/3 flex-1'><img src={web1} className='rounded-lg object-cover' /></div> */}
             <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
                   <img src={weather} className='mx-auto'/>
@@ -118,7 +119,7 @@ function App() {
                   <h4 className='py-4 text-custom-flame'>React & Material-UI</h4>
                   <p className=' py-1'>A music based social media app<br/>that brings freestyle to the<br/>public by allowing to share creations.</p>
             </div>
-              <p className='flex flex-col-reverse'>.. and this website! <br/><br/> Made with Vite + React + Tailwind :)<br/> and deployed via Vercel</p>
+              <p className='flex flex-col-reverse my-auto lg:ml-32'>.. and this website! <br/><br/> Made with Vite + React + Tailwind :)<br/> and deployed via Vercel</p>
           </div>
         </section>
 
