@@ -13,6 +13,7 @@ import weather from './public/weather.png'
 import wave from './public/wave.png'
 import imgsrc from './public/imgsrc.png'
 import ucf from './public/ucf.png'
+import resume from './public/Giampiero_Giovingo_2023.pdf'
 import { useState } from 'react'
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
             <a className="text-custom-flame" href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
             <a className="text-custom-flame" href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
             <a className="text-custom-flame" href='https://www.github.com/giampiga'><AiFillGithub /></a>
-            <a className="text-custom-flame" href='./public/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
+            <a className="text-custom-flame" href={resume} download="Giampiero_Giovingo_2023_Resume.pdf"><FaFileDownload /></a>
           </div>
           <div className='mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
              <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
