@@ -36,12 +36,12 @@ function App() {
             <h2 className='text-5xl py-2 bg-gradient-to-r from-custom-flame to-red-600 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
             <h3 className='text-2xl py -2 md:text-3xl'>a Software Engineer</h3>
           </div>
-          {/* <div className='text-5xl flex justify-center gap-16 py-3 text-gray-600'>
+          <div className='text-5xl flex justify-center gap-16 py-3 bg-custom-flame'>
             <a href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
             <a href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
             <a href='https://www.github.com/giampiga'><AiFillGithub /></a>
             <a href='/Users/giampi/Desktop/Resumes/Giampiero_Giovingo_2023.pdf' download><FaFileDownload /></a>
-          </div> */}
+          </div>
           <div className='mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
              <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
           </div>
