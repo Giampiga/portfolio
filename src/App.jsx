@@ -1,12 +1,12 @@
 import './App.css'
 import {BsFillMoonStarsFill, BsFillSunFill} from 'react-icons/bs'
 import {AiFillLinkedin, AiFillGithub, AiFillMail, AiFillHtml5} from 'react-icons/ai'
-import {FaFileDownload, FaHardHat, FaJava, FaPython, FaReact} from 'react-icons/fa'
+import {FaFileDownload, FaHardHat, FaJava, FaPython, FaReact, FaUniversity} from 'react-icons/fa'
 import {TbBrandOpenai, TbBrandVscode} from  'react-icons/tb'
 import {SiJavascript, SiTailwindcss} from 'react-icons/si'
 import {BiGitBranch} from 'react-icons/bi'
 import {DiCss3} from 'react-icons/di'
-import dev from './public/animepfp1.png'
+import dev from './public/pfp.png'
 import groov from './public/groov.png'
 import polybay from './public/polybay.png'
 import weather from './public/weather.png'
@@ -57,8 +57,13 @@ function App() {
               Computer Science graduate from University of Central Florida looking for opportunities and services for programming or other engineering tech needs. 
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
-            <div className='flex justify-center mx-8'>
-              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-64  py-4 ml-8'/>
+            <div className='flex justify-center text-9xl mx-8 px-12'>
+              {/* <h1 className='text-4xl py-24'>Computer Science degree at</h1> */}
+              {`{`}
+              <FaUniversity className=' text-custom-flame' />
+              :
+              <img src={ucf} className='w-40 h-40  ml-8'/>
+              {`}`}
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-custom-flame' />
@@ -120,7 +125,7 @@ function App() {
                   <h4 className='py-4 text-custom-flame'>React & Material-UI</h4>
                   <p className=' py-1'>A music based social media app<br/>that brings freestyle to the<br/>public by allowing to share creations.</p>
             </div>
-              <p className='flex flex-col-reverse my-auto lg:ml-32'>.. and this website! <br/><br/> Made with Vite + React + Tailwind :)<br/> and deployed via Vercel</p>
+              <p className='flex flex-col-reverse my-auto lg:ml-32'>.. and this website! <br/><br/> Made with Vite + React + Tailwind :)<br/> deployed via Vercel</p>
           </div>
         </section>
 
