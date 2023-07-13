@@ -61,17 +61,17 @@ function App() {
               <h1 className='sm:text-4xl text-xl py-24 ml-10'>Computer Science degree at</h1><img src={ucf} className='sm:w-56 sm: h-64  py-4 ml-4'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
-                <FaPython className='text-8xl text-custom-flame' />
-                <FaJava className='text-8xl text-custom-flame' />
-                <FaReact className='text-8xl text-custom-flame' />
-                <SiJavascript className='text-8xl text-custom-flame' />
-                <SiTailwindcss className='text-8xl text-custom-flame' />
-                <AiFillHtml5 className='text-8xl text-custom-flame' />
-                <DiCss3 className='text-8xl text-custom-flame' />
-                <FaHardHat className='text-8xl text-custom-flame' />
-                <TbBrandOpenai className='text-8xl text-custom-flame' />
-                <TbBrandVscode className='text-8xl text-custom-flame' />
-                <BiGitBranch className='text-8xl text-custom-flame' />
+                <FaPython className='sm:text-8xl text-4xl text-custom-flame' />
+                <FaJava className='sm:text-8xl text-4xl text-custom-flame' />
+                <FaReact className='sm:text-8xl text-4xl text-custom-flame' />
+                <SiJavascript className='sm:text-8xl text-4xl text-custom-flame' />
+                <SiTailwindcss className='sm:text-8xl text-4xl text-custom-flame' />
+                <AiFillHtml5 className='sm:text-8xl text-4xl text-custom-flame' />
+                <DiCss3 className='sm:text-8xl text-4xl text-custom-flame' />
+                <FaHardHat className='sm:text-8xl text-4xl text-custom-flame' />
+                <TbBrandOpenai className='sm:text-8xl text-4xl text-custom-flame' />
+                <TbBrandVscode className='sm:text-8xl text-4xl text-custom-flame' />
+                <BiGitBranch className='sm:text-8xl text-4xl text-custom-flame' />
             </div>
           </div>
         </section>
