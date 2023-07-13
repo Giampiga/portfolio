@@ -58,7 +58,7 @@ function App() {
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
             <div className='flex justify-center mx-8'>
-              <h1 className='text-4xl py-24 ml-8'>Computer Science degree at</h1><img src={ucf} className='w-56 h-64  py-4 ml-4'/>
+              <h1 className='text-4xl py-24 ml-10'>Computer Science degree at</h1><img src={ucf} className='w-56 h-64  py-4 ml-4'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-custom-flame' />
