@@ -58,12 +58,12 @@ function App() {
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
             <div className='flex justify-center text-9xl mx-8 px-12'>
-              {/* <h1 className='text-4xl py-24'>Computer Science degree at</h1> */}
-              {`{`}
-              <FaUniversity className=' text-custom-flame' />
-              :
+              <h1 className='text-4xl py-24'>Computer Science degree at</h1>
+              {/* {`{`} */}
+              {/* <FaUniversity className=' text-custom-flame' /> */}
+              {/* : */}
               <img src={ucf} className='w-40 h-40  ml-8'/>
-              {`}`}
+              {/* {`}`} */}
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-custom-flame' />
