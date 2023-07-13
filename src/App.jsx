@@ -57,9 +57,8 @@ function App() {
               Computer Science graduate from University of Central Florida looking for opportunities and services for programming or other engineering tech needs. 
               Ready to work anywhere in the USA. Passionate in learning about technology. Become a part of my journey, don't hesitate to contact me via email.
             </p>
-            <div className='flex justify-center mx-8 px-12'>
-              <h1 className='text-4xl py-24'>Computer Science degree at</h1>
-              <img src={ucf} className='w-56 h-64  py-4 ml-8'/>
+            <div className='flex justify-center mx-8'>
+              <h1 className='text-4xl py-24'>Computer Science degree at</h1><img src={ucf} className='w-56 h-64  py-4 ml-8'/>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11'>
                 <FaPython className='text-8xl text-custom-flame' />
