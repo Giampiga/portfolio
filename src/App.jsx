@@ -24,14 +24,14 @@ function App() {
     <div className={darkMode ? "dark" : ""}>
       <main className=' bg-custom-powder px-10 sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
       <nav class="sticky lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space">
-         <a href='/' className='bg-gradient-to-r from-red-400 to-custom-flame text-transparent bg-clip-text text-custom-flame text-2xl px-4 ml-8'>GGA</a>
+        <a href='/' className='bg-gradient-to-r from-red-400 to-custom-flame text-transparent bg-clip-text text-custom-flame text-2xl px-4 ml-8'>GGA</a>
             <ul className='flex items-center mr-8'>
               <li>
                 {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
               </li>
             </ul>
         </nav>
-
+        
         <section>
           <div className="text-center p-10">
             <p className='text-3xl'>Hello, world! :) I am</p>
@@ -45,7 +45,7 @@ function App() {
             <a className="text-custom-flame" href={resume} download="Giampiero_Giovingo_2023_Resume.pdf"><FaFileDownload /></a>
           </div>
           <div className='mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
-             <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
+            <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
           </div>
         </section>
         
