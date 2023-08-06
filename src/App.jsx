@@ -22,8 +22,8 @@ function App() {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <main className=' bg-custom-powder px-10 sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
-      <nav class="sticky lg:w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space">
+      <main className=' bg-custom-powder sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
+      <nav class="sticky w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space">
         <a href='/' className='bg-gradient-to-r from-red-400 to-custom-flame text-transparent bg-clip-text text-custom-flame text-2xl px-4 ml-8'>GGA</a>
             <ul className='flex items-center mr-8'>
               <li>
@@ -62,7 +62,7 @@ function App() {
               {/* <h1 className='sm:text-4xl text-xl py-24 ml-10'>Computer Science degree at</h1> */}
               <h1 className="max-md:text-8xl my-auto">{'{'}</h1>
               <FaUniversity className="sm:w-56 sm:h-64 my-auto"/> <p className="my-auto">:</p> 
-              {<img src={darkMode? ucf : ucfbw} className='sm:w-56 sm:h-64 w-16 h-16 my-auto'/>}
+              {<img src={darkMode? ucf : ucfbw} className='sm:w-52 sm:h-52 w-16 h-16 my-auto'/>}
               <h1 className="max-md:text-8xl my-auto">{'}'}</h1>
             </div>
             <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11 sm:text-8xl text-4xl text-custom-flame'>
