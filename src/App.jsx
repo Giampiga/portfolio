@@ -54,7 +54,7 @@ function App() {
             <h3 className='flex justify-center text-6xl py-6'>
               About Me
             </h3>
-            <p className='text-lg py-2 leading-8 text-custom-space dark:text-custom-powder'>
+            <p className='text-lg py-2 px-10 md:px-14 leading-8 text-custom-space dark:text-custom-powder'>
               I am a Computer Science graduate from University of Central Florida, currently looking for opportunities for programming or other engineering tech needs. 
               Passionate in learning about technology. Ready to work anywhere in the USA. Become a part of my journey, don't hesitate to contact me via <a className="text-custom-flame" href='mailto:giampiga.cs@gmail.com'>email.</a>
             </p>
