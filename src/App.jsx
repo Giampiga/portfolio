@@ -1,148 +1,781 @@
-import './App.css'
-import {BsFillMoonStarsFill, BsFillSunFill} from 'react-icons/bs'
-import {AiFillLinkedin, AiFillGithub, AiFillMail, AiFillHtml5} from 'react-icons/ai'
-import {FaFileDownload, FaHardHat, FaJava, FaPython, FaReact, FaUniversity} from 'react-icons/fa'
-import {TbBrandOpenai, TbBrandVscode} from  'react-icons/tb'
-import {SiJavascript, SiTailwindcss} from 'react-icons/si'
-import {BiGitBranch} from 'react-icons/bi'
-import {DiCss3} from 'react-icons/di'
-import dev from './public/pfp.png'
-import groov from './public/groov.png'
-import polybay from './public/polybay.png'
-import weather from './public/weather.png'
-import wave from './public/wave.png'
-import imgsrc from './public/imgsrc.png'
-import ucfbw from './public/ucfbw.png'
-import ucf from './public/ucf.png'
-import resume from './public/Giampiero_Giovingo_2023.pdf'
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  Briefcase,
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  MagnifyingGlass,
+  X,
+} from "@phosphor-icons/react";
+import {
+  archiveProjects,
+  primaryProjects,
+  profileLinks,
+  projectById,
+  repositoryCabinet,
+} from "./projects.js";
+import { RecruiterPortfolio, resumeUrl } from "./RecruiterPortfolio.jsx";
+import { projectStories } from "./project-stories.js";
+import { resolveInitialView } from "./portfolio-view.js";
+import { useStudioPlayer } from "./useStudioPlayer.js";
+import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches } from "./studio-navigation.js";
+import { personFrames, sideLegPose } from "./sprite-frames.js";
+import { roomDistance } from "./studio-motion.js";
 
-function App() {
-  const [darkMode, setDarkMode] = useState(true)
+const directions = {
+  down: { base: 0, dx: 0, dy: 1 },
+  left: { base: 3, dx: -1, dy: 0 },
+  right: { base: 6, dx: 1, dy: 0 },
+  up: { base: 9, dx: 0, dy: -1 },
+};
 
-  return (
-    <div className={darkMode ? "dark" : ""}>
-      <main className=' bg-custom-powder sm:px-20 lg:px-40 dark:bg-custom-space dark:text-custom-powder text-custom-space'>
-      <nav class="sticky w-full top-0 py-8 mb-12 flex justify-between bg-custom-powder dark:bg-custom-space">
-        <a href='/' className='bg-gradient-to-r from-red-400 to-custom-flame text-transparent bg-clip-text text-custom-flame text-2xl px-4 ml-8'>GGA</a>
-            <ul className='flex items-center mr-8'>
-              <li>
-                {darkMode ? <BsFillSunFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl'/> : <BsFillMoonStarsFill onClick={() => setDarkMode(!darkMode)} className=' cursor-pointer text-xl' /> }
-              </li>
-            </ul>
-        </nav>
-        
-        <section>
-          <div className="text-center p-10">
-            <p className='text-3xl'>Hello, world! :) I am</p>
-            <h2 className='text-5xl py-2 bg-gradient-to-r from-custom-flame to-red-600 text-transparent bg-clip-text font-medium md:text-7xl'>{`<`}Giampiero Giovingo{` />`}</h2>
-            <h3 className='text-2xl py-2 md:text-3xl'>a Software Engineer</h3>
-          </div>
-          <div className='text-5xl flex justify-center gap-16 py-3 -mx-8 text-custom-flame'>
-            <a className="text-custom-flame" href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
-            <a className="text-custom-flame" href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
-            <a className="text-custom-flame" href='https://www.github.com/giampiga'><AiFillGithub /></a>
-            <a className="text-custom-flame" href={resume} download="Giampiero_Giovingo_2023_Resume.pdf"><FaFileDownload /></a>
-          </div>
-          <div className='mx-auto bg-gradient-to-b from-custom-flame rounded-full w-60 h-60 mt-20 overflow-hidden md:h-96 md:w-96'>
-            <img src={dev} className='object-cover md:h-96 md:w-96 h-60 w-60' />
-          </div>
-        </section>
-        
-        <section>
-          <div>
-            <h3 className='flex justify-center text-6xl py-6'>
-              About Me
-            </h3>
-            <p className='text-lg py-2 px-10 md:px-14 leading-8 text-custom-space dark:text-custom-powder'>
-              I am a Computer Science graduate from University of Central Florida, currently looking for opportunities for programming or other engineering tech needs. 
-              Passionate in learning about technology. Ready to work anywhere in the USA. Become a part of my journey, don't hesitate to contact me via <a className="text-custom-flame" href='mailto:giampiga.cs@gmail.com'>email.</a>
-            </p>
-            <div className='flex justify-center mx-8 text-8xl text-custom-flame my-auto'>
-              {/* <h1 className='sm:text-4xl text-xl py-24 ml-10'>Computer Science degree at</h1> */}
-              <h1 className="max-md:text-8xl my-auto">{'{'}</h1>
-              <FaUniversity className="sm:w-56 sm:h-64 my-auto"/> <p className="my-auto">:</p> 
-              {<img src={darkMode? ucf : ucfbw} className='sm:w-52 sm:h-52 w-16 h-16 my-auto'/>}
-              <h1 className="max-md:text-8xl my-auto">{'}'}</h1>
-            </div>
-            <div className='flex flex-wrap gap justify-evenly gap-11 mt-11 m-11 sm:text-8xl text-4xl text-custom-flame'>
-                <FaPython />
-                <FaJava />
-                <FaReact />
-                <SiJavascript />
-                <SiTailwindcss />
-                <AiFillHtml5 />
-                <DiCss3 />
-                <FaHardHat />
-                <TbBrandOpenai />
-                <TbBrandVscode />
-                <BiGitBranch />
-            </div>
-          </div>
-        </section>
+const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const projectHref = (project) => `#project=${project.id}`;
 
-        <section>
-          <div>
-            <h2 className='flex justify-center text-6xl py-10'>
-              Projects
-            </h2>
-          </div>
-          <div className='grid md:grid-cols-2 lg:flex flex-wrap justify-center gap-10 py-10'>
-             {/* lg:flex-row'> */}
-            {/* <div className='basis-1/3 flex-1'><img src={web1} className='rounded-lg object-cover' /></div> */}
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={weather} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Weather App</h3>
-                  <p className='py-2'>Front End Engineer</p>
-                  <h4 className='py-4 text-custom-flame'>React & Material-UI</h4>
-                  <p className=' py-1'>Uses OpenWeather API to fetch weather of a typed user query, in this case a location and displays current weather information to the user. </p>
-            </div>
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={wave} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Wave-at-Me</h3>
-                  <p className='py-2'>Full Stack Engineer</p>
-                  <h4 className='py-4 text-custom-flame'>React, Ethers, Solidity, <br/>Hardhat & Rinkeby</h4>
-                  <p className=' py-1'>Simple web3 app that allowed any user to connect with their Metamask wallet and send a 'wave' attached with a message; to be displayed on an ever-public timeline.</p>
-            </div>
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={polybay} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Polybay</h3>
-                  <p className='py-2'>Smart Contract Engineer</p>
-                  <h4 className='py-4 text-custom-flame'>Solidity & Hardhat</h4>
-                  <p className=' py-1'>First phase of an NFT Marketplace using Polygon blockchain. Allowed the user to upload any visual media to be minted onchain from the marketplace.</p>
-            </div>
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={imgsrc} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Image Search</h3>
-                  <p className='py-2'>Front End Engineer</p>
-                  <h4 className='py-4 text-custom-flame'>HTML, CSS & JavaScript</h4>
-                  <p className=' py-1'>Simple app that allows the user to search a query by fetching public images with the Unsplash API.</p>
-            </div>
-            <div className='max-w-sm text-center shadow-xl p-10 rounded-xl scroll-my-10'>
-                  <img src={groov} className='mx-auto'/>
-                  <h3 className='text-lg font-medium pt-8 pb-2'>Groov</h3>
-                  <p className='py-2'>Front End Engineer</p>
-                  <h4 className='py-4 text-custom-flame'>React & Material-UI</h4>
-                  <p className=' py-1'>A music based social media app that brings freestyle to thepublic by allowing to share creations.</p>
-            </div>
-              <div className='flex flex-col-reverse my-auto lg:ml-32'><p>.. and this website! <br/><br/> Made with Vite + React + Tailwind<br/> deployed via Vercel</p></div>
-          </div>
-        </section>
+const dogNavigationGraphs = {
+  left: {
+    rugNorthWest: { x: 31.5, y: 30.5, links: ["rugNorth", "rugWest"] },
+    rugNorth: { x: 40.5, y: 30.5, links: ["rugNorthWest", "rugNorthEast"] },
+    rugNorthEast: { x: 52, y: 30.5, links: ["rugNorth", "rugEastUpper", "corridorNorth"] },
+    rugEastUpper: { x: 52, y: 39, links: ["rugNorthEast", "rugEastLower"] },
+    rugEastLower: { x: 52, y: 48.5, links: ["rugEastUpper", "rugSouth", "corridorSouth"] },
+    rugSouth: { x: 40.5, y: 48.5, links: ["rugEastLower", "rugSouthWest"] },
+    rugSouthWest: { x: 31.5, y: 48.5, links: ["rugSouth", "rugWest"] },
+    rugWest: { x: 31.5, y: 39, links: ["rugSouthWest", "rugNorthWest"] },
+    corridorNorth: { x: 56, y: 30.5, links: ["rugNorthEast", "corridorMiddle"] },
+    corridorMiddle: { x: 56, y: 39, links: ["corridorNorth", "corridorSouth"] },
+    corridorSouth: { x: 56, y: 48.5, links: ["corridorMiddle", "rugEastLower"] },
+  },
+  right: {
+    hallLeft: { x: 68, y: 49, links: ["hallMiddle"] },
+    hallMiddle: { x: 74, y: 49, links: ["hallLeft", "hallTurn"] },
+    hallTurn: { x: 81.25, y: 49, links: ["hallMiddle", "aisleUpper"] },
+    aisleUpper: { x: 81.25, y: 58, links: ["hallTurn", "aisleMiddle"] },
+    aisleMiddle: { x: 81.25, y: 68, links: ["aisleUpper", "aisleLower"] },
+    aisleLower: { x: 81.25, y: 76, links: ["aisleMiddle", "rugTurn"] },
+    rugTurn: { x: 75.25, y: 76, links: ["aisleLower", "rugNorth"] },
+    rugNorth: { x: 75.25, y: 82, links: ["rugTurn", "rugMiddle"] },
+    rugMiddle: { x: 70, y: 82, links: ["rugNorth", "rugWest"] },
+    rugWest: { x: 66, y: 82, links: ["rugMiddle", "rugExit"] },
+    rugExit: { x: 66, y: 78, links: ["rugWest"] },
+  },
+};
 
-        <footer className='flex justify-center py-10'>
-          <div className='text-2xl flex flex-col justify-center gap-8 py-3 -mx-8 text-custom-flame'>
-            <div>© 2023 by Giampiero Giovingo</div>
-            <div className='flex justify-center gap-16 flex-row'>
-              <a className="text-custom-flame" href='mailto:giampiga.cs@gmail.com'><AiFillMail /></a>
-              <a className="text-custom-flame" href='https://www.linkedin.com/in/giampiga' ><AiFillLinkedin /></a>
-              <a className="text-custom-flame" href='https://www.github.com/giampiga'><AiFillGithub /></a>
-              <a className="text-custom-flame" href={resume} download="Giampiero_Giovingo_2023_Resume.pdf"><FaFileDownload /></a>
-            </div>
-          </div>
-        </footer>
-      </main>
-    </div>
-  )
+const dogPersonalities = {
+  left: {
+    cadence: 132,
+    travelMsPerUnit: 70,
+    paceVariance: 0.12,
+    pauseMin: 500,
+    pauseMax: 1750,
+    burstMin: 2,
+    burstMax: 4,
+    anticipationMin: 100,
+    anticipationMax: 170,
+    cornerMin: 80,
+    cornerMax: 135,
+    settleDuration: 140,
+    observeChance: 0.34,
+    reverseChance: 0.12,
+    idleDuration: 2100,
+    idleDelay: -320,
+  },
+  right: {
+    cadence: 164,
+    travelMsPerUnit: 90,
+    paceVariance: 0.1,
+    pauseMin: 1300,
+    pauseMax: 3400,
+    burstMin: 1,
+    burstMax: 3,
+    anticipationMin: 155,
+    anticipationMax: 245,
+    cornerMin: 120,
+    cornerMax: 190,
+    settleDuration: 190,
+    observeChance: 0.62,
+    reverseChance: 0.38,
+    idleDuration: 2700,
+    idleDelay: -940,
+  },
+};
+
+// Both companions can use the doorway; personality no longer confines a dog
+// to a disconnected room. Prefix the workshop's repeated waypoint names.
+const dogHouseGraph = {
+  ...dogNavigationGraphs.left,
+  ...Object.fromEntries(Object.entries(dogNavigationGraphs.right).map(([name, node]) =>
+    [`workshop-${name}`, { ...node, links: node.links.map((link) => `workshop-${link}`) }])),
+  doorwayWest: { x: 56, y: 58.5, links: ["corridorSouth", "doorwayEast"] },
+  doorwayEast: { x: 65, y: 58.5, links: ["doorwayWest", "workshopEntry"] },
+  workshopEntry: { x: 65, y: 49, links: ["doorwayEast", "workshop-hallLeft"] },
+};
+dogHouseGraph.corridorSouth = { ...dogHouseGraph.corridorSouth, links: [...dogHouseGraph.corridorSouth.links, "doorwayWest"] };
+dogHouseGraph["workshop-hallLeft"] = { ...dogHouseGraph["workshop-hallLeft"], links: ["workshop-hallMiddle", "workshopEntry"] };
+
+function validateDogNavigationGraphs() {
+  Object.entries({ house: dogHouseGraph }).forEach(([zone, graph]) => {
+    Object.entries(graph).forEach(([nodeName, node]) => {
+      node.links.forEach((linkedName) => {
+        const linkedNode = graph[linkedName];
+        if (!linkedNode) throw new Error(`Missing ${zone} dog waypoint: ${linkedName}`);
+        if (!linkedNode.links.includes(nodeName)) throw new Error(`Dog route must be reciprocal: ${nodeName} → ${linkedName}`);
+        if (node.x !== linkedNode.x && node.y !== linkedNode.y) throw new Error(`Dog route must be axis-aligned: ${nodeName} → ${linkedName}`);
+      });
+    });
+    const reached = new Set();
+    const pending = ["rugNorthWest"];
+    while (pending.length) {
+      const name = pending.pop();
+      if (reached.has(name)) continue;
+      reached.add(name);
+      pending.push(...graph[name].links);
+    }
+    if (reached.size !== Object.keys(graph).length) throw new Error("A dog is confined to a disconnected room");
+    for (const name of ["doorwayWest", "doorwayEast", "workshopEntry"]) {
+      for (const link of graph[name].links) {
+        if (!isClearSegment(graph[name], graph[link])) throw new Error(`Blocked dog doorway: ${name} → ${link}`);
+      }
+    }
+  });
 }
 
-export default App
+if (import.meta.env.DEV) validateDogNavigationGraphs();
+
+const directionBetween = (from, to) => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  return Math.abs(dx) > Math.abs(dy)
+    ? (dx > 0 ? "right" : "left")
+    : (dy > 0 ? "down" : "up");
+};
+
+const gaitFrames = [0, 1, 2, 1];
+const randomBetween = (min, max) => min + Math.random() * (max - min);
+const randomInteger = (min, max) => Math.floor(randomBetween(min, max + 1));
+
+function useReducedMotionPreference() {
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mediaQuery) return undefined;
+    const updatePreference = () => setReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener?.("change", updatePreference);
+    return () => mediaQuery.removeEventListener?.("change", updatePreference);
+  }, []);
+
+  return reducedMotion;
+}
+
+function useWanderingDog(zone, mapRef) {
+  const graph = dogHouseGraph;
+  const personality = dogPersonalities[zone];
+  const reducedMotion = useReducedMotionPreference();
+  const [roomVisible, setRoomVisible] = useState(() => !document.hidden && window.matchMedia("(min-width: 861px)").matches);
+  const initialNodeRef = useRef(null);
+  if (initialNodeRef.current === null) {
+    initialNodeRef.current = zone === "left" ? "rugNorthWest" : "rugSouthWest";
+  }
+  const [position, setPosition] = useState(graph[initialNodeRef.current]);
+  const [direction, setDirection] = useState(zone === "right" ? "left" : "right");
+  const [gaitStep, setGaitStep] = useState(1);
+  const [walking, setWalking] = useState(false);
+  const [duration, setDuration] = useState(1200);
+  const [activity, setActivity] = useState("idle");
+  const currentNodeRef = useRef(initialNodeRef.current);
+  const previousNodeRef = useRef(null);
+  const [cadence, setCadence] = useState(personality.cadence);
+
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 861px)");
+    const update = () => setRoomVisible(!document.hidden && desktop.matches);
+    document.addEventListener("visibilitychange", update);
+    desktop.addEventListener("change", update);
+    return () => {
+      document.removeEventListener("visibilitychange", update);
+      desktop.removeEventListener("change", update);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (reducedMotion) {
+      const authoredNodeName = zone === "left" ? "rugNorthWest" : "rugSouthWest";
+      currentNodeRef.current = authoredNodeName;
+      previousNodeRef.current = null;
+      setPosition(graph[authoredNodeName]);
+      setDirection(zone === "left" ? "right" : "left");
+      setWalking(false);
+      setGaitStep(1);
+      setActivity("idle");
+      return undefined;
+    }
+    if (!roomVisible) {
+      // CSS travel completes at its destination while hidden; resume from that
+      // same graph node rather than starting an invisible random-walk loop.
+      setWalking(false);
+      setGaitStep(1);
+      setActivity("idle");
+      return undefined;
+    }
+
+    let cancelled = false;
+    const timers = new Set();
+
+    const schedule = (callback, delay) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer);
+        if (!cancelled) callback();
+      }, delay);
+      timers.add(timer);
+    };
+
+    const faceRandomExit = () => {
+      const node = graph[currentNodeRef.current];
+      const lookName = node.links[Math.floor(Math.random() * node.links.length)];
+      setDirection(directionBetween(node, graph[lookName]));
+    };
+
+    const chooseNextNode = () => {
+      const current = graph[currentNodeRef.current];
+      const previousName = previousNodeRef.current;
+      const alternatives = current.links.filter((name) => name !== previousName);
+      const canReverse = previousName && current.links.includes(previousName);
+      if (canReverse && (!alternatives.length || Math.random() < personality.reverseChance)) return previousName;
+      const candidates = alternatives.length ? alternatives : current.links;
+      return candidates[Math.floor(Math.random() * candidates.length)];
+    };
+
+    const restAtNode = () => {
+      setWalking(false);
+      setActivity(Math.random() < personality.observeChance ? "observing" : "idle");
+      const pause = randomBetween(personality.pauseMin, personality.pauseMax);
+
+      if (pause > 1000) {
+        schedule(() => {
+          faceRandomExit();
+          setActivity("alert");
+        }, pause * randomBetween(0.42, 0.64));
+      }
+
+      schedule(() => {
+        beginLeg(randomInteger(personality.burstMin, personality.burstMax));
+      }, pause);
+    };
+
+    const beginLeg = (legsRemaining) => {
+      const currentName = currentNodeRef.current;
+      const current = graph[currentName];
+      const targetName = chooseNextNode();
+      const target = graph[targetName];
+      const nextDirection = directionBetween(current, target);
+      const room = mapRef.current?.getBoundingClientRect();
+      const distance = roomDistance(current, target, room?.width ? room.height / room.width : 0.78);
+      const pace = personality.travelMsPerUnit * randomBetween(1 - personality.paceVariance, 1 + personality.paceVariance);
+      const travelTime = clamp(distance * pace, 520, 2100);
+
+      setDirection(nextDirection);
+      setActivity("anticipating");
+      schedule(() => {
+        setDuration(travelTime);
+        setCadence(personality.cadence * (travelTime / distance) / personality.travelMsPerUnit);
+        setWalking(true);
+        setActivity("walking");
+        previousNodeRef.current = currentName;
+        currentNodeRef.current = targetName;
+        setPosition(target);
+
+        schedule(() => {
+          previousNodeRef.current = currentName;
+          currentNodeRef.current = targetName;
+          setWalking(false);
+          setGaitStep(1);
+
+          if (legsRemaining > 1) {
+            setActivity("cornering");
+            schedule(() => beginLeg(legsRemaining - 1), randomBetween(personality.cornerMin, personality.cornerMax));
+          } else {
+            setActivity("settling");
+            schedule(restAtNode, personality.settleDuration);
+          }
+        }, travelTime);
+      }, randomBetween(personality.anticipationMin, personality.anticipationMax));
+    };
+
+    restAtNode();
+    return () => {
+      cancelled = true;
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.clear();
+    };
+  }, [graph, mapRef, personality, reducedMotion, roomVisible, zone]);
+
+  useEffect(() => {
+    if (!walking) return undefined;
+    const frameTimer = window.setInterval(() => setGaitStep((value) => (value + 1) % gaitFrames.length), cadence);
+    return () => window.clearInterval(frameTimer);
+  }, [cadence, walking]);
+
+  return {
+    position,
+    direction,
+    frame: gaitFrames[gaitStep],
+    walking,
+    traveling: walking,
+    duration,
+    activity,
+    cadence,
+    idleDuration: personality.idleDuration,
+    idleDelay: personality.idleDelay,
+  };
+}
+
+function getInitialView() {
+  let savedView;
+  try { savedView = window.localStorage.getItem("portfolio-view"); } catch { /* Optional device-local preference. */ }
+  return resolveInitialView({
+    reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+    explicitView: new URLSearchParams(window.location.search).get("view"),
+    savedView,
+  });
+}
+
+function Kbd({ children }) {
+  return <kbd>{children}</kbd>;
+}
+
+function Header({ view, onViewChange }) {
+  return (
+    <header className="masthead">
+      <a className="wordmark" href="#top" aria-label="Giampiero Giovingo, home">
+        Giampiero Giovingo
+      </a>
+      <div className="masthead__position">
+        <strong>Product Engineer</strong>
+        <span>I build playful interfaces and serious systems across realtime, AI-assisted workflows and commerce.</span>
+      </div>
+      <nav className="masthead__nav" aria-label="Primary navigation">
+        <div className="view-switch" aria-label="Portfolio view">
+          <button aria-pressed={view === "index"} className={view === "index" ? "is-active" : ""} type="button" onClick={() => onViewChange("index")}>Index</button>
+          <span aria-hidden="true">/</span>
+          <button aria-pressed={view === "studio"} className={view === "studio" ? "is-active" : ""} type="button" onClick={() => onViewChange("studio")}>Studio</button>
+        </div>
+        {view === "index" && <a className="index-nav-link" href="#work">Work</a>}
+        {view === "index" && <a className="index-nav-link" href="#about">About</a>}
+        <a href={resumeUrl} target="_blank" rel="noreferrer">Résumé ↗</a>
+        <a href={profileLinks.email}>Contact</a>
+      </nav>
+    </header>
+  );
+}
+
+function LinkRow({ links = [] }) {
+  if (!links.length) return <p className="private-note">Private or protected evidence is summarized without publishing source.</p>;
+
+  return (
+    <div className="project-links">
+      {links.map((link) => (
+        <a key={`${link.href}-${link.label}`} href={link.href} target="_blank" rel="noreferrer">
+          {link.label}
+          <ArrowUpRight size={15} weight="bold" aria-hidden="true" />
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function ProjectInspector({ project, compact = false, onOpenCaseStudy }) {
+  const hero = project.images[0];
+
+  return (
+    <aside className={`project-inspector${compact ? " is-compact" : ""}`} style={{ "--project-accent": project.accent }} aria-live="polite">
+      <div className="inspector-heading">
+        <p className="eyebrow">{project.number} / 07 · {project.group}</p>
+        <h2>{project.title}</h2>
+        <p className="project-meta">{project.role} · {project.date} · {project.status}</p>
+      </div>
+
+      <p className="inspector-summary">{project.summary}</p>
+
+      {hero ? (
+        <div className={`inspector-artifacts${!compact && project.images.length > 1 ? " has-thumbnails" : ""}`}>
+          <figure className="inspector-hero">
+            <img src={hero.src} alt={hero.alt} />
+            <figcaption>{hero.caption ?? `${hero.label} · real product artifact`}</figcaption>
+          </figure>
+          {!compact && project.images.slice(1, 3).map((image) => (
+            <figure className="inspector-thumbnail" key={image.src}>
+              <img src={image.src} alt={image.alt} />
+              <figcaption>{image.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+      ) : (
+        <div className="evidence-slate" aria-label="Verified project evidence">
+          <span>Evidence, not decoration</span>
+          <ul>{project.evidence.map((item) => <li key={item}>{item}</li>)}</ul>
+        </div>
+      )}
+
+      {!compact && (
+        <div className="inspector-evidence">
+          <p><strong>My contribution</strong>{project.contribution}</p>
+          <p><strong>What can be verified</strong>{project.proof}</p>
+        </div>
+      )}
+
+      <div className="inspector-actions">
+        <button type="button" onClick={onOpenCaseStudy}>
+          Inspect case study
+          <ArrowRight size={18} weight="bold" aria-hidden="true" />
+        </button>
+        <LinkRow links={project.links} />
+      </div>
+    </aside>
+  );
+}
+
+function ProjectDialog({ project, open, onClose }) {
+  const ref = useRef(null);
+  const story = projectStories[project.id];
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    if (open && !node.open) { node.showModal(); node.scrollTop = 0; }
+    if (!open && node.open) node.close();
+  }, [open]);
+
+  return (
+    <dialog className="case-dialog" ref={ref} onClose={onClose} onCancel={onClose} aria-labelledby="case-title">
+      <div className="case-reader__bar"><span>Selected work / {project.number}</span><button className="close-control" type="button" onClick={onClose} aria-label="Close case study"><X size={18} aria-hidden="true" /> Close</button></div>
+      <article className="case-reader">
+        <p className="eyebrow">{project.group}</p>
+        <h2 id="case-title">{project.title}</h2>
+        <dl className="case-reader__meta"><div><dt>My role</dt><dd>{project.role}</dd></div><div><dt>When</dt><dd>{project.date}</dd></div><div><dt>Status</dt><dd>{project.status}</dd></div></dl>
+        <p className="work-stack">{story.stack.join(" / ")}</p>
+        <p className="case-reader__lead">{story.challenge}</p>
+        {project.links.length > 0 && <LinkRow links={project.links} />}
+        {project.images[0] && <figure className="case-reader__main-artifact"><img src={project.images[0].src} alt={project.images[0].alt} /><figcaption>{project.images[0].caption ?? `${project.images[0].label} · captured from the actual product`}</figcaption></figure>}
+        <section className="case-reader__section"><h3>My contribution</h3><div><p>{project.contribution}</p><ul>{story.approach.map((item) => <li key={item}>{item}</li>)}</ul></div></section>
+        <section className="case-reader__section"><h3>Engineering decisions</h3><div>{story.decisions.map((decision) => <div className="case-decision" key={decision.title}><h4>{decision.title}</h4><p>{decision.detail}</p></div>)}</div></section>
+        <section className="case-reader__section"><h3>Evidence & results</h3><p>{story.proof}</p></section>
+        <section className="case-reader__scope"><h3>Scope & current status</h3><p>{story.boundary}</p></section>
+        {project.images.length > 1 && <div className="case-reader__gallery">{project.images.slice(1).map((image) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption>{image.caption ?? `${image.label} · actual product screenshot`}</figcaption></figure>)}</div>}
+        <footer className="case-reader__footer"><a href={profileLinks.email}>Ask me about this project ↗</a><button type="button" onClick={onClose}>Back to portfolio</button></footer>
+      </article>
+    </dialog>
+  );
+}
+
+function Sprite({ kind, position, direction, frame, walking, distance = 0, traveling = false, duration = 120, activity, cadence, idleDuration, idleDelay, className = "" }) {
+  const row = kind === "person" ? 0 : kind === "pomsky-white" ? 1 : 2;
+  const column = directions[direction].base + (walking ? frame : 1);
+  const isDog = kind.startsWith("pomsky-");
+  const idleDog = isDog && !walking && (!activity || activity === "idle");
+  const activityClass = isDog && activity ? `is-${activity}` : "";
+  const gaitClass = isDog ? `gait-frame-${walking ? frame : 1}` : "";
+  const personCrop = kind === "person" ? personFrames[column] : null;
+  const sideView = kind === "person" && (direction === "left" || direction === "right");
+  return (
+    <span
+      className={`game-sprite game-sprite--${kind} ${sideView ? "is-side-view" : ""} ${walking ? "is-walking" : ""} ${idleDog ? "is-idle" : ""} ${activityClass} ${gaitClass} ${traveling ? "is-traveling" : ""} ${className}`}
+      style={{
+        left: `${position.x}%`,
+        top: `${position.y}%`,
+        "--sprite-x": `${personCrop ? personCrop.x / 1408 * 100 : column / 11 * 100}%`,
+        "--sprite-y": `${personCrop ? personCrop.y / 736 * 100 : row / 2 * 100}%`,
+        "--travel-duration": `${duration}ms`,
+        "--dog-cadence": cadence ? `${cadence}ms` : undefined,
+        "--dog-idle-duration": idleDuration ? `${idleDuration}ms` : undefined,
+        "--dog-idle-delay": idleDelay ? `${idleDelay}ms` : undefined,
+      }}
+      aria-hidden="true"
+    >
+      {sideView && <span className="side-walk" style={{ transform: direction === "right" ? "scaleX(-1)" : undefined }}>
+        {[true, false].map((far) => {
+          const pose = sideLegPose(distance, walking, far);
+          return <span key={String(far)} className={`side-walk__pixels side-walk__leg--${far ? "far" : "near"}`} style={{ transformOrigin: `${pose.hip[0] / 128 * 100}% ${pose.hip[1] / 288 * 100}%`, transform: `translateY(${pose.offset / 288 * 100}%) rotate(${pose.angle}deg)` }} />;
+        })}
+        <span className="side-walk__pixels side-walk__pelvis" />
+        <span className="side-walk__pixels side-walk__torso" />
+      </span>}
+    </span>
+  );
+}
+
+function StudioView({ project, onSelect, onInspect, onShowIndex }) {
+  const mapRef = useRef(null);
+  const reducedMotion = useReducedMotionPreference();
+  const player = useStudioPlayer({ mapRef, canWalk: canPlayerWalk, routeTo: routePlayerTo, reducedMotion });
+  const { position } = player;
+  const whitePomsky = useWanderingDog("left", mapRef);
+  const blackPomsky = useWanderingDog("right", mapRef);
+
+  const nearestProject = useMemo(() => {
+    return primaryProjects.reduce((best, candidate) => {
+      const approach = stationApproaches[candidate.id];
+      const distance = Math.hypot(position.x - approach.x, position.y - approach.y);
+      return !best || distance < best.distance ? { project: candidate, distance } : best;
+    }, null);
+  }, [position]);
+
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (document.querySelector("dialog[open]") || ["INPUT", "TEXTAREA", "BUTTON", "A"].includes(document.activeElement?.tagName)) return;
+      if (!mapRef.current?.getBoundingClientRect().width) return;
+      if (event.key === "Enter" && nearestProject?.distance < 9) {
+        event.preventDefault();
+        onSelect(nearestProject.project);
+        onInspect(nearestProject.project);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [nearestProject, onInspect, onSelect]);
+
+  const walkToStation = (nextProject) => {
+    player.walkTo(stationApproaches[nextProject.id]);
+    onSelect(nextProject);
+  };
+
+  return (
+    <section className="studio-view" aria-label="Walkable portfolio studio">
+      <div className="studio-map-wrap">
+        <div className="studio-map" ref={mapRef} tabIndex="0" aria-label="Use W A S D or arrow keys to walk between project stations">
+          <img className="studio-room" src="/assets/portfolio-house-room-v2.png" alt="Two-room pixel-art working studio with project stations and an open connecting doorway" />
+
+          {primaryProjects.map((candidate) => candidate.station.screen && candidate.images[0] ? (
+            <img
+              key={`${candidate.id}-screen`}
+              className="station-screen"
+              src={candidate.images[0].src}
+              alt=""
+              style={{
+                left: `${candidate.station.screen.x}%`,
+                top: `${candidate.station.screen.y}%`,
+                width: `${candidate.station.screen.w}%`,
+                height: `${candidate.station.screen.h}%`,
+                transform: `rotate(${candidate.station.screen.rotate}deg)`,
+              }}
+            />
+          ) : null)}
+
+          {primaryProjects.map((candidate) => {
+            const selected = candidate.id === project.id;
+            const nearby = nearestProject?.project.id === candidate.id && nearestProject.distance < 9;
+            return (
+              <button
+                key={candidate.id}
+                className={`station-pin${selected ? " is-selected" : ""}${nearby ? " is-nearby" : ""}`}
+                style={{
+                  left: `${candidate.station.x + (candidate.station.labelOffsetX ?? 0)}%`,
+                  top: `${candidate.station.y}%`,
+                  "--pin-accent": candidate.accent,
+                  "--pin-anchor-x": candidate.station.pinAnchorX ?? "50%",
+                }}
+                type="button"
+                onClick={() => walkToStation(candidate)}
+                onDoubleClick={() => onInspect(candidate)}
+                aria-label={`Walk to ${candidate.title}`}
+              >
+                <span>{candidate.number}</span>
+                <strong>{candidate.shortTitle}</strong>
+              </button>
+            );
+          })}
+
+          <Sprite kind="pomsky-white" {...whitePomsky} />
+          <Sprite kind="pomsky-black" {...blackPomsky} />
+          <Sprite kind="person" {...player} />
+
+          <div className="room-prompt" aria-live="polite">
+            {nearestProject?.distance < 9 ? <><Kbd>Enter</Kbd> inspect {nearestProject.project.shortTitle}</> : <>Walk to an object · Enter to inspect</>}
+          </div>
+        </div>
+      </div>
+
+      <div className="mobile-studio-list" aria-label="Studio project stations">
+        <div className="mobile-studio-list__intro">
+          <div className="mobile-party" aria-hidden="true">
+            <Sprite kind="pomsky-white" position={{ x: 28, y: 50 }} direction="right" frame={1} walking={false} activity="mobile-white" />
+            <Sprite kind="person" position={{ x: 50, y: 42 }} direction="down" frame={1} walking={false} />
+            <Sprite kind="pomsky-black" position={{ x: 72, y: 52 }} direction="left" frame={1} walking={false} activity="mobile-black" />
+          </div>
+          <p className="eyebrow">Portfolio House · touch edition</p>
+          <h2>Choose a station.</h2>
+          <p>The same seven case studies, recomposed for a smaller screen—no tiny fake game controls required.</p>
+        </div>
+        <div className="mobile-stations">
+          {primaryProjects.map((candidate) => (
+            <button
+              key={`${candidate.id}-mobile`}
+              className={candidate.id === project.id ? "is-selected" : ""}
+              style={{ "--mobile-accent": candidate.accent }}
+              type="button"
+              onClick={() => onSelect(candidate)}
+            >
+              {candidate.images[0] && <img src={candidate.images[0].src} alt="" />}
+              <span>{candidate.number}</span>
+              <strong>{candidate.shortTitle}</strong>
+              <small>{candidate.date}</small>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <ProjectInspector project={project} compact onOpenCaseStudy={onInspect} />
+
+      <div className="studio-controls">
+        <p><Kbd>W</Kbd><Kbd>A</Kbd><Kbd>S</Kbd><Kbd>D</Kbd><span>/</span><Kbd>↑</Kbd><Kbd>↓</Kbd><Kbd>←</Kbd><Kbd>→</Kbd> to walk</p>
+        <p><Kbd>Enter</Kbd> to inspect</p>
+        <button type="button" onClick={onShowIndex}>Skip to Index <ArrowRight size={18} weight="bold" aria-hidden="true" /></button>
+        <span>{primaryProjects.length} case studies · {archiveProjects.length} selected archive projects</span>
+      </div>
+    </section>
+  );
+}
+
+function ArchiveSection() {
+  const [openId, setOpenId] = useState(null);
+  return (
+    <section className="archive-section">
+      <h3>Selected archive</h3>
+      <div className="archive-table">
+        {archiveProjects.map((item) => (
+          <div className={`archive-entry${openId === item.id ? " is-open" : ""}`} key={item.id}>
+            <button type="button" onClick={() => setOpenId((current) => current === item.id ? null : item.id)} aria-expanded={openId === item.id}>
+              <strong>{item.title}</strong>
+              <span>{item.role}</span>
+              <span>{item.date}</span>
+              <span>{item.status}</span>
+              <CaretDown size={16} weight="bold" aria-hidden="true" />
+            </button>
+            {openId === item.id && (
+              <div className="archive-entry__detail">
+                <p>{item.description}</p>
+                {item.contribution && <p><strong>My contribution.</strong> {item.contribution}</p>}
+                {item.proof && <p className="archive-entry__proof">{item.proof}</p>}
+                {item.stack && <p className="archive-entry__stack">{item.stack.join(" / ")}</p>}
+                <LinkRow links={item.links} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function RepositoryCabinet() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const filtered = repositoryCabinet.filter((item) => `${item.title} ${item.type} ${item.note}`.toLowerCase().includes(query.toLowerCase()));
+
+  return (
+    <section className={`repository-cabinet${open ? " is-open" : ""}`}>
+      <button className="cabinet-toggle" type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open}>
+        <span><Briefcase size={18} aria-hidden="true" /> Repository cabinet</span>
+        <small>{repositoryCabinet.length} more repositories · learning & experiments</small>
+        <CaretDown size={17} weight="bold" aria-hidden="true" />
+      </button>
+      {open && (
+        <div className="cabinet-body">
+          <label className="cabinet-search">
+            <MagnifyingGlass size={17} aria-hidden="true" />
+            <span className="sr-only">Search repository cabinet</span>
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search early work" />
+          </label>
+          <div className="cabinet-grid">
+            {filtered.map((item) => (
+              <article key={item.title}>
+                <p>{item.type}</p>
+                <h4>{item.title}</h4>
+                <span>{item.note}</span>
+              </article>
+            ))}
+          </div>
+          {filtered.length === 0 && <p role="status">No repositories match “{query}”. Try another name or topic.</p>}
+          <a className="github-cabinet-link" href={profileLinks.github} target="_blank" rel="noreferrer">See the complete GitHub profile <ArrowUpRight size={16} weight="bold" /></a>
+        </div>
+      )}
+    </section>
+  );
+}
+
+export function App() {
+  const [view, setView] = useState(getInitialView);
+  const initialProject = useMemo(() => {
+    const match = window.location.hash.match(/project=([^&]+)/);
+    return projectById[match?.[1]] ?? primaryProjects[0];
+  }, []);
+  const [selectedId, setSelectedId] = useState(initialProject.id);
+  const [caseOpen, setCaseOpen] = useState(() => /project=/.test(window.location.hash) && Boolean(projectById[window.location.hash.match(/project=([^&]+)/)?.[1]]));
+  const project = projectById[selectedId] ?? primaryProjects[0];
+
+  const changeView = (nextView) => {
+    setView(nextView);
+    try { window.localStorage.setItem("portfolio-view", nextView); } catch { /* Storage can be disabled in private browsing. */ }
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", nextView);
+    window.history.replaceState(null, "", url);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const selectProject = (nextProject) => {
+    setSelectedId(nextProject.id);
+    window.history.replaceState(null, "", projectHref(nextProject));
+  };
+
+  const openProject = (nextProject) => {
+    setSelectedId(nextProject.id);
+    window.history.pushState({ portfolioCase: true }, "", projectHref(nextProject));
+    setCaseOpen(true);
+  };
+
+  const closeProject = () => {
+    setCaseOpen(false);
+    if (/project=/.test(window.location.hash)) window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${view === "index" ? "#work" : "#top"}`);
+  };
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const match = window.location.hash.match(/project=([^&]+)/);
+      if (projectById[match?.[1]]) { setSelectedId(match[1]); setCaseOpen(true); }
+      else setCaseOpen(false);
+    };
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  useEffect(() => {
+    document.title = caseOpen ? `${project.shortTitle} — Giampiero Giovingo` : "Giampiero Giovingo — Software Engineer";
+  }, [caseOpen, project.shortTitle]);
+
+  return (
+    <div className={`site-shell view-${view}`} id="top">
+      <a className="skip-link" href={view === "index" ? "#main-content" : "#studio-content"}>Skip to content</a>
+      <Header view={view} onViewChange={changeView} />
+      {view === "studio" ? (
+        <main id="studio-content" tabIndex={-1}><StudioView
+          project={project}
+          onSelect={selectProject}
+          onInspect={(candidate) => openProject(candidate?.id ? candidate : project)}
+          onShowIndex={() => changeView("index")}
+        /></main>
+      ) : (
+        <RecruiterPortfolio selectedId={selectedId} onOpen={openProject} onStudio={() => changeView("studio")} archive={<ArchiveSection />} cabinet={<RepositoryCabinet />} />
+      )}
+      <ProjectDialog project={project} open={caseOpen} onClose={closeProject} />
+      <div className="mobile-project-nav" aria-label="Project navigation">
+        <button type="button" onClick={() => selectProject(primaryProjects[(primaryProjects.indexOf(project) - 1 + primaryProjects.length) % primaryProjects.length])}><CaretLeft size={18} /> Previous</button>
+        <span>{project.number} / 07</span>
+        <button type="button" onClick={() => selectProject(primaryProjects[(primaryProjects.indexOf(project) + 1) % primaryProjects.length])}>Next <CaretRight size={18} /></button>
+      </div>
+    </div>
+  );
+}
