@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>try { const saved = localStorage.getItem('portfolio-theme'); document.documentElement.dataset.theme = saved === 'dark' || saved === 'light' ? saved : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } catch { document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }</script>
     <meta name="description" content="Giampiero Giovingo is an Orlando-based software engineer building full-stack products with React, TypeScript, Python and Java. Explore commerce, multiplayer systems, research and backend case studies." />
     <meta name="theme-color" content="#f6f3eb" />
     <meta property="og:title" content="Giampiero Giovingo — Software Engineer" />

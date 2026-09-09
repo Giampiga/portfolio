@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { ArrowDown, ArrowRight, ArrowUpRight, DownloadSimple } from "@phosphor-icons/react";
 import { primaryProjects, profileLinks } from "./projects.js";
 import { projectStories } from "./project-stories.js";
@@ -14,8 +15,8 @@ const introductions = {
   "realtime-multiplayer-lab": {
     discipline: "Realtime systems · Browser games",
     headline: "Friendly competition. Serious state management.",
-    description: "Binaryrush and Stack Rush: a sandboxed coding race and a multiplayer puzzle arcade, with shared rooms, server-owned results and rematches.",
-    proof: "Bounded code execution, reconnect flows and two-client test coverage.",
+    description: "A coding race, a puzzle arcade, and Venezuelan Truco. Three ways to explore multiplayer state, clear feedback, and competitive play. Binaryrush was built with Codex and published on GPT Sites.",
+    proof: "Binaryrush: bounded code execution. Stack Rush: two-client tests. Truco: server-owned card rules and AI practice.",
   },
   arkollab: {
     discipline: "Product workflows · Team contribution",
@@ -31,16 +32,37 @@ const introductions = {
   },
 };
 
+export function ProjectLinks({ links = [] }) {
+  if (!links.length) return null;
+  return <div className="project-links">{links.map((link) => <a key={link.href + link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} <ArrowUpRight size={15} aria-hidden="true" /></a>)}</div>;
+}
+
+export function ProjectCarousel({ project, onOpen }) {
+  const rail = useRef(null);
+  const [index, setIndex] = useState(0);
+  const images = project.images.filter((image) => !image.detail);
+  const go = (next) => rail.current?.scrollTo({ left: Math.max(0, Math.min(images.length - 1, next)) * rail.current.clientWidth, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+  return <section className="project-carousel" aria-label={`${project.shortTitle} screenshots`} aria-roledescription="carousel">
+    <div className="project-carousel__rail" ref={rail} tabIndex={0} onScroll={(event) => setIndex(Math.round(event.currentTarget.scrollLeft / event.currentTarget.clientWidth))} onKeyDown={(event) => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); go(index + (event.key === "ArrowRight" ? 1 : -1)); } }}>
+      {images.map((image, i) => <figure className="project-carousel__slide" key={image.src} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${images.length}: ${image.label}`}>
+        {onOpen ? <a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read about ${image.label}`}><img src={image.src} alt={image.alt} loading={i ? "lazy" : "eager"} /></a> : <img src={image.src} alt={image.alt} loading="lazy" />}
+        <figcaption>{image.label}</figcaption>
+      </figure>)}
+    </div>
+    <div className="project-carousel__controls"><button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={`Previous screenshot: ${project.shortTitle}`}>←</button><span aria-live="polite">{index + 1} / {images.length} · {images[index]?.label}</span><button type="button" disabled={index === images.length - 1} onClick={() => go(index + 1)} aria-label={`Next screenshot: ${project.shortTitle}`}>→</button></div>
+  </section>;
+}
+
 function ProjectFeature({ project, onOpen, selected }) {
   const intro = introductions[project.id];
   const story = projectStories[project.id];
   return (
     <article className={`work-feature work-feature--${project.id}`} id={`work-${project.id}`}>
       <div className="work-feature__top"><span>{project.number} / {intro.discipline}</span><span>{project.date}</span></div>
-      <a className="work-feature__image" href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read ${project.title} case study`}>
+      {project.carousel ? <ProjectCarousel project={project} onOpen={onOpen} /> : <a className="work-feature__image" href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read ${project.title} case study`}>
         <img src={project.images[0].src} alt={project.images[0].alt} width="1440" height="1000" loading={project.number === "01" ? "eager" : "lazy"} />
         <span className="artifact-caption">{project.images[0].label}<ArrowUpRight size={20} aria-hidden="true" /></span>
-      </a>
+      </a>}
       <div className="work-feature__body">
         <p className="work-feature__name">{project.title}</p>
         <h3><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>{intro.headline}</a></h3>
@@ -49,6 +71,7 @@ function ProjectFeature({ project, onOpen, selected }) {
         <p className="work-feature__role">My role: {project.ledgerRole}</p>
         <p className="work-stack">{story.stack.slice(0, 5).join(" / ")}</p>
         <div className="work-feature__bottom"><span>{project.status}</span><button type="button" onClick={() => onOpen(project)} aria-label={`Read case study: ${project.shortTitle}`}>Read case study <ArrowRight size={18} aria-hidden="true" /></button></div>
+        <ProjectLinks links={project.links} />
         {selected && <span className="sr-only">Currently selected project</span>}
       </div>
     </article>
@@ -64,7 +87,7 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
           <h1 id="intro-title">Giampiero<br />Giovingo<span>.</span></h1>
           <div className="intro-copy">
             <h2>Software engineer.<br />Product-minded builder.</h2>
-            <p>I turn fuzzy requirements into usable interfaces and working systems—from restaurant ordering to multiplayer games and research tools.</p>
+            <p>I build software people can use, play, and learn from—bringing thoughtful interfaces and the systems behind them together.</p>
             <p className="intro-context">React & TypeScript, Python & Java.<br />Georgia Tech M.S. CS · UCF B.S. CS.</p>
             <div className="intro-actions"><a className="editorial-button" href="#work">Explore the work <ArrowDown size={18} aria-hidden="true" /></a><a className="text-action" href={resumeUrl} target="_blank" rel="noreferrer">Résumé PDF <ArrowUpRight size={17} aria-hidden="true" /></a></div>
           </div>
@@ -80,11 +103,11 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
       <section className="engineering-work" aria-labelledby="engineering-heading">
         <div className="section-heading"><h2 id="engineering-heading">Under the hood<span>05—07</span></h2><p>Smaller interfaces. Deeper implementation details.</p></div>
         <div className="engineering-list">{primaryProjects.slice(4).map((project) => (
-          <a key={project.id} href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>
+          <article className="engineering-entry" key={project.id}><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>
             <span className="engineering-number">{project.number}</span>
             <div><h3>{project.title}</h3><p>{projectStories[project.id].challenge}</p><p className="work-feature__role">{project.role}</p><span className="work-stack">{projectStories[project.id].stack.join(" / ")}</span></div>
             <div className="engineering-meta"><span>{project.date}</span><span>{project.status}</span><ArrowUpRight size={24} aria-hidden="true" /></div>
-          </a>
+          </a><ProjectLinks links={project.links} /></article>
         ))}</div>
       </section>
 

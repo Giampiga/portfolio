@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import { primaryProjects, archiveProjects, projectById, repositoryCabinet } from "../src/projects.js";
 import { projectStories } from "../src/project-stories.js";
 import { resolveInitialView } from "../src/portfolio-view.js";
@@ -49,11 +50,35 @@ test("résumé is an actual PDF and is included in the production output", async
 });
 
 test("private Koë source is not exposed and protected-course summaries stay bounded", () => {
-  assert.ok(!primaryProjects.flatMap((p) => p.links).some((l) => l.href.includes("koe-usa-website")));
+  assert.ok(!primaryProjects.flatMap((p) => p.links).some((l) => l.href.startsWith("https://github.com/Giampiga/koe-usa-website")));
   assert.match(projectStories.arkollab.boundary, /open, not merged/);
   assert.match(projectStories["cognitive-load-mvp"].boundary, /not a human-subject/);
   assert.match(projectStories["revature-architectures"].boundary, /Protected materials remain private/);
   assert.match(projectStories["algorithms-lab"].boundary, /implementation is not preserved/);
+});
+
+test("theme startup respects saved choices, system preference, and blocked storage", async () => {
+  const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  for (const [saved, systemDark, blocked, expected] of [["dark", false, false, "dark"], ["light", true, false, "light"], [null, true, false, "dark"], ["invalid", false, false, "light"], [null, true, true, "dark"]]) {
+    const document = { documentElement: { dataset: {} } };
+    runInNewContext(script, { document, matchMedia: () => ({ matches: systemDark }), localStorage: { getItem: () => { if (blocked) throw new Error("blocked"); return saved; } } });
+    assert.equal(document.documentElement.dataset.theme, expected);
+  }
+});
+
+test("storefront and game carousels use current artifacts and publish supplied demo links", () => {
+  const storefronts = projectById["restaurant-menu-pos"];
+  const games = projectById["realtime-multiplayer-lab"];
+  assert.equal(storefronts.carousel, true);
+  assert.deepEqual(storefronts.images.filter((image) => !image.detail).map((image) => image.label), ["Ghost storefront", "Koë storefront"]);
+  assert.equal(games.carousel, true);
+  assert.ok(games.images.some((image) => image.src === "/assets/projects/stack-rush-current.jpg"));
+  assert.match(games.summary, /Codex.*GPT Sites/);
+  for (const url of ["https://ghost-prototype-mu.vercel.app/", "https://koe-usa-website.vercel.app/", "https://truco-venezolano.gga.chatgpt.site/", "https://binaryrush.gga.chatgpt.site/"]) {
+    assert.ok([...storefronts.links, ...games.links].some((link) => link.href === url));
+  }
+  assert.ok(!games.links.some((link) => link.href.startsWith("https://github.com/Giampiga/truco-venezolano")));
 });
 
 test("the requested archive is retained and source links are public URL shapes", () => {

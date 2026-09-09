@@ -1,4 +1,29 @@
 /* Working Studio: the editorial, non-game entry point. */
+.project-carousel { min-width: 0; margin: 0; }
+.project-carousel__rail { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: thin; }
+.project-carousel__slide { flex: 0 0 100%; min-width: 0; margin: 0; scroll-snap-align: start; position: relative; background: var(--paper-bright); }
+.project-carousel__slide > a { display: block; }
+.project-carousel__slide img { width: 100%; aspect-ratio: 1.65; object-fit: cover; object-position: top; }
+.project-carousel__slide figcaption { padding: 10px 12px; font: 12px/1.4 "IBM Plex Mono", monospace; color: var(--muted); border: 1px solid var(--soft-rule); }
+.project-carousel__controls { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--soft-rule); }
+.project-carousel__controls span { font: 12px/1.5 "IBM Plex Mono", monospace; text-align: center; }
+.project-carousel__controls button { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--ink); cursor: pointer; font-size: 22px; }
+.project-carousel__controls button:disabled { opacity: .3; cursor: default; }
+.work-feature > .project-carousel { border: 1px solid var(--soft-rule); }
+.work-feature .project-links { margin-top: 12px; flex-wrap: wrap; gap: 10px 20px; }
+.work-feature .project-links a { min-height: 44px; align-items: center; font-size: 13px; }
+.case-reader .project-carousel { margin-block: 30px; }
+.case-reader .project-carousel__slide img { object-fit: contain; }
+
+/* Theme surfaces never alter the actual product screenshots or sprite art. */
+[data-theme="dark"] :is(.view-index, .view-index .masthead, .case-dialog, .case-reader__bar, .masthead, .mobile-project-nav) { background: var(--paper); }
+[data-theme="dark"] :is(.project-inspector, .case-reader__scope, .case-reader__main-artifact, .archive-entry__detail, .cabinet-grid article) { background: var(--paper-bright); }
+[data-theme="dark"] :is(.intro-context, .section-heading > p, .section-heading h2 span, .work-feature__top, .work-feature__name, .work-feature__role, .work-stack, .work-feature__bottom > span, .engineering-meta, .section-kicker, .about-personal, .background-record article > span, .archive-entry__proof, .archive-entry__stack, .case-reader__meta dt, .case-reader figcaption) { color: var(--muted); }
+[data-theme="dark"] :is(.intro-grid h1 span, .view-switch button[aria-pressed="true"], .engineering-number) { color: var(--red); }
+[data-theme="dark"] :is(.editorial-button, .case-reader__footer button, .skip-link) { background: var(--ink); color: var(--paper); }
+[data-theme="dark"] .work-feature__image { background: var(--paper-bright); border-color: var(--soft-rule); }
+[data-theme="dark"] .project-inspector { border-left-color: var(--soft-rule); }
+[data-theme="dark"] .ledger-row:hover { background: var(--paper-bright); }
 html { scroll-padding-top: 100px; }
 html:has(.view-index) { scroll-behavior: auto; }
 .skip-link { position: fixed; z-index: 100; top: 8px; left: 16px; padding: 12px 20px; background: var(--ink); color: white; transform: translateY(-160%); }
@@ -61,8 +86,11 @@ html:has(.view-index) { scroll-behavior: auto; }
 .work-feature__bottom > span { color: #67665e; }
 .work-feature__bottom button { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; border: 0; background: transparent; padding: 0; cursor: pointer; color: inherit; font-size: 13px; }
 .engineering-work { margin-top: 82px; }
-.engineering-list > a { display: grid; grid-template-columns: 44px 1fr 175px; gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--soft-rule); color: inherit; text-decoration: none; }
-.engineering-list > a:hover h3 { color: #b63326; }
+.engineering-entry > a { display: grid; grid-template-columns: 44px 1fr 175px; gap: 24px; padding: 28px 0; color: inherit; text-decoration: none; }
+.engineering-entry { border-bottom: 1px solid var(--soft-rule); }
+.engineering-entry .project-links { margin: 0 0 20px 68px; }
+.engineering-entry .project-links a { min-height: 44px; align-items: center; }
+.engineering-entry > a:hover h3 { color: var(--red); }
 .engineering-number { color: #9c3a2c; font: 13px "IBM Plex Mono", monospace; padding-top: 5px; }
 .engineering-list h3 { font-size: 23px; font-weight: 500; letter-spacing: -.03em; margin-bottom: 10px; }
 .engineering-list p { max-width: 710px; margin-bottom: 14px; font-size: 15px; }
@@ -179,7 +207,8 @@ body:has(dialog[open]) { overflow: hidden; }
   .work-feature__description { font-size: 16px; }
   .work-feature__top { font-size: 11px; }
   .selected-work, .engineering-work, .extended-archive { margin-top: 44px; }
-  .engineering-list > a { grid-template-columns: 25px 1fr; gap: 12px; }
+  .engineering-entry > a { grid-template-columns: 25px 1fr; gap: 12px; }
+  .engineering-entry .project-links { margin-left: 37px; }
   .engineering-meta { grid-column: 2; flex-direction: row; align-items: center; flex-wrap: wrap; text-align: left; }
   .engineering-meta svg { margin-left: auto; }
   .engineering-list h3 { font-size: 22px; }
