@@ -73,7 +73,8 @@ test("storefront and game carousels use current artifacts and publish supplied d
   assert.equal(storefronts.carousel, true);
   assert.deepEqual(storefronts.images.filter((image) => !image.detail).map((image) => image.label), ["Ghost storefront", "Koë storefront"]);
   assert.equal(games.carousel, true);
-  assert.ok(games.images.some((image) => image.src === "/assets/projects/stack-rush-current.jpg"));
+  assert.ok(games.images.some((image) => image.src === "/assets/projects/stack-rush-vercel.jpg"));
+  assert.equal(games.links.find((link) => link.label === "Play Stack Rush").href, "https://stack-rush-pi.vercel.app/");
   assert.match(games.summary, /Codex.*GPT Sites/);
   for (const url of ["https://ghost-prototype-mu.vercel.app/", "https://koe-usa-website.vercel.app/", "https://truco-venezolano.gga.chatgpt.site/", "https://binaryrush.gga.chatgpt.site/"]) {
     assert.ok([...storefronts.links, ...games.links].some((link) => link.href === url));

@@ -60,11 +60,11 @@ export const primaryProjects = [
     ],
     images: [
       { src: "/assets/projects/binaryrush-home.png", alt: "Binaryrush coding race home screen", label: "Binaryrush" },
-      { src: "/assets/projects/stack-rush-current.jpg", alt: "Updated Stack Rush lounge with Nuts & Bolts, Tower Race and solo practice", label: "Stack Rush" },
+      { src: "/assets/projects/stack-rush-vercel.jpg", alt: "Stack Rush on Vercel with Tower of Hanoi, solo practice, daily puzzles and multiplayer lounge", label: "Stack Rush · Hanoi & Nuts and Bolts" },
     ],
     links: [
       { label: "Play Binaryrush", href: "https://binaryrush.gga.chatgpt.site/" },
-      { label: "Play Stack Rush", href: "https://peg-rush-hanoi.gga.chatgpt.site/" },
+      { label: "Play Stack Rush", href: "https://stack-rush-pi.vercel.app/" },
       { label: "Open Truco · sign-in required", href: "https://truco-venezolano.gga.chatgpt.site/" },
       { label: "Stack Rush source", href: "https://github.com/Giampiga/stack-rush" },
     ],
