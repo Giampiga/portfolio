@@ -38,13 +38,14 @@ export const projectStories = {
       "Keep a shared competition coherent when players submit code, make puzzle moves, disconnect or request a rematch.",
     approach: [
       "Directed Binaryrush’s browser coding race and Stack Rush’s multiplayer puzzle arcade through AI-assisted engineering.",
+      "Built Binaryrush with Codex and published it on GPT Sites. Extended the games collection with Truco venezolano: multiplayer tables, chat and solo AI practice.",
       "Implemented shared rooms and competition state with server-authoritative judging, moves, timers and results.",
       "Developed reconnect and rematch flows, with multiplayer test evidence for Stack Rush.",
     ],
     proof:
       "Binaryrush has nine judged problems and explicit code-execution limits. Stack Rush has unit, rendered-HTML and multiplayer tests, including a reported 8/8 two-client suite.",
     boundary:
-      "Binaryrush is a controlled alpha with unpublished source; Stack Rush is a live prototype. Production load capacity and hardened abuse controls have not been verified.",
+      "Binaryrush is a controlled alpha with unpublished source; Stack Rush is a live prototype. Truco requires ChatGPT sign-in and site access; its source remains private, rooms use HTTP polling, and optional voice needs separate LiveKit configuration. Production load capacity and hardened abuse controls have not been verified.",
     decisions: [
       {
         title: "Let the server settle the race",

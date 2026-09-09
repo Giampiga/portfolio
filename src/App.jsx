@@ -16,7 +16,7 @@ import {
   projectById,
   repositoryCabinet,
 } from "./projects.js";
-import { RecruiterPortfolio, resumeUrl } from "./RecruiterPortfolio.jsx";
+import { RecruiterPortfolio, resumeUrl, ProjectCarousel, ProjectLinks as LinkRow } from "./RecruiterPortfolio.jsx";
 import { projectStories } from "./project-stories.js";
 import { resolveInitialView } from "./portfolio-view.js";
 import { useStudioPlayer } from "./useStudioPlayer.js";
@@ -346,7 +346,7 @@ function Kbd({ children }) {
   return <kbd>{children}</kbd>;
 }
 
-function Header({ view, onViewChange }) {
+function Header({ view, onViewChange, theme, onThemeChange }) {
   return (
     <header className="masthead">
       <a className="wordmark" href="#top" aria-label="Giampiero Giovingo, home">
@@ -366,23 +366,9 @@ function Header({ view, onViewChange }) {
         {view === "index" && <a className="index-nav-link" href="#about">About</a>}
         <a href={resumeUrl} target="_blank" rel="noreferrer">Résumé ↗</a>
         <a href={profileLinks.email}>Contact</a>
+        <button type="button" onClick={onThemeChange} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}>{theme === "dark" ? "Light" : "Dark"}</button>
       </nav>
     </header>
-  );
-}
-
-function LinkRow({ links = [] }) {
-  if (!links.length) return <p className="private-note">Private or protected evidence is summarized without publishing source.</p>;
-
-  return (
-    <div className="project-links">
-      {links.map((link) => (
-        <a key={`${link.href}-${link.label}`} href={link.href} target="_blank" rel="noreferrer">
-          {link.label}
-          <ArrowUpRight size={15} weight="bold" aria-hidden="true" />
-        </a>
-      ))}
-    </div>
   );
 }
 
@@ -399,7 +385,7 @@ function ProjectInspector({ project, compact = false, onOpenCaseStudy }) {
 
       <p className="inspector-summary">{project.summary}</p>
 
-      {hero ? (
+      {project.carousel ? <ProjectCarousel key={project.id} project={project} onOpen={onOpenCaseStudy} /> : hero ? (
         <div className={`inspector-artifacts${!compact && project.images.length > 1 ? " has-thumbnails" : ""}`}>
           <figure className="inspector-hero">
             <img src={hero.src} alt={hero.alt} />
@@ -458,12 +444,12 @@ function ProjectDialog({ project, open, onClose }) {
         <p className="work-stack">{story.stack.join(" / ")}</p>
         <p className="case-reader__lead">{story.challenge}</p>
         {project.links.length > 0 && <LinkRow links={project.links} />}
-        {project.images[0] && <figure className="case-reader__main-artifact"><img src={project.images[0].src} alt={project.images[0].alt} /><figcaption>{project.images[0].caption ?? `${project.images[0].label} · captured from the actual product`}</figcaption></figure>}
+        {project.carousel ? <ProjectCarousel key={project.id} project={project} /> : project.images[0] && <figure className="case-reader__main-artifact"><img src={project.images[0].src} alt={project.images[0].alt} /><figcaption>{project.images[0].caption ?? `${project.images[0].label} · captured from the actual product`}</figcaption></figure>}
         <section className="case-reader__section"><h3>My contribution</h3><div><p>{project.contribution}</p><ul>{story.approach.map((item) => <li key={item}>{item}</li>)}</ul></div></section>
         <section className="case-reader__section"><h3>Engineering decisions</h3><div>{story.decisions.map((decision) => <div className="case-decision" key={decision.title}><h4>{decision.title}</h4><p>{decision.detail}</p></div>)}</div></section>
         <section className="case-reader__section"><h3>Evidence & results</h3><p>{story.proof}</p></section>
         <section className="case-reader__scope"><h3>Scope & current status</h3><p>{story.boundary}</p></section>
-        {project.images.length > 1 && <div className="case-reader__gallery">{project.images.slice(1).map((image) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption>{image.caption ?? `${image.label} · actual product screenshot`}</figcaption></figure>)}</div>}
+        {project.images.length > 1 && <div className="case-reader__gallery">{(project.carousel ? project.images.filter((image) => image.detail) : project.images.slice(1)).map((image) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption>{image.caption ?? `${image.label} · actual product screenshot`}</figcaption></figure>)}</div>}
         <footer className="case-reader__footer"><a href={profileLinks.email}>Ask me about this project ↗</a><button type="button" onClick={onClose}>Back to portfolio</button></footer>
       </article>
     </dialog>
@@ -708,6 +694,14 @@ function RepositoryCabinet() {
 }
 
 export function App() {
+  const [theme, setTheme] = useState(() => document.documentElement.dataset.theme || "light");
+  useEffect(() => { document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#1b1c1a" : "#f6f3eb"); }, [theme]);
+  const changeTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    setTheme(next);
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem("portfolio-theme", next); } catch { /* Theme works without storage. */ }
+  };
   const [view, setView] = useState(getInitialView);
   const initialProject = useMemo(() => {
     const match = window.location.hash.match(/project=([^&]+)/);
@@ -759,7 +753,8 @@ export function App() {
   return (
     <div className={`site-shell view-${view}`} id="top">
       <a className="skip-link" href={view === "index" ? "#main-content" : "#studio-content"}>Skip to content</a>
-      <Header view={view} onViewChange={changeView} />
+      <Header view={view} onViewChange={changeView} theme={theme} onThemeChange={changeTheme} />
+      {view === "studio" && <p className="studio-status">Studio · Work in progress <span>Movement and room interactions are still being refined. All projects are also available in Index.</span></p>}
       {view === "studio" ? (
         <main id="studio-content" tabIndex={-1}><StudioView
           project={project}

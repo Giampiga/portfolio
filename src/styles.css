@@ -7,8 +7,8 @@
 @import "@fontsource/inter/500.css";
 
 :root {
-  color: #171817;
-  background: #f3efe6;
+  color: var(--ink);
+  background: var(--paper);
   font-family: "Inter", sans-serif;
   font-synthesis: none;
   --paper: #f3efe6;
@@ -18,7 +18,22 @@
   --rule: rgba(23, 24, 23, 0.62);
   --soft-rule: rgba(23, 24, 23, 0.22);
   --red: #ed3e32;
+  color-scheme: light;
 }
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #1b1c1a;
+  --paper-bright: #252622;
+  --ink: #f0ede4;
+  --muted: #b7b5ab;
+  --rule: #8d8e81;
+  --soft-rule: #484a42;
+  --red: #f58b67;
+}
+:root[data-theme="dark"] body { background: var(--paper); }
+.studio-status { margin: 0; padding: 12px 2.25vw; border-bottom: 1px solid var(--soft-rule); color: var(--red); font: 13px/1.5 "IBM Plex Mono", monospace; }
+.studio-status span { color: var(--muted); margin-left: 12px; }
 
 * { box-sizing: border-box; }
 

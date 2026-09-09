@@ -3,6 +3,7 @@ const github = "https://github.com/Giampiga";
 export const primaryProjects = [
   {
     id: "restaurant-menu-pos",
+    carousel: true,
     number: "01",
     group: "Featured case study",
     title: "Restaurant Menu-to-POS Prototypes for Local Food Trucks",
@@ -24,30 +25,34 @@ export const primaryProjects = [
       "A reusable Codex skill for food-truck site delivery",
     ],
     images: [
-      { src: "/assets/projects/ghost-desktop.png", alt: "Ghost food-truck menu prototype on desktop", label: "Ghost storefront" },
-      { src: "/assets/projects/koe-desktop.png", alt: "Koë restaurant ordering prototype on desktop", label: "Koë storefront" },
-      { src: "/assets/projects/ghost-ipad.png", alt: "Ghost food-truck menu prototype on tablet", label: "Responsive menu" },
+      { src: "/assets/projects/ghost-current.jpg", alt: "Current Ghost food-truck storefront prototype on desktop", label: "Ghost storefront" },
+      { src: "/assets/projects/koe-current.jpg", alt: "Current Koë restaurant ordering prototype on desktop", label: "Koë storefront" },
+      { src: "/assets/projects/ghost-ipad.png", alt: "Ghost food-truck menu prototype on tablet", label: "Responsive menu", detail: true },
     ],
-    links: [],
+    links: [
+      { label: "Open Ghost storefront", href: "https://ghost-prototype-mu.vercel.app/" },
+      { label: "Open Koë storefront", href: "https://koe-usa-website.vercel.app/" },
+    ],
     station: { x: 19, y: 46, screen: { x: 10.2, y: 41.1, w: 13.8, h: 8.7, rotate: 0 } },
   },
   {
     id: "realtime-multiplayer-lab",
+    carousel: true,
     number: "02",
     group: "Featured case study",
     title: "Realtime Multiplayer Lab",
     shortTitle: "Realtime Multiplayer Lab",
     role: "Product direction · AI-assisted engineering",
     ledgerRole: "Product Direction / AI-Assisted Eng.",
-    date: "Aug 2026",
+    date: "Aug–Sep 2026",
     status: "Controlled alpha + live prototype",
     accent: "#6256df",
     summary:
-      "Two fast, no-fuss multiplayer experiments: a sandboxed coding race and a live puzzle arcade built around shared rooms, rematches and immediate feedback.",
+      "Binaryrush, Stack Rush and Truco venezolano: a sandboxed coding race, a multiplayer puzzle arcade and a Venezuelan card-game prototype. Binaryrush was built with Codex and published on GPT Sites.",
     proof:
       "Binaryrush includes server-authoritative rooms, hidden-test judging and reconnect behavior. Stack Rush explores the same competitive loop through compact visual puzzles.",
     contribution:
-      "I directed both products and used AI-assisted engineering to move from interaction design to tested multiplayer prototypes.",
+      "I directed the product experiences and used AI-assisted engineering to develop the prototypes. Binaryrush was built with Codex and deployed to GPT Sites; Truco adds Venezuelan card rules, multiplayer rooms and AI practice.",
     evidence: [
       "Realtime rooms, reconnects and rematches",
       "Server-authoritative competition state",
@@ -55,11 +60,12 @@ export const primaryProjects = [
     ],
     images: [
       { src: "/assets/projects/binaryrush-home.png", alt: "Binaryrush coding race home screen", label: "Binaryrush" },
-      { src: "/assets/projects/stack-rush-lounge.png", alt: "Stack Rush multiplayer puzzle lounge", label: "Stack Rush" },
+      { src: "/assets/projects/stack-rush-vercel.jpg", alt: "Stack Rush on Vercel with Tower of Hanoi, solo practice, daily puzzles and multiplayer lounge", label: "Stack Rush · Hanoi & Nuts and Bolts" },
     ],
     links: [
       { label: "Play Binaryrush", href: "https://binaryrush.gga.chatgpt.site/" },
-      { label: "Play puzzle prototype (Peg Rush)", href: "https://peg-rush-hanoi.gga.chatgpt.site/" },
+      { label: "Play Stack Rush", href: "https://stack-rush-pi.vercel.app/" },
+      { label: "Open Truco · sign-in required", href: "https://truco-venezolano.gga.chatgpt.site/" },
       { label: "Stack Rush source", href: "https://github.com/Giampiga/stack-rush" },
     ],
     station: { x: 16, y: 70, screen: { x: 7.5, y: 60.8, w: 13.2, h: 9.9, rotate: 0 } },
