@@ -23,7 +23,6 @@
 [data-theme="dark"] :is(.editorial-button, .case-reader__footer button, .skip-link) { background: var(--ink); color: var(--paper); }
 [data-theme="dark"] .work-feature__image { background: var(--paper-bright); border-color: var(--soft-rule); }
 [data-theme="dark"] .project-inspector { border-left-color: var(--soft-rule); }
-[data-theme="dark"] .ledger-row:hover { background: var(--paper-bright); }
 html { scroll-padding-top: 100px; }
 html:has(.view-index) { scroll-behavior: auto; }
 .skip-link { position: fixed; z-index: 100; top: 8px; left: 16px; padding: 12px 20px; background: var(--ink); color: white; transform: translateY(-160%); }

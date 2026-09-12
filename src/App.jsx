@@ -22,13 +22,13 @@ import { resolveInitialView } from "./portfolio-view.js";
 import { useStudioPlayer } from "./useStudioPlayer.js";
 import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches } from "./studio-navigation.js";
 import { personFrames, sideLegPose } from "./sprite-frames.js";
-import { roomDistance } from "./studio-motion.js";
+import { facingBetween, roomDistance } from "./studio-motion.js";
 
 const directions = {
-  down: { base: 0, dx: 0, dy: 1 },
-  left: { base: 3, dx: -1, dy: 0 },
-  right: { base: 6, dx: 1, dy: 0 },
-  up: { base: 9, dx: 0, dy: -1 },
+  down: 0,
+  left: 3,
+  right: 6,
+  up: 9,
 };
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
@@ -144,14 +144,6 @@ function validateDogNavigationGraphs() {
 
 if (import.meta.env.DEV) validateDogNavigationGraphs();
 
-const directionBetween = (from, to) => {
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  return Math.abs(dx) > Math.abs(dy)
-    ? (dx > 0 ? "right" : "left")
-    : (dy > 0 ? "down" : "up");
-};
-
 const gaitFrames = [0, 1, 2, 1];
 const randomBetween = (min, max) => min + Math.random() * (max - min);
 const randomInteger = (min, max) => Math.floor(randomBetween(min, max + 1));
@@ -235,7 +227,7 @@ function useWanderingDog(zone, mapRef) {
     const faceRandomExit = () => {
       const node = graph[currentNodeRef.current];
       const lookName = node.links[Math.floor(Math.random() * node.links.length)];
-      setDirection(directionBetween(node, graph[lookName]));
+      setDirection(facingBetween(node, graph[lookName]));
     };
 
     const chooseNextNode = () => {
@@ -270,7 +262,7 @@ function useWanderingDog(zone, mapRef) {
       const current = graph[currentName];
       const targetName = chooseNextNode();
       const target = graph[targetName];
-      const nextDirection = directionBetween(current, target);
+      const nextDirection = facingBetween(current, target);
       const room = mapRef.current?.getBoundingClientRect();
       const distance = roomDistance(current, target, room?.width ? room.height / room.width : 0.78);
       const pace = personality.travelMsPerUnit * randomBetween(1 - personality.paceVariance, 1 + personality.paceVariance);
@@ -326,7 +318,6 @@ function useWanderingDog(zone, mapRef) {
     traveling: walking,
     duration,
     activity,
-    cadence,
     idleDuration: personality.idleDuration,
     idleDelay: personality.idleDelay,
   };
@@ -340,10 +331,6 @@ function getInitialView() {
     explicitView: new URLSearchParams(window.location.search).get("view"),
     savedView,
   });
-}
-
-function Kbd({ children }) {
-  return <kbd>{children}</kbd>;
 }
 
 function Header({ view, onViewChange, theme, onThemeChange }) {
@@ -372,11 +359,11 @@ function Header({ view, onViewChange, theme, onThemeChange }) {
   );
 }
 
-function ProjectInspector({ project, compact = false, onOpenCaseStudy }) {
+function ProjectInspector({ project, onOpenCaseStudy }) {
   const hero = project.images[0];
 
   return (
-    <aside className={`project-inspector${compact ? " is-compact" : ""}`} style={{ "--project-accent": project.accent }} aria-live="polite">
+    <aside className="project-inspector" style={{ "--project-accent": project.accent }} aria-live="polite">
       <div className="inspector-heading">
         <p className="eyebrow">{project.number} / 07 · {project.group}</p>
         <h2>{project.title}</h2>
@@ -386,29 +373,16 @@ function ProjectInspector({ project, compact = false, onOpenCaseStudy }) {
       <p className="inspector-summary">{project.summary}</p>
 
       {project.carousel ? <ProjectCarousel key={project.id} project={project} onOpen={onOpenCaseStudy} /> : hero ? (
-        <div className={`inspector-artifacts${!compact && project.images.length > 1 ? " has-thumbnails" : ""}`}>
+        <div className="inspector-artifacts">
           <figure className="inspector-hero">
             <img src={hero.src} alt={hero.alt} />
             <figcaption>{hero.caption ?? `${hero.label} · real product artifact`}</figcaption>
           </figure>
-          {!compact && project.images.slice(1, 3).map((image) => (
-            <figure className="inspector-thumbnail" key={image.src}>
-              <img src={image.src} alt={image.alt} />
-              <figcaption>{image.label}</figcaption>
-            </figure>
-          ))}
         </div>
       ) : (
         <div className="evidence-slate" aria-label="Verified project evidence">
           <span>Evidence, not decoration</span>
           <ul>{project.evidence.map((item) => <li key={item}>{item}</li>)}</ul>
-        </div>
-      )}
-
-      {!compact && (
-        <div className="inspector-evidence">
-          <p><strong>My contribution</strong>{project.contribution}</p>
-          <p><strong>What can be verified</strong>{project.proof}</p>
         </div>
       )}
 
@@ -456,9 +430,9 @@ function ProjectDialog({ project, open, onClose }) {
   );
 }
 
-function Sprite({ kind, position, direction, frame, walking, distance = 0, traveling = false, duration = 120, activity, cadence, idleDuration, idleDelay, className = "" }) {
+function Sprite({ kind, position, direction, frame, walking, distance = 0, traveling = false, duration = 120, activity, idleDuration, idleDelay, className = "" }) {
   const row = kind === "person" ? 0 : kind === "pomsky-white" ? 1 : 2;
-  const column = directions[direction].base + (walking ? frame : 1);
+  const column = directions[direction] + (walking ? frame : 1);
   const isDog = kind.startsWith("pomsky-");
   const idleDog = isDog && !walking && (!activity || activity === "idle");
   const activityClass = isDog && activity ? `is-${activity}` : "";
@@ -474,7 +448,6 @@ function Sprite({ kind, position, direction, frame, walking, distance = 0, trave
         "--sprite-x": `${personCrop ? personCrop.x / 1408 * 100 : column / 11 * 100}%`,
         "--sprite-y": `${personCrop ? personCrop.y / 736 * 100 : row / 2 * 100}%`,
         "--travel-duration": `${duration}ms`,
-        "--dog-cadence": cadence ? `${cadence}ms` : undefined,
         "--dog-idle-duration": idleDuration ? `${idleDuration}ms` : undefined,
         "--dog-idle-delay": idleDelay ? `${idleDelay}ms` : undefined,
       }}
@@ -580,7 +553,7 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
           <Sprite kind="person" {...player} />
 
           <div className="room-prompt" aria-live="polite">
-            {nearestProject?.distance < 9 ? <><Kbd>Enter</Kbd> inspect {nearestProject.project.shortTitle}</> : <>Walk to an object · Enter to inspect</>}
+            {nearestProject?.distance < 9 ? <><kbd>Enter</kbd> inspect {nearestProject.project.shortTitle}</> : <>Walk to an object · Enter to inspect</>}
           </div>
         </div>
       </div>
@@ -614,11 +587,11 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
         </div>
       </div>
 
-      <ProjectInspector project={project} compact onOpenCaseStudy={onInspect} />
+      <ProjectInspector project={project} onOpenCaseStudy={onInspect} />
 
       <div className="studio-controls">
-        <p><Kbd>W</Kbd><Kbd>A</Kbd><Kbd>S</Kbd><Kbd>D</Kbd><span>/</span><Kbd>↑</Kbd><Kbd>↓</Kbd><Kbd>←</Kbd><Kbd>→</Kbd> to walk</p>
-        <p><Kbd>Enter</Kbd> to inspect</p>
+        <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span>/</span><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> to walk</p>
+        <p><kbd>Enter</kbd> to inspect</p>
         <button type="button" onClick={onShowIndex}>Skip to Index <ArrowRight size={18} weight="bold" aria-hidden="true" /></button>
         <span>{primaryProjects.length} case studies · {archiveProjects.length} selected archive projects</span>
       </div>
