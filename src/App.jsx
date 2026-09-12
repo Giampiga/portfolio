@@ -21,8 +21,8 @@ import { projectStories } from "./project-stories.js";
 import { resolveInitialView } from "./portfolio-view.js";
 import { useStudioPlayer } from "./useStudioPlayer.js";
 import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches } from "./studio-navigation.js";
-import { personFrames, sideLegPose } from "./sprite-frames.js";
-import { facingBetween, roomDistance } from "./studio-motion.js";
+import { personFrames, PERSON_WIDTH, sideLegPose, northLegPose } from "./sprite-frames.js";
+import { facingBetween, PLAYER_SPEED, roomDistance } from "./studio-motion.js";
 
 const directions = {
   down: 0,
@@ -430,7 +430,7 @@ function ProjectDialog({ project, open, onClose }) {
   );
 }
 
-function Sprite({ kind, position, direction, frame, walking, distance = 0, traveling = false, duration = 120, activity, idleDuration, idleDelay, className = "" }) {
+export function Sprite({ kind, position, direction, frame, walking, distance = 0, speed = 0, traveling = false, duration = 120, activity, idleDuration, idleDelay, className = "" }) {
   const row = kind === "person" ? 0 : kind === "pomsky-white" ? 1 : 2;
   const column = directions[direction] + (walking ? frame : 1);
   const isDog = kind.startsWith("pomsky-");
@@ -439,12 +439,15 @@ function Sprite({ kind, position, direction, frame, walking, distance = 0, trave
   const gaitClass = isDog ? `gait-frame-${walking ? frame : 1}` : "";
   const personCrop = kind === "person" ? personFrames[column] : null;
   const sideView = kind === "person" && (direction === "left" || direction === "right");
+  const northView = kind === "person" && direction === "up";
+  const sidePoses = sideView ? [true, false].map((far) => sideLegPose(distance, walking, far, speed / PLAYER_SPEED)) : [];
   return (
     <span
-      className={`game-sprite game-sprite--${kind} ${sideView ? "is-side-view" : ""} ${walking ? "is-walking" : ""} ${idleDog ? "is-idle" : ""} ${activityClass} ${gaitClass} ${traveling ? "is-traveling" : ""} ${className}`}
+      className={`game-sprite game-sprite--${kind} ${sideView ? "is-side-view" : ""} ${northView ? "is-north-view" : ""} ${walking ? "is-walking" : ""} ${idleDog ? "is-idle" : ""} ${activityClass} ${gaitClass} ${traveling ? "is-traveling" : ""} ${className}`}
       style={{
         left: `${position.x}%`,
         top: `${position.y}%`,
+        "--person-width": kind === "person" ? `${PERSON_WIDTH}%` : undefined,
         "--sprite-x": `${personCrop ? personCrop.x / 1408 * 100 : column / 11 * 100}%`,
         "--sprite-y": `${personCrop ? personCrop.y / 736 * 100 : row / 2 * 100}%`,
         "--travel-duration": `${duration}ms`,
@@ -454,12 +457,20 @@ function Sprite({ kind, position, direction, frame, walking, distance = 0, trave
       aria-hidden="true"
     >
       {sideView && <span className="side-walk" style={{ transform: direction === "right" ? "scaleX(-1)" : undefined }}>
-        {[true, false].map((far) => {
-          const pose = sideLegPose(distance, walking, far);
-          return <span key={String(far)} className={`side-walk__pixels side-walk__leg--${far ? "far" : "near"}`} style={{ transformOrigin: `${pose.hip[0] / 128 * 100}% ${pose.hip[1] / 288 * 100}%`, transform: `translateY(${pose.offset / 288 * 100}%) rotate(${pose.angle}deg)` }} />;
-        })}
-        <span className="side-walk__pixels side-walk__pelvis" />
-        <span className="side-walk__pixels side-walk__torso" />
+        {sidePoses.map((pose, index) => ["leg", "shoe"].map((part) => {
+          const joint = pose[part];
+          return <span key={`${index}-${part}`} className={`side-walk__segment side-walk__segment--${part}`} style={{ transformOrigin: `${joint.origin[0] / 128 * 100}% ${joint.origin[1] / 288 * 100}%`, transform: `translate(${joint.x / 128 * 100}%, ${joint.y / 288 * 100}%) rotate(${joint.angle}deg) scale(${joint.scale})` }}>
+            <span className="side-walk__pixels side-walk__leg--near" />
+          </span>;
+        }))}
+        <span className="side-walk__body" style={{ transform: `translateY(${sidePoses[0].bodyY / 288 * 100}%)` }}>
+          <span className="side-walk__pixels side-walk__pelvis" />
+          <span className="side-walk__pixels side-walk__torso" />
+        </span>
+      </span>}
+      {northView && <span className="north-walk">
+        {[false, true].map((right) => <span key={String(right)} className="north-walk__leg" style={{ transform: `scale(${right ? -1 : 1}, ${northLegPose(distance, walking, right, speed / PLAYER_SPEED).scaleY})` }}><span className="north-walk__pixels north-walk__leg-pixels" /></span>)}
+        <span className="north-walk__pixels north-walk__torso" />
       </span>}
     </span>
   );
@@ -676,6 +687,7 @@ export function App() {
     try { localStorage.setItem("portfolio-theme", next); } catch { /* Theme works without storage. */ }
   };
   const [view, setView] = useState(getInitialView);
+  useEffect(() => { document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ behavior: "instant" }); }, []);
   const initialProject = useMemo(() => {
     const match = window.location.hash.match(/project=([^&]+)/);
     return projectById[match?.[1]] ?? primaryProjects[0];

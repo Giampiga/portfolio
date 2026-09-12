@@ -1,5 +1,58 @@
 const github = "https://github.com/Giampiga";
 
+const trucoImages = [
+  { src: "/assets/projects/truco-vercel-practice.png", alt: "Truco on Vercel: an active practice hand against Truquito with cards on the table", label: "Truco · practice against Truquito" },
+  { src: "/assets/projects/truco-vercel-cantos.png", alt: "Retruco confirmation beside the player's hand, available actions and Truquito's explanation", label: "Truco · cantos and guided practice" },
+  { src: "/assets/projects/truco-vercel-lobby.png", alt: "Current Truco lobby with casual and competitive play options", label: "Truco · casual and competitive lobby" },
+  { src: "/assets/projects/truco-vercel-mobile.png", alt: "Truco practice table adapted to a mobile screen", label: "Truco · mobile practice" },
+];
+
+const multiplayerGames = [
+  {
+    id: "truco-venezolano",
+    title: "Truco venezolano",
+    role: "Full-stack development · AI-assisted",
+    date: "2026 · ongoing",
+    status: "Work in progress",
+    description: "A full-stack Venezuelan card-game platform with server-authoritative multiplayer, public and private rooms, and rule-based AI practice. I built the gameplay, player experience and persistent social features.",
+    detail: "Built with React and TypeScript, with authenticated APIs and persistent data for Elo rankings, profiles, friendships, chat and match history. The responsive interface supports drag-and-drop cards, contextual controls and dark mode. Tested game rules power 1v1/2v2 tables and Truquito practice, with three difficulty levels, explanations, pause and undo/redo. AI practice is available on Vercel; hosted online services remain in progress.",
+    stack: ["Next.js", "React", "TypeScript", "Supabase", "PostgreSQL"],
+    access: "Vercel · AI practice available; online play in progress.",
+    image: trucoImages[0],
+    images: trucoImages,
+    links: [{ label: "Open Truco", href: "https://truco-ve.vercel.app/" }],
+  },
+  {
+    id: "stack-rush",
+    title: "Stack Rush",
+    role: "Product direction · AI-assisted engineering",
+    date: "Aug–Sep 2026",
+    status: "Live prototype",
+    description: "Tower of Hanoi and Nuts & Bolts, built for solo practice, daily puzzles and head-to-head races.",
+    detail: "Server-authoritative moves, shared countdowns, opponent progress, reconnects, and rematches keep both players on the same page.",
+    stack: ["React", "TypeScript", "Cloudflare", "D1"],
+    access: "Play on Vercel · public source.",
+    image: { src: "/assets/projects/stack-rush-live.png", alt: "Current Stack Rush interface with Tower of Hanoi, Nuts & Bolts, solo practice and the daily puzzle", label: "Stack Rush · Hanoi & Nuts and Bolts" },
+    links: [
+      { label: "Play Stack Rush", href: "https://stack-rush-pi.vercel.app/" },
+      { label: "Stack Rush source", href: "https://github.com/Giampiga/stack-rush" },
+    ],
+  },
+  {
+    id: "binaryrush",
+    title: "Binaryrush",
+    role: "Product direction · AI-assisted engineering",
+    date: "Aug 2026 · ongoing",
+    status: "Work in progress",
+    description: "Race through JavaScript challenges solo or with up to five players. Hidden tests judge submissions and update the standings.",
+    detail: "A bounded QuickJS sandbox, server-owned judging, and private opponent code form the engineering core. Built with Codex and published on GPT Sites.",
+    stack: ["React", "TypeScript", "D1", "QuickJS WASM"],
+    access: "Built with Codex · published on GPT Sites · controlled alpha.",
+    image: { src: "/assets/projects/binaryrush-home.png", alt: "Binaryrush browser coding race home screen", label: "Binaryrush · work in progress" },
+    links: [{ label: "Play Binaryrush", href: "https://binaryrush.gga.chatgpt.site/" }],
+  },
+];
+
 export const primaryProjects = [
   {
     id: "restaurant-menu-pos",
@@ -14,9 +67,9 @@ export const primaryProjects = [
     status: "Prototype · partner conversations",
     accent: "#ed3e32",
     summary:
-      "Exploring how independent food trucks can run faster and sell more through a reusable menu-to-operations system, tested through the distinct Ghost and Koë brands.",
+      "Two food-truck storefront prototypes with distinct branding, configurable menus, modifiers and local carts: Ghost and Koë.",
     proof:
-      "Responsive menus, modifiers, carts and checkout concepts, staged operator and POS workflows, and a reusable food-truck website skill that codifies the repeated build decisions. Ghost and Koë are prospective design partners—not paid clients or live POS deployments.",
+      "Responsive ordering flows and a reusable Codex skill for food-truck websites. Built for prospective partners; payment, order submission and POS integration are not live.",
     contribution:
       "I formed the effort, own the product direction, designed both brand experiences and built the frontend prototypes.",
     evidence: [
@@ -45,29 +98,21 @@ export const primaryProjects = [
     role: "Product direction · AI-assisted engineering",
     ledgerRole: "Product Direction / AI-Assisted Eng.",
     date: "Aug–Sep 2026",
-    status: "Controlled alpha + live prototype",
+    status: "Stack Rush live · Binaryrush & Truco in progress",
     accent: "#6256df",
     summary:
-      "Binaryrush, Stack Rush and Truco venezolano: a sandboxed coding race, a multiplayer puzzle arcade and a Venezuelan card-game prototype. Binaryrush was built with Codex and published on GPT Sites.",
+      "A coding race, a puzzle arcade and Venezuelan Truco—three explorations of shared game state. Binaryrush was built with Codex and published on GPT Sites.",
     proof:
-      "Binaryrush includes server-authoritative rooms, hidden-test judging and reconnect behavior. Stack Rush explores the same competitive loop through compact visual puzzles.",
+      "Server-owned rules, hidden-test judging and reconnect flows, with two-client test evidence for Stack Rush and guided AI practice in Truco.",
     contribution:
-      "I directed the product experiences and used AI-assisted engineering to develop the prototypes. Binaryrush was built with Codex and deployed to GPT Sites; Truco adds Venezuelan card rules, multiplayer rooms and AI practice.",
+      "I designed and developed the products with AI-assisted engineering, from game rules and interaction to server APIs and persistent state.",
     evidence: [
       "Realtime rooms, reconnects and rematches",
       "Server-authoritative competition state",
       "Two-client interaction and failure-state QA",
     ],
-    images: [
-      { src: "/assets/projects/binaryrush-home.png", alt: "Binaryrush coding race home screen", label: "Binaryrush" },
-      { src: "/assets/projects/stack-rush-vercel.jpg", alt: "Stack Rush on Vercel with Tower of Hanoi, solo practice, daily puzzles and multiplayer lounge", label: "Stack Rush · Hanoi & Nuts and Bolts" },
-    ],
-    links: [
-      { label: "Play Binaryrush", href: "https://binaryrush.gga.chatgpt.site/" },
-      { label: "Play Stack Rush", href: "https://stack-rush-pi.vercel.app/" },
-      { label: "Open Truco · sign-in required", href: "https://truco-venezolano.gga.chatgpt.site/" },
-      { label: "Stack Rush source", href: "https://github.com/Giampiga/stack-rush" },
-    ],
+    images: [multiplayerGames[2].image, multiplayerGames[1].image, ...trucoImages],
+    links: multiplayerGames.flatMap((game) => game.links),
     station: { x: 16, y: 70, screen: { x: 7.5, y: 60.8, w: 13.2, h: 9.9, rotate: 0 } },
   },
   {
@@ -84,7 +129,7 @@ export const primaryProjects = [
     summary:
       "A luxury-bag appraisal workflow that turns marketplace evidence into a clear, inspectable valuation report instead of a black-box price.",
     proof:
-      "The v0 frontend PR covers intake, condition, mock market search, comparables, reports and saved records across 23 changed files. The PR remains open, not merged.",
+      "A staged frontend journey from intake and condition through mock comparables, reports and saved records. Submitted as an open, unmerged PR.",
     contribution:
       "I designed and implemented the v0 appraisal journey. Authentication, backend services and the broader AI-search system are team work.",
     evidence: [
@@ -116,7 +161,7 @@ export const primaryProjects = [
     summary:
       "An interpretable learning-support model comparing hints, walkthroughs, full explanations and adaptive guidance across a frozen task analysis.",
     proof:
-      "A modular Python and Streamlit prototype, twelve commits, an eight-task frozen analysis and a 120-hour research/build report.",
+      "Four assistance policies compared across eight tasks, with inspectable equations for reasoning effort and presentation load.",
     contribution:
       "I built the product and analysis. Its outputs are model predictions and heuristics—not measured student outcomes.",
     evidence: [
@@ -142,15 +187,15 @@ export const primaryProjects = [
     status: "Prototype",
     accent: "#176e9d",
     summary:
-      "A geometry-driven practice game focused on one legible interaction: estimate, draw and learn from the difference between intent and accuracy.",
+      "Draw a circle and see how round, closed and smooth it is, with a 0–100 score and fitted geometry.",
     proof:
-      "A public canvas-based implementation with its earliest remembered product work around December 2025 and visible repository activity in March 2026.",
+      "Least-squares circle fitting, pointer input and local attempt history, with tests for ideal, open and degenerate strokes.",
     contribution:
       "I designed and built the experience end to end.",
     evidence: [
       "Canvas geometry and pointer interaction",
       "Immediate visual scoring feedback",
-      "Public source with honest date framing",
+      "Tested scoring · public source",
     ],
     images: [],
     links: [
@@ -174,7 +219,7 @@ export const primaryProjects = [
     proof:
       "The work was completed against provided cohort specifications and tests in private training repositories.",
     contribution:
-      "I implemented both versions during Revature training. Revature is currently presenting me for client opportunities; this is not framed as an active client engineering role.",
+      "I implemented both versions during Revature training. Revature is currently presenting me for client opportunities.",
     evidence: [
       "Javalin + JDBC implementation",
       "Spring + JPA re-architecture",
@@ -196,14 +241,14 @@ export const primaryProjects = [
     status: "Private archive · clean-room revisit",
     accent: "#8b4bb5",
     summary:
-      "A candid foundations case study: strong verified results across trees, recursion and complexity, plus a SkipList attempt that did not fully land.",
+      "C and Java implementations of hashing, trees, recursion, dynamic programming and constraint detection, with preserved coursework results.",
     proof:
       "Verified results include Hashtastic 40/40, Kindred Spirits 17/17, Domichar 21/21, GenericBST 10/10, Run Like Hell 20/20 and both Sneaky assignments at 21/21.",
     contribution:
       "The SkipList earned 17/24 with both bonuses, but the original implementation is not preserved. Any public version will be a clearly labeled clean-room revisit.",
     evidence: [
       "Seven verified coursework outcomes",
-      "SkipList limitation stated instead of polished away",
+      "SkipList: partial result, 17/24 tests",
       "No private UCF assignment source published",
     ],
     images: [],
@@ -291,6 +336,17 @@ export const experience = [
 ];
 
 export const projectById = Object.fromEntries(primaryProjects.map((project) => [project.id, project]));
+
+export const games = [
+  ...multiplayerGames,
+  {
+    ...projectById["circle-accuracy"],
+    description: "How close can you get to a perfect circle? Draw with a mouse, touch or pen, then get a 0–100 score based on roundness, closure and smoothness.",
+    detail: "Resampled strokes and least-squares circle fitting turn each attempt into geometric feedback. Best and recent attempts are saved locally in the browser.",
+    stack: ["Next.js", "React", "TypeScript", "Canvas", "Pointer Events", "Vitest"],
+    access: "Prototype · public source.",
+  },
+];
 
 export const profileLinks = {
   github,

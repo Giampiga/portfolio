@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { ArrowDown, ArrowRight, ArrowUpRight, DownloadSimple } from "@phosphor-icons/react";
-import { primaryProjects, profileLinks } from "./projects.js";
+import { games, primaryProjects, profileLinks, projectById } from "./projects.js";
 import { projectStories } from "./project-stories.js";
 
 export const resumeUrl = "/Giampiero_Giovingo_2026.pdf";
@@ -9,25 +9,25 @@ const introductions = {
   "restaurant-menu-pos": {
     discipline: "Commerce · Product design · Frontend",
     headline: "Two brands. One better ordering journey.",
-    description: "Distinct Ghost and Koë storefronts with configurable menus, modifiers and carts. A product I’m shaping with prospective local food-truck partners.",
-    proof: "Responsive ordering flows + a reusable food-truck website skill.",
+    description: "I designed and built Ghost and Koë’s storefront prototypes: menus, custom orders and carts for two local food-truck brands.",
+    proof: "Responsive ordering flows and a reusable food-truck build skill.",
   },
   "realtime-multiplayer-lab": {
     discipline: "Realtime systems · Browser games",
     headline: "Friendly competition. Serious state management.",
-    description: "A coding race, a puzzle arcade, and Venezuelan Truco. Three ways to explore multiplayer state, clear feedback, and competitive play. Binaryrush was built with Codex and published on GPT Sites.",
-    proof: "Binaryrush: bounded code execution. Stack Rush: two-client tests. Truco: server-owned card rules and AI practice.",
+    description: "A coding race, a puzzle arcade and Venezuelan Truco—built around server-owned rules, competitive play and clear feedback.",
+    proof: "Sandboxed judging · two-client puzzle tests · card-game rules and AI practice.",
   },
   arkollab: {
     discipline: "Product workflows · Team contribution",
     headline: "An appraisal you can actually follow.",
-    description: "A luxury-bag appraisal journey from photos and condition to comparable listings and a readable valuation report. My contribution: the v0 frontend prototype.",
-    proof: "A 23-file frontend contribution, submitted as an open PR.",
+    description: "I built the v0 frontend for a team luxury-bag appraisal product, from item intake to a readable valuation report.",
+    proof: "Photo and condition intake → comparables → report → saved appraisals.",
   },
   "cognitive-load-mvp": {
     discipline: "Python · Research · Learning tools",
     headline: "When does more help become more work?",
-    description: "A Georgia Tech prototype comparing four learning-support policies. An inspectable model of the tradeoffs between explanation and cognitive load.",
+    description: "I modeled how hints, walkthroughs and adaptive guidance change learning support in a Georgia Tech research prototype.",
     proof: "Four policies, eight tasks. Modeled predictions, not student outcomes.",
   },
 };
@@ -45,7 +45,7 @@ export function ProjectCarousel({ project, onOpen }) {
   return <section className="project-carousel" aria-label={`${project.shortTitle} screenshots`} aria-roledescription="carousel">
     <div className="project-carousel__rail" ref={rail} tabIndex={0} onScroll={(event) => setIndex(Math.round(event.currentTarget.scrollLeft / event.currentTarget.clientWidth))} onKeyDown={(event) => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); go(index + (event.key === "ArrowRight" ? 1 : -1)); } }}>
       {images.map((image, i) => <figure className="project-carousel__slide" key={image.src} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${images.length}: ${image.label}`}>
-        {onOpen ? <a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read about ${image.label}`}><img src={image.src} alt={image.alt} loading={i ? "lazy" : "eager"} /></a> : <img src={image.src} alt={image.alt} loading="lazy" />}
+        {onOpen ? <a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read about ${image.label}`}><img src={image.src} alt={image.alt} loading={i ? "lazy" : "eager"} /></a> : <a href={image.src} target="_blank" rel="noreferrer" aria-label={`View full-size ${image.label}`}><img src={image.src} alt={image.alt} loading="lazy" /></a>}
         <figcaption>{image.label}</figcaption>
       </figure>)}
     </div>
@@ -69,7 +69,7 @@ function ProjectFeature({ project, onOpen, selected }) {
         <p className="work-feature__description">{intro.description}</p>
         <p className="work-feature__proof">{intro.proof}</p>
         <p className="work-feature__role">My role: {project.ledgerRole}</p>
-        <p className="work-stack">{story.stack.slice(0, 5).join(" / ")}</p>
+        <p className="work-stack">{story.stack.slice(0, 3).join(" / ")}</p>
         <div className="work-feature__bottom"><span>{project.status}</span><button type="button" onClick={() => onOpen(project)} aria-label={`Read case study: ${project.shortTitle}`}>Read case study <ArrowRight size={18} aria-hidden="true" /></button></div>
         <ProjectLinks links={project.links} />
         {selected && <span className="sr-only">Currently selected project</span>}
@@ -87,32 +87,54 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
           <h1 id="intro-title">Giampiero<br />Giovingo<span>.</span></h1>
           <div className="intro-copy">
             <h2>Software engineer.<br />Product-minded builder.</h2>
-            <p>I build software people can use, play, and learn from—bringing thoughtful interfaces and the systems behind them together.</p>
-            <p className="intro-context">React & TypeScript, Python & Java.<br />Georgia Tech M.S. CS · UCF B.S. CS.</p>
+            <p>I build web products—from food-truck ordering to multiplayer games—with React, TypeScript, Python and Java.</p>
+            <p className="intro-context">Georgia Tech M.S. CS · in progress<br />UCF B.S. Computer Science.</p>
             <div className="intro-actions"><a className="editorial-button" href="#work">Explore the work <ArrowDown size={18} aria-hidden="true" /></a><a className="text-action" href={resumeUrl} target="_blank" rel="noreferrer">Résumé PDF <ArrowUpRight size={17} aria-hidden="true" /></a></div>
           </div>
         </div>
-        <div className="intro-foot"><p>Interfaces with care. Systems with a reason.</p><button type="button" onClick={onStudio}>Prefer to wander? Enter the Studio <ArrowUpRight size={17} aria-hidden="true" /></button></div>
+        <div className="intro-foot"><button type="button" onClick={onStudio}>Explore the interactive Studio <ArrowUpRight size={17} aria-hidden="true" /></button></div>
       </section>
 
       <section className="selected-work" id="work" aria-labelledby="work-heading">
-        <div className="section-heading"><h2 id="work-heading">Selected work<span>01—04</span></h2><p>Product decisions. Implementation. Evidence.</p></div>
+        <div className="section-heading"><h2 id="work-heading">Selected work<span>01—04</span></h2></div>
         <div className="work-grid">{primaryProjects.slice(0, 4).map((project) => <ProjectFeature key={project.id} project={project} selected={project.id === selectedId} onOpen={onOpen} />)}</div>
       </section>
 
+      <section className="games-section" id="games" aria-labelledby="games-heading">
+        <div className="section-heading"><h2 id="games-heading">Games <span>Play the projects</span></h2><p>Puzzles, coding races & card games.</p></div>
+        <div className="games-grid">
+          {games.map((game) => (
+            <article className={`game-entry${game.image ? "" : " game-entry--source-only"}`} id={`game-${game.id}`} key={game.id}>
+              {game.image ? <a className="game-entry__image" href={game.links[0].href} target="_blank" rel="noreferrer" aria-label={`Open ${game.title} in a new tab`}>
+                <img src={game.image.src} alt={game.image.alt} loading="lazy" width="1280" height="720" />
+              </a> : null}
+              <div className="game-entry__meta"><span className={game.status === "Work in progress" ? "game-entry__wip" : ""}>{game.status}</span><span>{game.date}</span></div>
+              <h3>{game.title}</h3>
+              <p className="work-feature__role">{game.role ?? "Product direction · AI-assisted engineering"}</p>
+              <p>{game.description}</p>
+              <p className="game-entry__access">{game.access}</p>
+              <ProjectLinks links={game.links} />
+              <details className="game-entry__details"><summary>Build details<span className="sr-only"> for {game.title}</span></summary><p>{game.detail}</p><p className="work-stack">{game.stack.join(" / ")}</p>{game.images?.length > 0 && <ProjectCarousel project={{ ...game, shortTitle: game.title }} />}</details>
+              {projectById[game.id] && <a className="text-action" href={`#project=${game.id}`} onClick={(event) => { event.preventDefault(); onOpen(projectById[game.id]); }}>Read {game.title} case study <ArrowRight size={18} aria-hidden="true" /></a>}
+            </article>
+          ))}
+        </div>
+        <a className="text-action" href="#project=realtime-multiplayer-lab" onClick={(event) => { event.preventDefault(); onOpen(projectById["realtime-multiplayer-lab"]); }}>Read the multiplayer engineering case study <ArrowRight size={18} aria-hidden="true" /></a>
+      </section>
+
       <section className="engineering-work" aria-labelledby="engineering-heading">
-        <div className="section-heading"><h2 id="engineering-heading">Under the hood<span>05—07</span></h2><p>Smaller interfaces. Deeper implementation details.</p></div>
-        <div className="engineering-list">{primaryProjects.slice(4).map((project) => (
+        <div className="section-heading"><h2 id="engineering-heading">Under the hood<span>06—07</span></h2><p>Backend systems & computer-science foundations.</p></div>
+        <div className="engineering-list">{primaryProjects.slice(5).map((project) => (
           <article className="engineering-entry" key={project.id}><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>
             <span className="engineering-number">{project.number}</span>
-            <div><h3>{project.title}</h3><p>{projectStories[project.id].challenge}</p><p className="work-feature__role">{project.role}</p><span className="work-stack">{projectStories[project.id].stack.join(" / ")}</span></div>
+            <div><h3>{project.title}</h3><p className="work-feature__role">{project.role}</p><span className="work-stack">{projectStories[project.id].stack.slice(0, 4).join(" / ")}</span></div>
             <div className="engineering-meta"><span>{project.date}</span><span>{project.status}</span><ArrowUpRight size={24} aria-hidden="true" /></div>
           </a><ProjectLinks links={project.links} /></article>
         ))}</div>
       </section>
 
       <section className="about-section" id="about" aria-labelledby="about-heading">
-        <div className="about-copy"><p className="section-kicker">The person behind the work</p><h2 id="about-heading">Curious about the whole thing.</h2><p>I like being close to both the problem and the implementation: mapping a confusing workflow, building the interface, then working through what happens when a request fails or a player disconnects.</p><p>My projects span independent prototypes, team contributions and graduate research. I use AI-assisted tools, and I document the decisions, tests and limitations that make the work mine to explain.</p><p className="about-personal">Away from the screen: two miniature Pomskies, both blue-eyed, both wandering around my <button type="button" onClick={onStudio}>little portfolio house <ArrowUpRight size={15} aria-hidden="true" /></button>.</p></div>
+        <div className="about-copy"><p className="section-kicker">The person behind the work</p><h2 id="about-heading">Curious about the whole thing.</h2><p>I like turning an unclear problem into a working product: shaping the interface, building the system and testing what happens when things go wrong.</p><p className="about-personal">Away from the screen: two blue-eyed Pomskies, both wandering around my <button type="button" onClick={onStudio}>little portfolio house <ArrowUpRight size={15} aria-hidden="true" /></button>.</p></div>
         <div className="background-record">
           <h3>Background</h3>
           <article><span>2024—present</span><h4>Georgia Institute of Technology</h4><p>M.S. Computer Science · in progress</p></article>

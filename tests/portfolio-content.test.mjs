@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
-import { primaryProjects, archiveProjects, projectById, repositoryCabinet } from "../src/projects.js";
+import { games, primaryProjects, archiveProjects, projectById, repositoryCabinet } from "../src/projects.js";
 import { projectStories } from "../src/project-stories.js";
 import { resolveInitialView } from "../src/portfolio-view.js";
 
@@ -73,10 +73,10 @@ test("storefront and game carousels use current artifacts and publish supplied d
   assert.equal(storefronts.carousel, true);
   assert.deepEqual(storefronts.images.filter((image) => !image.detail).map((image) => image.label), ["Ghost storefront", "Koë storefront"]);
   assert.equal(games.carousel, true);
-  assert.ok(games.images.some((image) => image.src === "/assets/projects/stack-rush-vercel.jpg"));
+  assert.ok(games.images.some((image) => image.src === "/assets/projects/stack-rush-live.png"));
   assert.equal(games.links.find((link) => link.label === "Play Stack Rush").href, "https://stack-rush-pi.vercel.app/");
   assert.match(games.summary, /Codex.*GPT Sites/);
-  for (const url of ["https://ghost-prototype-mu.vercel.app/", "https://koe-usa-website.vercel.app/", "https://truco-venezolano.gga.chatgpt.site/", "https://binaryrush.gga.chatgpt.site/"]) {
+  for (const url of ["https://ghost-prototype-mu.vercel.app/", "https://koe-usa-website.vercel.app/", "https://truco-ve.vercel.app/", "https://binaryrush.gga.chatgpt.site/"]) {
     assert.ok([...storefronts.links, ...games.links].some((link) => link.href === url));
   }
   assert.ok(!games.links.some((link) => link.href.startsWith("https://github.com/Giampiga/truco-venezolano")));
@@ -87,6 +87,43 @@ test("the requested archive is retained and source links are public URL shapes",
   for (const project of [...primaryProjects, ...archiveProjects]) {
     for (const link of project.links) assert.equal(new URL(link.href).protocol, "https:");
   }
+});
+
+test("Games presents four projects with explicit WIP labels and shared evidence", async () => {
+  assert.deepEqual(games.map((game) => game.id), ["truco-venezolano", "stack-rush", "binaryrush", "circle-accuracy"]);
+  const lab = projectById["realtime-multiplayer-lab"];
+  for (const game of games) {
+    assert.ok(game.date && game.description && game.access && game.stack.length);
+  }
+  for (const game of games.slice(0, 3)) {
+    assert.equal(game.status, game.id === "stack-rush" ? "Live prototype" : "Work in progress");
+    assert.ok(lab.images.includes(game.image));
+    await access(new URL(`../public${game.image.src}`, import.meta.url));
+    for (const link of game.links) assert.ok(lab.links.includes(link));
+  }
+  assert.match(games[0].description, /full-stack.*server-authoritative.*rule-based/);
+  assert.match(games[0].detail, /Elo rankings, profiles, friendships, chat and match history/);
+  assert.match(games[0].detail, /drag-and-drop.*dark mode/);
+  assert.match(games[0].detail, /three difficulty levels/);
+  assert.match(games[0].access, /Vercel/);
+  assert.match(games[0].stack.join(" "), /Next.js.*Supabase.*PostgreSQL/);
+  assert.ok(!games[0].stack.some((item) => /D1|Drizzle/.test(item)));
+  assert.equal(games[0].images.length, 4);
+  assert.equal(games[0].image, games[0].images[0]);
+  for (const image of games[0].images) {
+    assert.ok(image.alt && image.label && lab.images.includes(image));
+    for (const directory of ["public", "dist/client"]) await access(new URL(`../${directory}${image.src}`, import.meta.url));
+  }
+  assert.match(games[2].detail, /Codex.*GPT Sites/);
+  const circle = games[3];
+  assert.equal(circle.status, "Prototype");
+  assert.equal(circle.date, projectById[circle.id].date);
+  assert.equal(circle.links, projectById[circle.id].links);
+  assert.equal(circle.evidence, projectById[circle.id].evidence);
+  assert.equal(circle.access, "Prototype · public source.");
+  assert.ok(!JSON.stringify(games).includes("honest date framing"));
+  assert.equal(lab.links.some((link) => circle.links.includes(link)), false);
+  assert.ok(!games.flatMap((game) => game.links).some((link) => link.href.includes("github.com/Giampiga/truco")));
 });
 
 test("public cabinet omits the old portfolio and empty repositories", () => {

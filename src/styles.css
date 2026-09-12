@@ -287,13 +287,18 @@ h1, h2, h3, h4, p { margin-top: 0; }
   transition-timing-function: linear;
 }
 .game-sprite--person {
+  width: var(--person-width, 5.5%);
   height: auto;
   aspect-ratio: 4 / 9;
   transform: translate(-50%, -94.444444%);
   transition: none;
 }
-.game-sprite--person.is-side-view { background-image: none; }
-.side-walk, .side-walk__pixels { position: absolute; inset: 0; }
+.game-sprite--person.is-side-view, .game-sprite--person.is-north-view { background-image: none; }
+.side-walk, .side-walk__pixels, .side-walk__segment, .side-walk__body { position: absolute; inset: 0; }
+.side-walk__segment--leg { clip-path: inset(0 0 9.4% 0); }
+.side-walk__segment--shoe { clip-path: inset(88.9% 0 0 0); }
+.game-sprite--person:not(.is-walking) .side-walk__segment,
+.game-sprite--person:not(.is-walking) .side-walk__body { transition: transform 90ms ease-out; }
 .side-walk__pixels {
   background: url("/assets/character/portfolio-sprite-atlas.png") no-repeat;
   background-size: 1200% auto;
@@ -301,9 +306,14 @@ h1, h2, h3, h4, p { margin-top: 0; }
   image-rendering: pixelated;
 }
 .side-walk__leg--near { clip-path: polygon(8.594% 66.667%,56.25% 66.667%,57.813% 70.139%,58.594% 73.264%,57.813% 75.694%,59.375% 79.167%,59.375% 96.528%,8.594% 96.528%); }
-.side-walk__leg--far { clip-path: polygon(56.25% 66.667%,100% 66.667%,100% 96.528%,59.375% 96.528%,59.375% 79.167%,57.813% 75.694%,58.594% 73.264%,57.813% 70.139%); }
 .side-walk__pelvis { clip-path: inset(66.667% 21.875% 28.472% 32.031%); }
 .side-walk__torso { clip-path: inset(0 0 33.333% 0); }
+.north-walk, .north-walk__pixels, .north-walk__leg { position: absolute; inset: 0; }
+.north-walk__pixels { background: url("/assets/character/portfolio-sprite-atlas.png") no-repeat; background-size: 1200% auto; background-position: 82.1022727% 17.9347826%; image-rendering: pixelated; }
+.north-walk__leg { transform-origin: 50% 65.972222%; }
+.north-walk__leg-pixels { clip-path: inset(65.972222% 48% 0 20%); }
+.north-walk__torso { clip-path: inset(0 0 32% 0); }
+.game-sprite--person:not(.is-walking) .north-walk__leg { transition: transform 90ms ease-out; }
 .game-sprite--pomsky-white,
 .game-sprite--pomsky-black { width: 4.7%; height: auto; aspect-ratio: 4 / 7; z-index: 6; transform: translate(-50%, -55%); }
 .game-sprite--pomsky-white.is-walking,

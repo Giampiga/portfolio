@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>Walk-cycle visual check</title>
+<style>body{margin:20px;background:#ded8c9;color:#222;font:14px monospace}section{display:flex;border-bottom:1px solid #555}figure{margin:0;width:120px}figcaption{text-align:center}.sample{position:relative;height:300px;border-bottom:1px solid #888}.sample .game-sprite{width:110px!important}h2{margin:18px 0 0}</style>
+<div id="root"></div>
+<script type="module">
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {Sprite} from '../src/App.jsx';
+import {SIDE_WALK_DISTANCE} from '../src/sprite-frames.js';
+import {walkingFrame, PLAYER_SPEED} from '../src/studio-motion.js';
+import '../src/styles.css';
+const h=React.createElement;
+createRoot(document.getElementById('root')).render(h('main',null,...['left','right','up'].map(direction=>h(React.Fragment,{key:direction},h('h2',null,direction),h('section',null,...Array.from({length:9},(_,i)=>{const distance=i/8*SIDE_WALK_DISTANCE;return h('figure',{key:i},h('div',{className:'sample'},h(Sprite,{kind:'person',position:{x:50,y:96},direction,walking:i<8,frame:walkingFrame(distance,true),distance,speed:PLAYER_SPEED})),h('figcaption',null,i<8?`${i}/8`:'idle'));}))))));
+</script></html>

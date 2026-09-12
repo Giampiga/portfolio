@@ -3,22 +3,64 @@ import assert from "node:assert/strict";
 import { advancePlayer, createPlayerState, integrateSpeed, PLAYER_SPEED, PLAYER_ACCELERATION, PLAYER_BRAKING, PLAYER_TURN_SPEED, roomDistance, walkingFrame, WALK_FRAME_DISTANCE } from "../src/studio-motion.js";
 import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches, walkableFloor } from "../src/studio-navigation.js";
 import { primaryProjects } from "../src/projects.js";
-import { personFrames, sideLegPose } from "../src/sprite-frames.js";
+import { personFrames, PERSON_WIDTH, SIDE_WALK_DISTANCE, sideLegPose, northLegPose } from "../src/sprite-frames.js";
 
-test("side legs alternate, loop without a seam, and keep contact at floor height", () => {
+test("side walk keeps intact legs anchored and planted shoes level", () => {
+  const rotate = (point, joint) => {
+    const r = joint.angle * Math.PI / 180;
+    const dx = (point[0] - joint.origin[0]) * joint.scale, dy = (point[1] - joint.origin[1]) * joint.scale;
+    return [joint.origin[0] + joint.x + dx * Math.cos(r) - dy * Math.sin(r), joint.origin[1] + joint.y + dx * Math.sin(r) + dy * Math.cos(r)];
+  };
+  const samePoint = (a, b) => a.forEach((value, i) => approximately(value, b[i]));
   for (const far of [false, true]) {
     assert.deepEqual(sideLegPose(0, false, far), sideLegPose(50, false, far));
-    approximately(sideLegPose(0, true, far).angle, sideLegPose(5.8, true, far).angle);
-    for (let distance = 0; distance < 5.8; distance += 0.1) {
-      const { angle, offset, hip } = sideLegPose(distance, true, far);
-      const contact = far ? [99.5, 265] : [46, 272];
-      const radians = angle * Math.PI / 180;
-      const ground = hip[1] + (contact[0] - hip[0]) * Math.sin(radians) + (contact[1] - hip[1]) * Math.cos(radians) + offset;
-      assert.ok(ground >= 267 - 1e-8 && ground <= 272 + 1e-8);
+    samePoint(sideLegPose(0, true, far).foot, sideLegPose(SIDE_WALK_DISTANCE, true, far).foot);
+    const sourceHip = [63, 194], sourceAnkle = [46, 258], sourceFoot = [46, 272];
+    for (const stride of [0, 0.25, 0.5, 1]) {
+      for (let distance = 0; distance < SIDE_WALK_DISTANCE; distance += 0.04) {
+        const pose = sideLegPose(distance, true, far, stride);
+        samePoint(rotate(sourceHip, pose.leg), pose.hip);
+        samePoint(rotate(sourceAnkle, pose.leg), pose.ankle);
+        samePoint(rotate(sourceAnkle, pose.shoe), pose.ankle);
+        samePoint(rotate(sourceFoot, pose.shoe), pose.foot);
+        samePoint(rotate([24, 272], pose.shoe), [pose.foot[0] - 22, pose.foot[1]]);
+        assert.equal(pose.shoe.angle, 0);
+        assert.equal(pose.shoe.scale, 1);
+        assert.ok(Math.abs(pose.leg.angle) < 40);
+        assert.ok(pose.leg.scale >= 0.7 && pose.leg.scale <= 1.06);
+        approximately(pose.hip[1], sourceHip[1] + pose.bodyY);
+        assert.ok(pose.foot[1] <= sourceFoot[1] - (far ? 3 : 0) + 1e-8);
+      }
+    }
+    const start = (far ? 0.6 : 0.1) * SIDE_WALK_DISTANCE;
+    const end = start + SIDE_WALK_DISTANCE * 0.2;
+    const plantedX = (distance) => -distance + sideLegPose(distance, true, far).foot[0] / 128 * PERSON_WIDTH;
+    approximately(plantedX(start), plantedX(end));
+    assert.deepEqual(sideLegPose(2, true, far, 0), sideLegPose(2, false, far));
+  }
+  approximately(sideLegPose(0, true).foot[1], 272);
+  assert.ok(sideLegPose(SIDE_WALK_DISTANCE * 0.75, true).foot[1] < 272);
+  approximately(sideLegPose(SIDE_WALK_DISTANCE * 0.75, true, true).foot[1], 269);
+});
+
+test("north walk alternates equal foot lifts without changing the idle pose", () => {
+  for (const right of [false, true]) {
+    assert.deepEqual(northLegPose(0, false, right), { scaleY: 1, lift: 0 });
+    assert.deepEqual(northLegPose(50, false, right), northLegPose(0, false, right));
+    assert.deepEqual(northLegPose(2, true, right, 0), northLegPose(2, false, right));
+    for (let distance = 0; distance < SIDE_WALK_DISTANCE; distance += 0.04) {
+      const pose = northLegPose(distance, true, right);
+      const opposite = northLegPose(distance + SIDE_WALK_DISTANCE / 2, true, !right);
+      approximately(pose.lift, opposite.lift);
+      approximately(pose.scaleY, opposite.scaleY);
+      assert.ok(pose.scaleY >= 0.75 && pose.scaleY <= 1);
+      assert.ok(pose.lift >= 0 && pose.lift <= 20);
+      approximately(northLegPose(distance, true, right, 0.5).lift, pose.lift / 2);
     }
   }
-  assert.ok(sideLegPose(1.45, true).angle > sideLegPose(4.35, true).angle);
-  assert.ok(sideLegPose(1.45, true, true).angle < sideLegPose(4.35, true, true).angle);
+  approximately(northLegPose(SIDE_WALK_DISTANCE / 4, true).lift, 20);
+  approximately(northLegPose(SIDE_WALK_DISTANCE / 4, true, true).lift, 0);
+  approximately(northLegPose(SIDE_WALK_DISTANCE * 3 / 4, true, true).lift, 20);
 });
 
 test("the dogs' room-to-room corridor clears the furniture in both directions", () => {
