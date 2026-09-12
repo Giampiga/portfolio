@@ -80,6 +80,8 @@ export const primaryProjects = [
     images: [
       { src: "/assets/projects/ghost-current.jpg", alt: "Current Ghost food-truck storefront prototype on desktop", label: "Ghost storefront" },
       { src: "/assets/projects/koe-current.jpg", alt: "Current Koë restaurant ordering prototype on desktop", label: "Koë storefront" },
+      { src: "/assets/projects/ghost-modifiers-live.jpg", alt: "Ghost’s mixed-protein selector with steak and chicken selected, duplicate choices disabled and the item price updated to $20", label: "Ghost · two distinct proteins, one updated price", detail: true },
+      { src: "/assets/projects/ghost-cart-live.jpg", alt: "Ghost’s demo cart preserves the mixed steak-and-chicken selection and shows quantity, subtotal and estimated tax", label: "Ghost · configured item carried into the demo cart", detail: true },
       { src: "/assets/projects/ghost-ipad.png", alt: "Ghost food-truck menu prototype on tablet", label: "Responsive menu", detail: true },
     ],
     links: [

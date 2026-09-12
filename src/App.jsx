@@ -418,12 +418,12 @@ function ProjectDialog({ project, open, onClose }) {
         <p className="work-stack">{story.stack.join(" / ")}</p>
         <p className="case-reader__lead">{story.challenge}</p>
         {project.links.length > 0 && <LinkRow links={project.links} />}
-        {project.carousel ? <ProjectCarousel key={project.id} project={project} /> : project.images[0] && <figure className="case-reader__main-artifact"><img src={project.images[0].src} alt={project.images[0].alt} /><figcaption>{project.images[0].caption ?? `${project.images[0].label} · captured from the actual product`}</figcaption></figure>}
+        {project.carousel ? <ProjectCarousel key={project.id} project={project} details /> : project.images[0] && <figure className="case-reader__main-artifact"><img src={project.images[0].src} alt={project.images[0].alt} /><figcaption>{project.images[0].caption ?? `${project.images[0].label} · captured from the actual product`}</figcaption></figure>}
         <section className="case-reader__section"><h3>My contribution</h3><div><p>{project.contribution}</p><ul>{story.approach.map((item) => <li key={item}>{item}</li>)}</ul></div></section>
         <section className="case-reader__section"><h3>Engineering decisions</h3><div>{story.decisions.map((decision) => <div className="case-decision" key={decision.title}><h4>{decision.title}</h4><p>{decision.detail}</p></div>)}</div></section>
         <section className="case-reader__section"><h3>Evidence & results</h3><p>{story.proof}</p></section>
         <section className="case-reader__scope"><h3>Scope & current status</h3><p>{story.boundary}</p></section>
-        {project.images.length > 1 && <div className="case-reader__gallery">{(project.carousel ? project.images.filter((image) => image.detail) : project.images.slice(1)).map((image) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption>{image.caption ?? `${image.label} · actual product screenshot`}</figcaption></figure>)}</div>}
+        {!project.carousel && project.images.length > 1 && <div className="case-reader__gallery">{project.images.slice(1).map((image) => <figure key={image.src}><img src={image.src} alt={image.alt} loading="lazy" /><figcaption>{image.caption ?? `${image.label} · actual product screenshot`}</figcaption></figure>)}</div>}
         <footer className="case-reader__footer"><a href={profileLinks.email}>Ask me about this project ↗</a><button type="button" onClick={onClose}>Back to portfolio</button></footer>
       </article>
     </dialog>

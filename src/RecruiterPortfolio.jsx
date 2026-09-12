@@ -7,29 +7,28 @@ export const resumeUrl = "/Giampiero_Giovingo_2026.pdf";
 
 const introductions = {
   "restaurant-menu-pos": {
-    discipline: "Commerce · Product design · Frontend",
-    headline: "Two brands. One better ordering journey.",
-    description: "I designed and built Ghost and Koë’s storefront prototypes: menus, custom orders and carts for two local food-truck brands.",
-    proof: "Responsive ordering flows and a reusable food-truck build skill.",
+    description: "I designed and built Ghost and Koë’s food-truck storefronts, from configurable menus to cart and checkout review.",
+    proof: "Two distinct brands share one reusable ordering foundation.",
   },
   "realtime-multiplayer-lab": {
-    discipline: "Realtime systems · Browser games",
-    headline: "Friendly competition. Serious state management.",
-    description: "A coding race, a puzzle arcade and Venezuelan Truco—built around server-owned rules, competitive play and clear feedback.",
-    proof: "Sandboxed judging · two-client puzzle tests · card-game rules and AI practice.",
+    description: "I developed three browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
+    proof: "Stack Rush’s two-client tests cover competitive play and reconnects.",
   },
   arkollab: {
-    discipline: "Product workflows · Team contribution",
-    headline: "An appraisal you can actually follow.",
-    description: "I built the v0 frontend for a team luxury-bag appraisal product, from item intake to a readable valuation report.",
-    proof: "Photo and condition intake → comparables → report → saved appraisals.",
+    description: "I built the v0 frontend for a team luxury-bag appraisal product, from item intake to a readable report.",
+    proof: "Photo and condition intake → mock comparables → saved appraisal.",
   },
   "cognitive-load-mvp": {
-    discipline: "Python · Research · Learning tools",
-    headline: "When does more help become more work?",
-    description: "I modeled how hints, walkthroughs and adaptive guidance change learning support in a Georgia Tech research prototype.",
+    description: "I built a research tool comparing hints, walkthroughs and adaptive guidance for beginner programming problems.",
     proof: "Four policies, eight tasks. Modeled predictions, not student outcomes.",
   },
+};
+
+const gameIntroductions = {
+  "truco-venezolano": "Venezuelan card play with guided AI practice.",
+  "stack-rush": "Tower of Hanoi and Nuts & Bolts, solo or head-to-head.",
+  binaryrush: "JavaScript coding races for up to five players.",
+  "circle-accuracy": "Draw a circle. Get a geometry-based accuracy score.",
 };
 
 export function ProjectLinks({ links = [] }) {
@@ -37,10 +36,11 @@ export function ProjectLinks({ links = [] }) {
   return <div className="project-links">{links.map((link) => <a key={link.href + link.label} href={link.href} target="_blank" rel="noreferrer">{link.label} <ArrowUpRight size={15} aria-hidden="true" /></a>)}</div>;
 }
 
-export function ProjectCarousel({ project, onOpen }) {
+export function ProjectCarousel({ project, onOpen, details = false }) {
   const rail = useRef(null);
   const [index, setIndex] = useState(0);
-  const images = project.images.filter((image) => !image.detail);
+  const hasDetails = details && project.images.some((image) => image.detail);
+  const images = project.images.filter((image) => hasDetails ? image.detail : !image.detail);
   const go = (next) => rail.current?.scrollTo({ left: Math.max(0, Math.min(images.length - 1, next)) * rail.current.clientWidth, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   return <section className="project-carousel" aria-label={`${project.shortTitle} screenshots`} aria-roledescription="carousel">
     <div className="project-carousel__rail" ref={rail} tabIndex={0} onScroll={(event) => setIndex(Math.round(event.currentTarget.scrollLeft / event.currentTarget.clientWidth))} onKeyDown={(event) => { if (event.key === "ArrowLeft" || event.key === "ArrowRight") { event.preventDefault(); go(index + (event.key === "ArrowRight" ? 1 : -1)); } }}>
@@ -55,21 +55,18 @@ export function ProjectCarousel({ project, onOpen }) {
 
 function ProjectFeature({ project, onOpen, selected }) {
   const intro = introductions[project.id];
-  const story = projectStories[project.id];
   return (
     <article className={`work-feature work-feature--${project.id}`} id={`work-${project.id}`}>
-      <div className="work-feature__top"><span>{project.number} / {intro.discipline}</span><span>{project.date}</span></div>
+      <div className="work-feature__top"><span>{project.number}</span><span>{project.date}</span></div>
       {project.carousel ? <ProjectCarousel project={project} onOpen={onOpen} /> : <a className="work-feature__image" href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }} aria-label={`Read ${project.title} case study`}>
         <img src={project.images[0].src} alt={project.images[0].alt} width="1440" height="1000" loading={project.number === "01" ? "eager" : "lazy"} />
         <span className="artifact-caption">{project.images[0].label}<ArrowUpRight size={20} aria-hidden="true" /></span>
       </a>}
       <div className="work-feature__body">
-        <p className="work-feature__name">{project.title}</p>
-        <h3><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>{intro.headline}</a></h3>
+        <h3><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>{project.shortTitle}</a></h3>
+        <p className="work-feature__role">{project.role}</p>
         <p className="work-feature__description">{intro.description}</p>
         <p className="work-feature__proof">{intro.proof}</p>
-        <p className="work-feature__role">My role: {project.ledgerRole}</p>
-        <p className="work-stack">{story.stack.slice(0, 3).join(" / ")}</p>
         <div className="work-feature__bottom"><span>{project.status}</span><button type="button" onClick={() => onOpen(project)} aria-label={`Read case study: ${project.shortTitle}`}>Read case study <ArrowRight size={18} aria-hidden="true" /></button></div>
         <ProjectLinks links={project.links} />
         {selected && <span className="sr-only">Currently selected project</span>}
@@ -86,13 +83,12 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
         <div className="intro-grid">
           <h1 id="intro-title">Giampiero<br />Giovingo<span>.</span></h1>
           <div className="intro-copy">
-            <h2>Software engineer.<br />Product-minded builder.</h2>
-            <p>I build web products—from food-truck ordering to multiplayer games—with React, TypeScript, Python and Java.</p>
+            <h2>Software engineer.</h2>
+            <p>I build web products with React, TypeScript, Python and Java.</p>
             <p className="intro-context">Georgia Tech M.S. CS · in progress<br />UCF B.S. Computer Science.</p>
             <div className="intro-actions"><a className="editorial-button" href="#work">Explore the work <ArrowDown size={18} aria-hidden="true" /></a><a className="text-action" href={resumeUrl} target="_blank" rel="noreferrer">Résumé PDF <ArrowUpRight size={17} aria-hidden="true" /></a></div>
           </div>
         </div>
-        <div className="intro-foot"><button type="button" onClick={onStudio}>Explore the interactive Studio <ArrowUpRight size={17} aria-hidden="true" /></button></div>
       </section>
 
       <section className="selected-work" id="work" aria-labelledby="work-heading">
@@ -101,21 +97,21 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
       </section>
 
       <section className="games-section" id="games" aria-labelledby="games-heading">
-        <div className="section-heading"><h2 id="games-heading">Games <span>Play the projects</span></h2><p>Puzzles, coding races & card games.</p></div>
+        <div className="section-heading"><h2 id="games-heading">Games <span>Play the projects</span></h2></div>
         <div className="games-grid">
           {games.map((game) => (
             <article className={`game-entry${game.image ? "" : " game-entry--source-only"}`} id={`game-${game.id}`} key={game.id}>
               {game.image ? <a className="game-entry__image" href={game.links[0].href} target="_blank" rel="noreferrer" aria-label={`Open ${game.title} in a new tab`}>
                 <img src={game.image.src} alt={game.image.alt} loading="lazy" width="1280" height="720" />
               </a> : null}
-              <div className="game-entry__meta"><span className={game.status === "Work in progress" ? "game-entry__wip" : ""}>{game.status}</span><span>{game.date}</span></div>
-              <h3>{game.title}</h3>
-              <p className="work-feature__role">{game.role ?? "Product direction · AI-assisted engineering"}</p>
-              <p>{game.description}</p>
-              <p className="game-entry__access">{game.access}</p>
-              <ProjectLinks links={game.links} />
-              <details className="game-entry__details"><summary>Build details<span className="sr-only"> for {game.title}</span></summary><p>{game.detail}</p><p className="work-stack">{game.stack.join(" / ")}</p>{game.images?.length > 0 && <ProjectCarousel project={{ ...game, shortTitle: game.title }} />}</details>
-              {projectById[game.id] && <a className="text-action" href={`#project=${game.id}`} onClick={(event) => { event.preventDefault(); onOpen(projectById[game.id]); }}>Read {game.title} case study <ArrowRight size={18} aria-hidden="true" /></a>}
+              <div className="game-entry__body">
+                <div className="game-entry__meta"><span className={game.status === "Work in progress" ? "game-entry__wip" : ""}>{game.status}</span></div>
+                <h3>{game.title}</h3>
+                <p>{gameIntroductions[game.id]}</p>
+                {game.status === "Work in progress" && <p className="game-entry__access">{game.access}</p>}
+                <ProjectLinks links={game.links} />
+              </div>
+              <details className="game-entry__details"><summary>Build details<span className="sr-only"> for {game.title}</span></summary><p className="work-feature__role">{game.role ?? "Product direction · AI-assisted engineering"} · {game.date}</p><p>{game.description}</p><p>{game.detail}</p><p className="work-stack">{game.stack.join(" / ")}</p>{game.images?.length > 0 && <ProjectCarousel project={{ ...game, shortTitle: game.title }} />}{projectById[game.id] && <a className="text-action" href={`#project=${game.id}`} onClick={(event) => { event.preventDefault(); onOpen(projectById[game.id]); }}>Read case study <ArrowRight size={18} aria-hidden="true" /></a>}</details>
             </article>
           ))}
         </div>
