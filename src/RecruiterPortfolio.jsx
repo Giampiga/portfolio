@@ -49,7 +49,7 @@ export function ProjectCarousel({ project, onOpen, details = false }) {
         <figcaption>{image.label}</figcaption>
       </figure>)}
     </div>
-    <div className="project-carousel__controls"><button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={`Previous screenshot: ${project.shortTitle}`}>←</button><span aria-live="polite">{index + 1} / {images.length} · {images[index]?.label}</span><button type="button" disabled={index === images.length - 1} onClick={() => go(index + 1)} aria-label={`Next screenshot: ${project.shortTitle}`}>→</button></div>
+    <div className="project-carousel__controls"><button type="button" disabled={index === 0} onClick={() => go(index - 1)} aria-label={`Previous screenshot: ${project.shortTitle}`}>←</button><span aria-live="polite" aria-atomic="true">{index + 1} / {images.length}<span className="sr-only"> · {images[index]?.label}</span></span><button type="button" disabled={index === images.length - 1} onClick={() => go(index + 1)} aria-label={`Next screenshot: ${project.shortTitle}`}>→</button></div>
   </section>;
 }
 

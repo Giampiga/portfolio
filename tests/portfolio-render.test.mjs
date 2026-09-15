@@ -36,6 +36,7 @@ test("Index keeps four games, native build details and a single Circle entry", a
     const preview = renderToStaticMarkup(createElement(ProjectCarousel, { project: restaurant }));
     const caseStudy = renderToStaticMarkup(createElement(ProjectCarousel, { project: restaurant, details: true }));
     assert.ok(preview.includes("ghost-current.jpg") && preview.includes("koe-current.jpg"));
+    assert.ok(preview.includes('<span aria-live="polite" aria-atomic="true">1 / 2<span class="sr-only"> · Ghost storefront</span></span>'));
     assert.ok(!preview.includes("ghost-modifiers-live.jpg"));
     assert.ok(caseStudy.includes("ghost-modifiers-live.jpg") && caseStudy.includes("ghost-cart-live.jpg"));
     assert.ok(!caseStudy.includes("ghost-current.jpg") && !caseStudy.includes("koe-current.jpg"));
