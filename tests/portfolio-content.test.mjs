@@ -6,9 +6,10 @@ import { games, primaryProjects, archiveProjects, projectById, repositoryCabinet
 import { projectStories } from "../src/project-stories.js";
 import { resolveInitialView } from "../src/portfolio-view.js";
 
-test("new visitors get Index, while explicit links and saved view preferences work", () => {
+test("landing defaults to Index even with a saved Studio preference; explicit links still work", () => {
   assert.equal(resolveInitialView(), "index");
-  assert.equal(resolveInitialView({ savedView: "studio" }), "studio");
+  assert.equal(resolveInitialView({ savedView: "studio" }), "index");
+  assert.equal(resolveInitialView({ explicitView: "invalid", savedView: "studio" }), "index");
   assert.equal(resolveInitialView({ savedView: "invalid" }), "index");
   assert.equal(resolveInitialView({ explicitView: "index", savedView: "studio" }), "index");
   assert.equal(resolveInitialView({ explicitView: "studio", savedView: "index" }), "studio");

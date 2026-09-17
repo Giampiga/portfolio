@@ -324,12 +324,9 @@ function useWanderingDog(zone, mapRef) {
 }
 
 function getInitialView() {
-  let savedView;
-  try { savedView = window.localStorage.getItem("portfolio-view"); } catch { /* Optional device-local preference. */ }
   return resolveInitialView({
     reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
     explicitView: new URLSearchParams(window.location.search).get("view"),
-    savedView,
   });
 }
 
@@ -698,7 +695,6 @@ export function App() {
 
   const changeView = (nextView) => {
     setView(nextView);
-    try { window.localStorage.setItem("portfolio-view", nextView); } catch { /* Storage can be disabled in private browsing. */ }
     const url = new URL(window.location.href);
     url.searchParams.set("view", nextView);
     window.history.replaceState(null, "", url);
