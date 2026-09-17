@@ -7,19 +7,19 @@ export const resumeUrl = "/Giampiero_Giovingo_2026.pdf";
 
 const introductions = {
   "restaurant-menu-pos": {
-    description: "I designed and built Ghost and Koë’s food-truck storefronts, from configurable menus to cart and checkout review.",
+    description: "Designed and built Ghost and Koë’s food-truck storefronts, from configurable menus to cart and checkout review.",
     proof: "Two distinct brands share one reusable ordering foundation.",
   },
   "realtime-multiplayer-lab": {
-    description: "I developed three browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
+    description: "Developed three browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
     proof: "Stack Rush’s two-client tests cover competitive play and reconnects.",
   },
   arkollab: {
-    description: "I built the v0 frontend for a team luxury-bag appraisal product, from item intake to a readable report.",
+    description: "Led the team to develop a luxury-bag appraisal product and built its v0 frontend, from item intake to a readable report.",
     proof: "Photo and condition intake → mock comparables → saved appraisal.",
   },
   "cognitive-load-mvp": {
-    description: "I built a research tool comparing hints, walkthroughs and adaptive guidance for beginner programming problems.",
+    description: "Built a research tool comparing hints, walkthroughs and adaptive guidance for beginner programming problems.",
     proof: "Four policies, eight tasks. Modeled predictions, not student outcomes.",
   },
 };

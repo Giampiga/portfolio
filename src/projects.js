@@ -14,7 +14,7 @@ const multiplayerGames = [
     role: "Full-stack development · AI-assisted",
     date: "2026 · ongoing",
     status: "Work in progress",
-    description: "A full-stack Venezuelan card-game platform with server-authoritative multiplayer, public and private rooms, and rule-based AI practice. I built the gameplay, player experience and persistent social features.",
+    description: "A full-stack Venezuelan card-game platform with server-authoritative multiplayer, public and private rooms, and rule-based AI practice. Built the gameplay, player experience and persistent social features.",
     detail: "Built with React and TypeScript, with authenticated APIs and persistent data for Elo rankings, profiles, friendships, chat and match history. The responsive interface supports drag-and-drop cards, contextual controls and dark mode. Tested game rules power 1v1/2v2 tables and Truquito practice, with three difficulty levels, explanations, pause and undo/redo. AI practice is available on Vercel; hosted online services remain in progress.",
     stack: ["Next.js", "React", "TypeScript", "Supabase", "PostgreSQL"],
     access: "Vercel · AI practice available; online play in progress.",
@@ -71,7 +71,7 @@ export const primaryProjects = [
     proof:
       "Responsive ordering flows and a reusable Codex skill for food-truck websites. Built for prospective partners; payment, order submission and POS integration are not live.",
     contribution:
-      "I formed the effort, own the product direction, designed both brand experiences and built the frontend prototypes.",
+      "Initiated the effort, set the product direction, designed both brand experiences and built the frontend prototypes.",
     evidence: [
       "Two distinct restaurant brands on one reusable commerce foundation",
       "Responsive storefront and ordering flows",
@@ -107,7 +107,7 @@ export const primaryProjects = [
     proof:
       "Server-owned rules, hidden-test judging and reconnect flows, with two-client test evidence for Stack Rush and guided AI practice in Truco.",
     contribution:
-      "I designed and developed the products with AI-assisted engineering, from game rules and interaction to server APIs and persistent state.",
+      "Designed and developed the products with AI-assisted engineering, from game rules and interaction to server APIs and persistent state.",
     evidence: [
       "Realtime rooms, reconnects and rematches",
       "Server-authoritative competition state",
@@ -123,8 +123,8 @@ export const primaryProjects = [
     group: "Featured case study",
     title: "Arkollab",
     shortTitle: "Arkollab",
-    role: "Product + frontend prototype contributor",
-    ledgerRole: "Product / Frontend Engineer",
+    role: "Team lead · Product + frontend prototype contributor",
+    ledgerRole: "Team Lead / Frontend Engineer",
     date: "Jun 2026",
     status: "Team project · open frontend PR",
     accent: "#7165e8",
@@ -133,11 +133,11 @@ export const primaryProjects = [
     proof:
       "A staged frontend journey from intake and condition through mock comparables, reports and saved records. Submitted as an open, unmerged PR.",
     contribution:
-      "I designed and implemented the v0 appraisal journey. Authentication, backend services and the broader AI-search system are team work.",
+      "Led the team to develop the appraisal product; designed and implemented the v0 frontend journey. Authentication, backend services and the broader AI-search system are team work.",
     evidence: [
       "Sold comparables separated from active asking prices",
       "Condition and confidence made visible in the report",
-      "My contribution isolated from the broader team system",
+      "Individual frontend contribution distinguished from the broader team system",
     ],
     images: [
       { src: "/assets/projects/arkollab-dashboard-live.jpg", alt: "Arkollab’s live dashboard showing saved luxury-bag appraisals, completion status and estimated values", label: "Team app · saved appraisals", caption: "Current team app · saved appraisals organized for review." },
@@ -165,7 +165,7 @@ export const primaryProjects = [
     proof:
       "Four assistance policies compared across eight tasks, with inspectable equations for reasoning effort and presentation load.",
     contribution:
-      "I built the product and analysis. Its outputs are model predictions and heuristics—not measured student outcomes.",
+      "Built the product and analysis. Its outputs are model predictions and heuristics—not measured student outcomes.",
     evidence: [
       "Four assistance policies compared consistently",
       "Inspectable task-level scoring",
@@ -193,7 +193,7 @@ export const primaryProjects = [
     proof:
       "Least-squares circle fitting, pointer input and local attempt history, with tests for ideal, open and degenerate strokes.",
     contribution:
-      "I designed and built the experience end to end.",
+      "Designed and built the experience end to end.",
     evidence: [
       "Canvas geometry and pointer interaction",
       "Immediate visual scoring feedback",
@@ -221,7 +221,7 @@ export const primaryProjects = [
     proof:
       "The work was completed against provided cohort specifications and tests in private training repositories.",
     contribution:
-      "I implemented both versions during Revature training. Revature is currently presenting me for client opportunities.",
+      "Implemented both versions during Revature training. Currently being presented by Revature for client opportunities.",
     evidence: [
       "Javalin + JDBC implementation",
       "Spring + JPA re-architecture",
@@ -266,7 +266,7 @@ export const archiveProjects = [
     role: "Frontend build",
     date: "2024–2025",
     status: "Disbanded before mint integration",
-    description: "A custom NFT collection and minting-site frontend built with React and Vite, including collection artwork, typography and carousel interactions. I completed the frontend before the team disbanded; backend, wallet and minting-service integration never began.",
+    description: "A custom NFT collection and minting-site frontend built with React and Vite, including collection artwork, typography and carousel interactions. Completed the frontend before the team disbanded; backend, wallet and minting-service integration never began.",
     stack: ["React", "Vite", "Tailwind CSS"],
     links: [{ label: "Open archived build", href: "https://gummy-final.vercel.app/" }],
   },
@@ -277,8 +277,8 @@ export const archiveProjects = [
     date: "2021",
     status: "Team archive",
     description: "A UCF team-built music social app where people record over beats, share posts and connect through profiles and comments.",
-    contribution: "I built the initial profile layout and login page, added profile-image selection with local preview, and refined registration and login forms with password visibility controls, clearer navigation and layout fixes.",
-    proof: "25 attributed commits · 7 merged pull requests. My work was on the web frontend, not the audio-recording or backend systems.",
+    contribution: "Built the initial profile layout and login page, added profile-image selection with local preview, and refined registration and login forms with password visibility controls, clearer navigation and layout fixes.",
+    proof: "25 attributed commits · 7 merged pull requests. Individual contributions covered the web frontend, not the audio-recording or backend systems.",
     stack: ["JavaScript", "React", "Material UI", "React Router", "Axios", "Firebase"],
     links: [
       { label: "View source", href: "https://github.com/GroovTeam/groov-web" },
@@ -292,7 +292,7 @@ export const archiveProjects = [
     role: "Team contributor",
     date: "2021–2022",
     status: "Capstone archive",
-    description: "A UCF capstone team project exploring a wallet-connected NFT marketplace. I initialized the codebase, authored its first ERC-721 URI-storage contract, and contributed later constructor and integration changes. The wider minting, listing and marketplace flows were a team effort.",
+    description: "A UCF capstone team project exploring a wallet-connected NFT marketplace. Initialized the codebase, authored its first ERC-721 URI-storage contract, and contributed later constructor and integration changes. The wider minting, listing and marketplace flows were a team effort.",
     stack: ["Next.js", "Solidity", "Hardhat", "Ethers.js", "IPFS"],
     links: [{ label: "View source", href: "https://github.com/ucf-nft-marketplace/polybay" }],
   },
@@ -302,7 +302,7 @@ export const archiveProjects = [
     role: "Solo Python microbuild",
     date: "2023",
     status: "Archived",
-    description: "A Python Discord bot for simulated baccarat, with daily virtual credits, bets, balances and hand payouts. I built the one-file prototype and 24-hour daily-claim checks; balances live in memory and reset when the bot restarts.",
+    description: "A Python Discord bot for simulated baccarat, with daily virtual credits, bets, balances and hand payouts. Built the one-file prototype and 24-hour daily-claim checks; balances live in memory and reset when the bot restarts.",
     stack: ["Python", "Discord API"],
     links: [{ label: "View source", href: "https://github.com/Giampiga/quick-baccarat" }],
   },
@@ -312,7 +312,7 @@ export const archiveProjects = [
     role: "Team contributor",
     date: "2021",
     status: "Course archive",
-    description: "A team-built contact manager for UCF’s COP 4331 course, using a LAMP stack. My two verified commits implemented and revised the registration and contact-deletion PHP endpoints.",
+    description: "A team-built contact manager for UCF’s COP 4331 course, using a LAMP stack. Two verified commits implemented and revised the registration and contact-deletion PHP endpoints.",
     stack: ["PHP", "MySQL", "Apache", "Linux"],
     links: [{ label: "View source", href: "https://github.com/LLemmers1030/G19-COP4331" }],
   },

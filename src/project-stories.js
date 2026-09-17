@@ -86,14 +86,15 @@ export const projectStories = {
     challenge:
       "Turn an ambiguous luxury-bag appraisal process into a sequence a user can follow and a valuation report they can inspect.",
     approach: [
+      "Led the team to develop the luxury-bag appraisal product.",
       "Designed and implemented the v0 frontend flow across intake, photos, condition, mock market search, comparables and reports.",
       "Added saved-record screens and deployment/compliance wiring within the frontend demo contribution.",
-      "Kept my contribution distinct from the team’s authentication, backend and AI-assisted marketplace service.",
+      "Kept the individual frontend contribution distinct from the team’s authentication, backend and AI-assisted marketplace service.",
     ],
     proof:
       "The open v0 PR implements the appraisal journey from intake and photos to condition, mock comparables, reports and saved records. The screenshots show the current team app, not a claim that this unmerged PR powers it.",
     boundary:
-      "Team project. My substantial v0 PR is open, not merged, and its market-search flow is mocked. The broader backend and AI architecture are team work.",
+      "Team project. The v0 frontend PR is open, not merged, and its market-search flow is mocked. The broader backend and AI architecture are team work.",
     decisions: [
       {
         title: "Make the appraisal a visible sequence",
@@ -108,7 +109,7 @@ export const projectStories = {
       {
         title: "Keep a fallback when synthesis fails",
         detail:
-          "The team architecture retains deterministic market calculations if LLM synthesis fails. This reliability choice belongs to the broader team system, not my frontend-only contribution.",
+          "The team architecture retains deterministic market calculations if LLM synthesis fails. This reliability choice belongs to the broader team system, not the individual frontend contribution.",
       },
     ],
   },
