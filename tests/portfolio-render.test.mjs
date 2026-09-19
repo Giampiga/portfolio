@@ -40,8 +40,15 @@ test("Index keeps four games, native build details and a single Circle entry", a
     assert.ok(!preview.includes("ghost-modifiers-live.jpg"));
     assert.ok(caseStudy.includes("ghost-modifiers-live.jpg") && caseStudy.includes("ghost-cart-live.jpg"));
     assert.ok(!caseStudy.includes("ghost-current.jpg") && !caseStudy.includes("koe-current.jpg"));
-    const gameCase = renderToStaticMarkup(createElement(ProjectCarousel, { project: projectById["realtime-multiplayer-lab"], details: true }));
-    assert.ok(!gameCase.includes("truco-"));
+    const lab = projectById["realtime-multiplayer-lab"];
+    const firstGameImage = projectById["truco-venezolano"].images[0].src;
+    for (const details of [false, true]) {
+      const carousel = renderToStaticMarkup(createElement(ProjectCarousel, { project: lab, details }));
+      assert.equal(carousel.match(/<img[^>]+src="([^"]+)"/)[1], firstGameImage);
+      assert.ok(carousel.includes("stack-rush-live.png") && carousel.includes("binaryrush-home.png"));
+      assert.ok(carousel.includes('aria-label="1 of 3: Truco'));
+    }
+    assert.equal(features[1].match(/<img[^>]+src="([^"]+)"/)[1], firstGameImage);
     const trucoCase = renderToStaticMarkup(createElement(ProjectCarousel, { project: projectById["truco-venezolano"], details: true }));
     assert.ok(trucoCase.includes("truco-sep18-practice.png"));
     const trucoCard = html.match(/<article class="game-entry" id="game-truco-venezolano">[\s\S]*?<\/article>/)[0];

@@ -11,7 +11,7 @@ const introductions = {
     proof: "Two distinct brands share one reusable ordering foundation.",
   },
   "realtime-multiplayer-lab": {
-    description: "Developed two browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
+    description: "Developed Truco venezolano, Stack Rush and Binaryrush with AI assistance, from game rules to shared multiplayer state.",
     proof: "Stack Rush’s two-client tests cover competitive play and reconnects.",
   },
   arkollab: {

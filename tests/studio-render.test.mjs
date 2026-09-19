@@ -4,7 +4,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createServer } from "vite";
 import react from "@vitejs/plugin-react";
-import { authoredWalkPose, DOG_GAIT_FRAMES, SIDE_WALK_DISTANCE } from "../src/sprite-frames.js";
+import { authoredWalkPose, dogSideFrames, DOG_GAIT_FRAMES, SIDE_WALK_DISTANCE } from "../src/sprite-frames.js";
 import { PLAYER_SPEED } from "../src/studio-motion.js";
 
 function pixelPolygons(html) {
@@ -42,6 +42,7 @@ test("Studio keeps an accessible compact room, named dogs and the independent In
       const pins = html.match(/<button class="station-pin[^>]*>/g) ?? [];
       assert.equal(pins.length, 8);
       assert.ok(pins.some((pin) => pin.includes("Truco Venezolano")));
+      assert.ok(html.includes('<span>08 · Truco</span>'), "Keep Truco identifiable without hover");
       assert.ok(pins.every((pin) => pin.includes('type="button"') && pin.includes(`aria-label="${compact ? "Preview" : "Walk to"} `)));
       assert.equal(pins.filter((pin) => pin.includes('aria-current="true"')).length, 1);
       assert.ok(html.includes('src="/assets/portfolio-studio-loft.png"'));
@@ -84,23 +85,21 @@ test("Studio keeps an accessible compact room, named dogs and the independent In
       for (const direction of ["left", "right"]) {
         const poses = new Set(), idlePoses = new Set();
         for (let phase = 0; phase < DOG_GAIT_FRAMES.length; phase++) {
-          const html = renderDog(direction, phase);
-          assert.ok(html.includes('class="dog-artwork"'));
-          assert.equal(html.includes("scaleX(-1)"), direction === "right");
-          const images = html.match(/<image [^>]+>/g) ?? [];
-          assert.equal(images.length, 1, "Retain one stable original dog body");
-          assert.ok(images[0].includes('href="/assets/character/portfolio-sprite-atlas.png"'));
-          assert.ok(images[0].includes(`x="-392" y="${kind === "pomsky-black" ? -648 : -420}"`));
-          const clip = html.match(/<clipPath id="([^"]+)"><path d="([^"]+)"/);
-          assert.ok(clip && images[0].includes(`clip-path="url(#${clip[1]})"`), "Keep the body isolated from the atlas legs");
-          assert.ok([...clip[2].matchAll(/V(\d+)/g)].every(([, y]) => Number(y) <= 154), "Keep the fur edge above the old paw artwork");
-          const polygons = pixelPolygons(html);
-          assert.equal(polygons.filter(({ fill }) => fill === "#171815").length, 4, "Give each dog four articulated paws");
-          poses.add(JSON.stringify(polygons));
-          idlePoses.add(JSON.stringify(pixelPolygons(renderDog(direction, phase, false))));
+          for (const walking of [true, false]) {
+            const html = renderDog(direction, phase, walking);
+            const crop = dogSideFrames[kind][walking ? DOG_GAIT_FRAMES[phase] : 1];
+            assert.ok(html.includes('class="dog-artwork"') && html.includes('viewBox="0 0 128 224"'));
+            assert.equal(html.includes("scaleX(-1)"), direction === "right");
+            const images = html.match(/<image [^>]+>/g) ?? [];
+            assert.equal(images.length, 1, "Retain the complete original furry dog, including its paws");
+            assert.ok(images[0].includes('href="/assets/character/portfolio-sprite-atlas.png"'));
+            assert.ok(images[0].includes(`x="${-crop.x}" y="${-crop.y}"`));
+            assert.ok(!html.includes("<polygon") && !html.includes("clip-path="), "Do not replace or mask the original dog legs");
+            (walking ? poses : idlePoses).add(images[0]);
+          }
         }
-        assert.equal(poses.size, 8, "Use distinct eight-phase side poses");
-        assert.equal(idlePoses.size, 1, "Idle paws must not depend on the last gait phase");
+        assert.equal(poses.size, 3, "Cycle through all three original side frames");
+        assert.equal(idlePoses.size, 1, "Use the same original idle frame after every gait phase");
       }
       for (const [direction, startColumn] of [["down", 0], ["up", 9]]) {
         for (let phase = 0; phase < DOG_GAIT_FRAMES.length; phase++) {

@@ -10,7 +10,7 @@ export const personFrames = [
 export const SIDE_WALK_DISTANCE = 5.2;
 export const PERSON_WIDTH = 5.5; // Room-width percent; also sets the rendered sprite width.
 
-// Step fabric and fur contours on the same source-pixel grid as the atlas.
+// Step fabric contours on the same source-pixel grid as the atlas.
 export const pixelContour = (values) => {
   const corners = values.map((point) => point.map((value) => Math.round(value / 4) * 4));
   return corners.flatMap(([x, y], index) => {
@@ -27,13 +27,11 @@ export const pixelContour = (values) => {
 
 export const DOG_GAIT_FRAMES = [0, 0, 1, 1, 2, 2, 1, 1];
 export const DOG_SIDE_STEP_DISTANCE = 44 / 128 * 4.7 / 4;
-export function dogSidePose(step, walking, offset = 0) {
-  const phase = ((step + offset) % 8 + 8) % 8;
-  return {
-    travel: walking ? [-22, -11, 0, 11, 22, 16, 0, -16][phase] : 0,
-    lift: walking ? [0, 0, 0, 0, 0, 8, 12, 8][phase] : 0,
-  };
-}
+// Register the original furry side frames around their paws, not the atlas grid.
+export const dogSideFrames = {
+  "pomsky-white": [{ x: 392, y: 420 }, { x: 514, y: 412 }, { x: 636, y: 424 }],
+  "pomsky-black": [{ x: 390, y: 646 }, { x: 514, y: 650 }, { x: 634, y: 660 }],
+};
 
 // Contact, recoil, passing and reach. The lower body is drawn in each pose,
 // rather than stretching one diagonal trouser crop through the whole cycle.

@@ -3,23 +3,21 @@ import assert from "node:assert/strict";
 import { advancePlayer, createPlayerState, integrateSpeed, PLAYER_SPEED, PLAYER_ACCELERATION, PLAYER_BRAKING, PLAYER_TURN_SPEED, roomDistance, walkingFrame, WALK_FRAME_DISTANCE } from "../src/studio-motion.js";
 import { canPlayerWalk, dogHouseGraph, isClearSegment, routePlayerTo, stationApproaches, walkableFloor } from "../src/studio-navigation.js";
 import { primaryProjects } from "../src/projects.js";
-import { personFrames, PERSON_WIDTH, SIDE_WALK_DISTANCE, authoredWalkPose, DOG_GAIT_FRAMES, DOG_SIDE_STEP_DISTANCE, dogSidePose } from "../src/sprite-frames.js";
+import { personFrames, PERSON_WIDTH, SIDE_WALK_DISTANCE, authoredWalkPose, dogSideFrames, DOG_GAIT_FRAMES, DOG_SIDE_STEP_DISTANCE } from "../src/sprite-frames.js";
 
-test("dog side paws stay planted through stance, lift on recovery and wrap without an idle twitch", () => {
+test("dog walking cycles the complete measured atlas frames without skipping poses", () => {
   assert.equal(DOG_GAIT_FRAMES.length, 8);
-  assert.ok(DOG_GAIT_FRAMES.every((frame) => [0, 1, 2].includes(frame)));
-  for (let step = 0; step < 8; step++) {
-    const pose = dogSidePose(step, true);
-    assert.equal(pose.lift > 0, step > 4);
-    if (step > 0 && step <= 4) {
-      assert.equal(pose.travel - dogSidePose(step - 1, true).travel, 11);
-      approximately(-step * DOG_SIDE_STEP_DISTANCE + pose.travel / 128 * 4.7, dogSidePose(0, true).travel / 128 * 4.7);
-    }
-    for (const offset of [0, 2, 4, 6]) {
-      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step + offset, true));
-      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step + 8, true, offset));
-      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step - 8, true, offset));
-      assert.deepEqual(dogSidePose(step, false, offset), { travel: 0, lift: 0 });
+  assert.deepEqual([...new Set(DOG_GAIT_FRAMES)].sort(), [0, 1, 2]);
+  assert.ok(Number.isFinite(DOG_SIDE_STEP_DISTANCE) && DOG_SIDE_STEP_DISTANCE > 0);
+  DOG_GAIT_FRAMES.forEach((frame, index) => {
+    assert.ok(Math.abs(frame - DOG_GAIT_FRAMES[(index + 1) % DOG_GAIT_FRAMES.length]) <= 1);
+  });
+  for (const kind of ["pomsky-white", "pomsky-black"]) {
+    assert.equal(dogSideFrames[kind].length, 3);
+    assert.equal(new Set(dogSideFrames[kind].map(({ x, y }) => `${x},${y}`)).size, 3);
+    for (const { x, y } of dogSideFrames[kind]) {
+      assert.ok(Number.isFinite(x) && Number.isFinite(y));
+      assert.ok(x >= 0 && y >= 0 && x + 128 <= 1536 && y + 224 <= 1024);
     }
   }
 });

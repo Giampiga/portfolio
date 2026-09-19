@@ -99,11 +99,11 @@ export const primaryProjects = [
     shortTitle: "Realtime Multiplayer Lab",
     role: "Product direction · AI-assisted engineering",
     ledgerRole: "Product Direction / AI-Assisted Eng.",
-    date: "Aug–Sep 2026",
-    status: "Stack Rush live · Binaryrush in progress",
+    date: "2026 · ongoing",
+    status: "Stack Rush live · Truco & Binaryrush in progress",
     accent: "#6256df",
     summary:
-      "A browser coding race and a multiplayer puzzle arcade exploring shared game state. Binaryrush was built with Codex and published on GPT Sites.",
+      "Truco venezolano, Stack Rush and Binaryrush explore server-owned game rules, rooms and shared state. Binaryrush was built with Codex and published on GPT Sites.",
     proof:
       "Server-owned rules, hidden-test judging and reconnect flows, with two-client test evidence for Stack Rush.",
     contribution:
@@ -113,8 +113,8 @@ export const primaryProjects = [
       "Server-authoritative competition state",
       "Two-client interaction and failure-state QA",
     ],
-    images: [multiplayerGames[2].image, multiplayerGames[1].image],
-    links: multiplayerGames.slice(1).flatMap((game) => game.links),
+    images: multiplayerGames.map((game) => game.image),
+    links: multiplayerGames.flatMap((game) => game.links),
     station: { x: 16, y: 85, screen: { x: 10.2, y: 68.1, w: 8.5, h: 6.3, rotate: 0 } },
   },
   {

@@ -245,6 +245,7 @@ h1, h2, h3, h4, p { margin-top: 0; }
   cursor: pointer;
 }
 .station-pin > span { display: grid; place-items: center; width: 28px; height: 28px; border: 1px solid #584b3c; background: #fff5df; font-weight: 500; box-shadow: 0 2px 0 #342b2450; }
+.station-pin--truco > span { width: max-content; min-width: 72px; padding: 0 8px; white-space: nowrap; }
 .station-pin strong { position: absolute; bottom: calc(100% - 3px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 190px; padding: 8px 10px; background: #272620; color: #fff5df; font: 500 12px/1.35 "Inter", sans-serif; text-align: center; opacity: 0; visibility: hidden; pointer-events: none; }
 .station-pin strong.station-label--left { left: auto; right: 8px; transform: none; }
 .station-pin strong.station-label--right { left: 8px; transform: none; }
@@ -284,6 +285,7 @@ h1, h2, h3, h4, p { margin-top: 0; }
 }
 .game-sprite--person.is-side-view, .game-sprite--person.is-north-view { background-image: none; }
 .player-artwork, .dog-artwork { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; image-rendering: pixelated; }
+.dog-artwork { overflow: hidden; }
 .game-sprite.is-dog-side-view { background-image: none; }
 .game-sprite--pomsky-white,
 .game-sprite--pomsky-black { width: 4.7%; height: auto; aspect-ratio: 4 / 7; z-index: 6; transform: translate(-50%, -55%); }

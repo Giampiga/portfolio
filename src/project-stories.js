@@ -33,24 +33,25 @@ export const projectStories = {
     ],
   },
   "realtime-multiplayer-lab": {
-    stack: ["React", "TypeScript", "Cloudflare", "D1", "Drizzle", "QuickJS WASM"],
+    stack: ["React", "TypeScript", "Next.js", "Supabase", "PostgreSQL", "Cloudflare", "D1", "QuickJS WASM"],
     challenge:
-      "Keep a shared competition coherent when players submit code, make puzzle moves, disconnect or request a rematch.",
+      "Keep competition coherent when players play cards, submit code, make puzzle moves, disconnect or request a rematch.",
     approach: [
+      "Developed Truco venezolano’s server-authoritative card gameplay, public/private rooms and guided AI practice.",
       "Directed Binaryrush’s browser coding race and Stack Rush’s multiplayer puzzle arcade through AI-assisted engineering.",
       "Built Binaryrush with Codex and published it on GPT Sites, with a bounded JavaScript judge and hidden tests.",
       "Implemented shared rooms and competition state with server-authoritative judging, moves, timers and results.",
       "Developed reconnect and rematch flows, with multiplayer test evidence for Stack Rush.",
     ],
     proof:
-      "Binaryrush has nine judged problems and explicit code-execution limits. Stack Rush has unit, rendered-HTML and multiplayer tests, including a reported 8/8 two-client suite.",
+      "Truco’s AI practice is playable on Vercel. Binaryrush has nine judged problems and explicit code-execution limits. Stack Rush has unit, rendered-HTML and multiplayer tests, including a reported 8/8 two-client suite.",
     boundary:
-      "Binaryrush is a work in progress with unpublished source. Stack Rush remains a live prototype. Production-scale load and abuse resistance have not been validated.",
+      "Truco and Binaryrush are works in progress with private or unpublished source; Truco’s online services are still in development. Stack Rush remains a live prototype. Production-scale load and abuse resistance have not been validated.",
     decisions: [
       {
         title: "Let the server settle the race",
         detail:
-          "Judging and standings in Binaryrush, and moves, timers and results in Stack Rush, are server-authoritative. The browser presents the competition state.",
+          "Truco’s multiplayer rules, Binaryrush’s judging and standings, and Stack Rush’s moves, timers and results are server-authoritative. Each browser presents its game’s competition state.",
       },
       {
         title: "Bound code execution",

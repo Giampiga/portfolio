@@ -275,7 +275,7 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
             return (
               <button
                 key={candidate.id}
-                className={`station-pin${selected ? " is-selected" : ""}${nearby ? " is-nearby" : ""}`}
+                className={`station-pin${candidate.id === "truco-venezolano" ? " station-pin--truco" : ""}${selected ? " is-selected" : ""}${nearby ? " is-nearby" : ""}`}
                 style={{
                   left: `${candidate.station.x + (candidate.station.labelOffsetX ?? 0)}%`,
                   top: `${candidate.station.y}%`,
@@ -287,7 +287,7 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
                 aria-current={selected ? "true" : undefined}
                 aria-label={`${compact ? "Preview" : nearby && nearestProject.distance < 5 ? "Inspect" : "Walk to"} ${candidate.title}`}
               >
-                <span>{candidate.number}</span>
+                <span>{candidate.number}{candidate.id === "truco-venezolano" && " · Truco"}</span>
                 <strong className={candidate.station.x > 80 ? "station-label--left" : candidate.station.x < 25 ? "station-label--right" : ""}>{candidate.shortTitle}</strong>
               </button>
             );
