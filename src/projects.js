@@ -1,10 +1,10 @@
 const github = "https://github.com/Giampiga";
 
 const trucoImages = [
-  { src: "/assets/projects/truco-vercel-practice.png", alt: "Truco on Vercel: an active practice hand against Truquito with cards on the table", label: "Truco · practice against Truquito" },
-  { src: "/assets/projects/truco-vercel-cantos.png", alt: "Retruco confirmation beside the player's hand, available actions and Truquito's explanation", label: "Truco · cantos and guided practice" },
-  { src: "/assets/projects/truco-vercel-lobby.png", alt: "Current Truco lobby with casual and competitive play options", label: "Truco · casual and competitive lobby" },
-  { src: "/assets/projects/truco-vercel-mobile.png", alt: "Truco practice table adapted to a mobile screen", label: "Truco · mobile practice" },
+  { src: "/assets/projects/truco-sep18-practice.png", alt: "An active Truco practice hand against Truquito, with played cards, the vira and a rules explanation", label: "Truco · practice against Truquito" },
+  { src: "/assets/projects/truco-sep18-cantos.png", alt: "Contextual Flor options and bidding guidance beside the player's hand and Truquito's explanation", label: "Truco · cantos and guided practice" },
+  { src: "/assets/projects/truco-sep18-lobby.png", alt: "Current Truco lobby with bot-practice tables and casual and competitive play options", label: "Truco · lobby and practice tables" },
+  { src: "/assets/projects/truco-sep18-mobile.png", alt: "Mobile Truco practice with played cards, the player's hand and contextual actions", label: "Truco · mobile practice" },
 ];
 
 const multiplayerGames = [
@@ -88,7 +88,7 @@ export const primaryProjects = [
       { label: "Open Ghost storefront", href: "https://ghost-prototype-mu.vercel.app/" },
       { label: "Open Koë storefront", href: "https://koe-usa-website.vercel.app/" },
     ],
-    station: { x: 19, y: 46, screen: { x: 10.2, y: 41.1, w: 13.8, h: 8.7, rotate: 0 } },
+    station: { x: 19, y: 31, screen: { x: 15.6, y: 13.5, w: 6.5, h: 5.1, rotate: 0 } },
   },
   {
     id: "realtime-multiplayer-lab",
@@ -100,12 +100,12 @@ export const primaryProjects = [
     role: "Product direction · AI-assisted engineering",
     ledgerRole: "Product Direction / AI-Assisted Eng.",
     date: "Aug–Sep 2026",
-    status: "Stack Rush live · Binaryrush & Truco in progress",
+    status: "Stack Rush live · Binaryrush in progress",
     accent: "#6256df",
     summary:
-      "A coding race, a puzzle arcade and Venezuelan Truco—three explorations of shared game state. Binaryrush was built with Codex and published on GPT Sites.",
+      "A browser coding race and a multiplayer puzzle arcade exploring shared game state. Binaryrush was built with Codex and published on GPT Sites.",
     proof:
-      "Server-owned rules, hidden-test judging and reconnect flows, with two-client test evidence for Stack Rush and guided AI practice in Truco.",
+      "Server-owned rules, hidden-test judging and reconnect flows, with two-client test evidence for Stack Rush.",
     contribution:
       "Designed and developed the products with AI-assisted engineering, from game rules and interaction to server APIs and persistent state.",
     evidence: [
@@ -113,9 +113,9 @@ export const primaryProjects = [
       "Server-authoritative competition state",
       "Two-client interaction and failure-state QA",
     ],
-    images: [multiplayerGames[2].image, multiplayerGames[1].image, ...trucoImages],
-    links: multiplayerGames.flatMap((game) => game.links),
-    station: { x: 16, y: 70, screen: { x: 7.5, y: 60.8, w: 13.2, h: 9.9, rotate: 0 } },
+    images: [multiplayerGames[2].image, multiplayerGames[1].image],
+    links: multiplayerGames.slice(1).flatMap((game) => game.links),
+    station: { x: 16, y: 85, screen: { x: 10.2, y: 68.1, w: 8.5, h: 6.3, rotate: 0 } },
   },
   {
     id: "arkollab",
@@ -147,7 +147,7 @@ export const primaryProjects = [
     links: [
       { label: "Open live app", href: "https://project-21faf183-fcb8-4503-941.web.app/" },
     ],
-    station: { x: 48, y: 65, screen: { x: 33.2, y: 55.7, w: 18.2, h: 12.8, rotate: 0 } },
+    station: { x: 42, y: 31, screen: { x: 38.8, y: 13.3, w: 6.7, h: 4.6, rotate: 0 } },
   },
   {
     id: "cognitive-load-mvp",
@@ -175,7 +175,7 @@ export const primaryProjects = [
       { src: "/assets/projects/cognitive-load-results.png", alt: "Cognitive Load MVP task-level analysis", label: "Task-level results" },
     ],
     links: [],
-    station: { x: 48, y: 86, screen: { x: 33.5, y: 79.9, w: 17.8, h: 10.8, rotate: 0 } },
+    station: { x: 42, y: 88, screen: { x: 36.5, y: 74, w: 12.5, h: 7.6, rotate: 0 } },
   },
   {
     id: "circle-accuracy",
@@ -203,7 +203,7 @@ export const primaryProjects = [
     links: [
       { label: "View source", href: "https://github.com/Giampiga/circle-accuracy-game" },
     ],
-    station: { x: 73, y: 34 },
+    station: { x: 75, y: 29 },
   },
   {
     id: "revature-architectures",
@@ -229,7 +229,7 @@ export const primaryProjects = [
     ],
     images: [],
     links: [],
-    station: { x: 76, y: 62, labelOffsetX: -4.8, pinAnchorX: "83%" },
+    station: { x: 81, y: 88 },
   },
   {
     id: "algorithms-lab",
@@ -255,7 +255,29 @@ export const primaryProjects = [
     ],
     images: [],
     links: [],
-    station: { x: 87, y: 58, labelOffsetX: 1.7, pinAnchorX: "35%" },
+    station: { x: 91, y: 29 },
+  },
+  {
+    ...multiplayerGames[0],
+    number: "08",
+    group: "Game case study",
+    title: "Truco Venezolano",
+    shortTitle: "Truco Venezolano",
+    ledgerRole: "Full-Stack / AI-Assisted",
+    carousel: true,
+    accent: "#238861",
+    summary:
+      "A full-stack Venezuelan card-game platform with server-authoritative multiplayer, public/private rooms, rankings and guided AI practice.",
+    proof:
+      "Real practice against Truquito, with explanations, three difficulty levels and undo/redo. Online services remain in progress.",
+    contribution:
+      "Developed the game rules, responsive card interface, authenticated APIs and persistent social features with AI-assisted engineering.",
+    evidence: [
+      "Server-authoritative gameplay and public/private rooms",
+      "Rule-based AI practice with guided decisions",
+      "Elo, profiles, friendships, chat and match history implementation",
+    ],
+    station: { x: 19, y: 59 },
   },
 ];
 

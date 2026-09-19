@@ -1,6 +1,6 @@
 // Positions use percentages of the room. Distances use room-width units so
 // vertical and horizontal movement cover the same screen distance per second.
-export const PLAYER_SPEED = 12.5;
+export const PLAYER_SPEED = 10.5;
 export const PLAYER_ACCELERATION = 110;
 export const PLAYER_BRAKING = 210;
 export const PLAYER_TURN_SPEED = 8;
@@ -34,8 +34,9 @@ export function createPlayerState(position = PLAYER_START) {
 // target. This keeps the feel consistent on 60Hz and high-refresh displays.
 export function integrateSpeed(initial, target, deltaSeconds) {
   const rate = target > initial ? PLAYER_ACCELERATION : PLAYER_BRAKING;
-  const rampTime = Math.min(deltaSeconds, Math.abs(target - initial) / rate);
-  const speed = rampTime < deltaSeconds ? target : Math.max(0, initial + Math.sign(target - initial) * rate * rampTime);
+  const rampDuration = Math.abs(target - initial) / rate;
+  const rampTime = Math.min(deltaSeconds, rampDuration);
+  const speed = rampDuration <= deltaSeconds + Number.EPSILON ? target : Math.max(0, initial + Math.sign(target - initial) * rate * rampTime);
   return { speed, distance: (initial + speed) * rampTime / 2 + speed * (deltaSeconds - rampTime) };
 }
 

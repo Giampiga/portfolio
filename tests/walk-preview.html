@@ -1,14 +1,31 @@
 <!doctype html>
 <html lang="en"><meta charset="utf-8"><title>Walk-cycle visual check</title>
-<style>body{margin:20px;background:#ded8c9;color:#222;font:14px monospace}section{display:flex;border-bottom:1px solid #555}figure{margin:0;width:120px}figcaption{text-align:center}.sample{position:relative;height:300px;border-bottom:1px solid #888}.sample .game-sprite{width:110px!important}h2{margin:18px 0 0}</style>
+<style>body{margin:20px;background:#ded8c9;color:#222;font:14px monospace}section{display:flex;border-bottom:1px solid #555}figure{margin:0;width:120px}figcaption{text-align:center}.sample{position:relative;height:300px;border-bottom:1px solid #888}.sample .game-sprite{width:var(--preview-size,110px)!important}.sample .game-sprite:not(.game-sprite--person){transform:translate(-50%,-85%)!important}h2{margin:18px 0 0}.live figure{width:240px}.controls{display:flex;gap:16px;align-items:center;padding:12px}.controls button,.controls select{font:inherit;padding:8px}</style>
 <div id="root"></div>
 <script type="module">
-import React from 'react';
+import React, {useEffect,useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {Sprite} from '../src/App.jsx';
 import {SIDE_WALK_DISTANCE} from '../src/sprite-frames.js';
 import {walkingFrame, PLAYER_SPEED} from '../src/studio-motion.js';
 import '../src/styles.css';
 const h=React.createElement;
-createRoot(document.getElementById('root')).render(h('main',null,...['left','right','up'].map(direction=>h(React.Fragment,{key:direction},h('h2',null,direction),h('section',null,...Array.from({length:9},(_,i)=>{const distance=i/8*SIDE_WALK_DISTANCE;return h('figure',{key:i},h('div',{className:'sample'},h(Sprite,{kind:'person',position:{x:50,y:96},direction,walking:i<8,frame:walkingFrame(distance,true),distance,speed:PLAYER_SPEED})),h('figcaption',null,i<8?`${i}/8`:'idle'));}))))));
+function Preview(){
+  const [playing,setPlaying]=useState(true),[playback,setPlayback]=useState(1),[distance,setDistance]=useState(0),[size,setSize]=useState(110),[kind,setKind]=useState('person');
+  useEffect(()=>{
+    if(!playing)return;
+    let request,previous;
+    const tick=now=>{if(previous!==undefined)setDistance(value=>value+Math.min(now-previous,50)/1000*PLAYER_SPEED*playback);previous=now;request=requestAnimationFrame(tick);};
+    request=requestAnimationFrame(tick);return()=>cancelAnimationFrame(request);
+  },[playing,playback]);
+  const sample=(direction,value,walking=true)=>{
+    const gaitStep=walking?Math.floor((value/SIDE_WALK_DISTANCE%1)*8):0;
+    return h('div',{className:'sample'},h(Sprite,{kind,position:{x:50,y:96},direction,walking,gaitStep,frame:kind==='person'?walkingFrame(value,walking):[0,0,1,1,2,2,1,1][gaitStep],distance:value,speed:PLAYER_SPEED}));
+  };
+  return h('main',{style:{'--preview-size':`${size}px`}},
+    h('div',{className:'controls'},h('label',null,'Character ',h('select',{value:kind,onChange:event=>setKind(event.target.value)},h('option',{value:'person'},'Giampiero'),h('option',{value:'pomsky-white'},'Jojo · black/white'),h('option',{value:'pomsky-black'},'Maui · black/beige'))),h('button',{onClick:()=>setPlaying(value=>!value)},playing?'Pause cycle':'Play cycle'),h('label',null,'Playback ',h('select',{value:playback,onChange:event=>setPlayback(Number(event.target.value))},h('option',{value:1},'Real speed'),h('option',{value:.25},'Quarter speed'))),h('label',null,'Size ',h('select',{value:size,onChange:event=>setSize(Number(event.target.value))},h('option',{value:110},'Enlarged'),h('option',{value:56},'Room scale')))),
+    h('section',{className:'live'},...['left','right','up','down'].map(direction=>h('figure',{key:direction},sample(direction,distance),h('figcaption',null,direction)))),
+    ...['left','right','up'].map(direction=>h(React.Fragment,{key:direction},h('h2',null,`${direction} · contact sheet`),h('section',null,...Array.from({length:9},(_,i)=>h('figure',{key:i},sample(direction,i/8*SIDE_WALK_DISTANCE,i<8),h('figcaption',null,['contact','recoil','passing','toe-off','contact','pickup','passing','reach','idle'][i])))))));
+}
+createRoot(document.getElementById('root')).render(h(Preview));
 </script></html>

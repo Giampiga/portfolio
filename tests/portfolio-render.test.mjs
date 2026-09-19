@@ -41,9 +41,14 @@ test("Index keeps four games, native build details and a single Circle entry", a
     assert.ok(caseStudy.includes("ghost-modifiers-live.jpg") && caseStudy.includes("ghost-cart-live.jpg"));
     assert.ok(!caseStudy.includes("ghost-current.jpg") && !caseStudy.includes("koe-current.jpg"));
     const gameCase = renderToStaticMarkup(createElement(ProjectCarousel, { project: projectById["realtime-multiplayer-lab"], details: true }));
-    assert.ok(gameCase.includes("truco-vercel-practice.png"));
+    assert.ok(!gameCase.includes("truco-"));
+    const trucoCase = renderToStaticMarkup(createElement(ProjectCarousel, { project: projectById["truco-venezolano"], details: true }));
+    assert.ok(trucoCase.includes("truco-sep18-practice.png"));
+    const trucoCard = html.match(/<article class="game-entry" id="game-truco-venezolano">[\s\S]*?<\/article>/)[0];
+    assert.ok(trucoCard.split("<details")[0].includes('href="#project=truco-venezolano"'));
     const engineering = html.match(/<section class="engineering-work"[\s\S]*?<\/section>/)[0];
     assert.ok(!engineering.includes("Circle Accuracy"));
+    assert.ok(!engineering.includes("Truco"));
     assert.ok(engineering.includes("Revature") && engineering.includes("Algorithms"));
   } finally {
     await server.close();

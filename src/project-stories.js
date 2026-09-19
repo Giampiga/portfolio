@@ -33,21 +33,19 @@ export const projectStories = {
     ],
   },
   "realtime-multiplayer-lab": {
-    stack: ["React", "TypeScript", "Next.js", "Supabase", "PostgreSQL", "Cloudflare", "D1", "Drizzle", "QuickJS WASM"],
+    stack: ["React", "TypeScript", "Cloudflare", "D1", "Drizzle", "QuickJS WASM"],
     challenge:
       "Keep a shared competition coherent when players submit code, make puzzle moves, disconnect or request a rematch.",
     approach: [
       "Directed Binaryrush’s browser coding race and Stack Rush’s multiplayer puzzle arcade through AI-assisted engineering.",
       "Built Binaryrush with Codex and published it on GPT Sites, with a bounded JavaScript judge and hidden tests.",
-      "Developed Truco’s full-stack React and TypeScript platform: server-authoritative 1v1/2v2 play, public/private rooms, Elo rankings, profiles, friendships, chat and match history, backed by authenticated APIs and persistent data.",
-      "Built Truco’s responsive drag-and-drop card interface, contextual game controls and dark mode, plus guided practice against rule-based Truquito.",
       "Implemented shared rooms and competition state with server-authoritative judging, moves, timers and results.",
       "Developed reconnect and rematch flows, with multiplayer test evidence for Stack Rush.",
     ],
     proof:
-      "Binaryrush has nine judged problems and explicit code-execution limits. Stack Rush has unit, rendered-HTML and multiplayer tests, including a reported 8/8 two-client suite. Truco’s source includes rules tests; its Vercel practice was played through a completed trick and captured on desktop and mobile.",
+      "Binaryrush has nine judged problems and explicit code-execution limits. Stack Rush has unit, rendered-HTML and multiplayer tests, including a reported 8/8 two-client suite.",
     boundary:
-      "Binaryrush and Truco are works in progress; their source is not public. Truco’s Vercel AI practice works, but online rooms showed a connection error during review; implemented accounts, multiplayer and optional media are not yet launch-ready. Stack Rush remains a live prototype. Production-scale load and abuse resistance have not been validated.",
+      "Binaryrush is a work in progress with unpublished source. Stack Rush remains a live prototype. Production-scale load and abuse resistance have not been validated.",
     decisions: [
       {
         title: "Let the server settle the race",
@@ -63,21 +61,6 @@ export const projectStories = {
         title: "Keep answers private during competition",
         detail:
           "Binaryrush keeps judging tests on the server and opponent source hidden until completion. Its current judge supports JavaScript and a deliberately small problem set.",
-      },
-      {
-        title: "Make Truco’s rules explicit",
-        detail:
-          "Truco’s shared rules engine powers local practice and the server-side room implementation. It validates turns and projects only each player’s private hand. Table presets expose the vira, Perico/Perica, bidding, Flor, and parda rules; the competitive implementation uses fixed rules and separate 1v1/2v2 Elo.",
-      },
-      {
-        title: "Let practice explain the table",
-        detail:
-          "Truquito has three rule-based difficulty levels and cannot inspect the rival’s hand. Explanations, pause, undo/redo, and locally saved practice let players explore decisions without affecting competitive rankings.",
-      },
-      {
-        title: "Validate identity and concurrent moves",
-        detail:
-          "Truco uses Next.js, server-verified Supabase identities and parameterized PostgreSQL queries. Room revisions and command IDs guard concurrent or repeated moves; clients poll for updates. This is separate from the older GPT Sites/D1 build, with hosted online services still in progress.",
       },
     ],
   },
@@ -234,6 +217,38 @@ export const projectStories = {
         title: "Preserve the limits of the evidence",
         detail:
           "SkipList’s grading report survives but the submitted implementation does not. Any new public visualizer is a clearly labeled clean-room revisit, not a recovered original.",
+      },
+    ],
+  },
+  "truco-venezolano": {
+    stack: ["Next.js", "React", "TypeScript", "Supabase", "PostgreSQL"],
+    challenge:
+      "Translate Venezuelan Truco’s card hierarchy, bidding and team rules into a browser game that can explain a decision in practice and validate it in multiplayer.",
+    approach: [
+      "Developed server-authoritative 1v1/2v2 gameplay and public/private rooms with AI-assisted engineering.",
+      "Built authenticated APIs and persistent data for Elo rankings, player profiles, friendships, chat and match history.",
+      "Designed a responsive card interface with drag-and-drop, contextual game controls and dark mode.",
+      "Built guided practice against rule-based Truquito, with three difficulty levels, explanations, pause and undo/redo.",
+    ],
+    proof:
+      "The implementation includes game-rules tests. Vercel practice was played through a completed trick and captured on desktop and mobile; the screenshots show the real app.",
+    boundary:
+      "Work in progress · AI-assisted development. AI practice is available on Vercel; online multiplayer and social features are still being developed. Source remains private.",
+    decisions: [
+      {
+        title: "Make the rules explicit",
+        detail:
+          "A shared rules engine powers local practice and the server-side room implementation. It validates turns and projects only each player’s private hand. Table presets expose the vira, Perico/Perica, bidding, Flor and parda rules; competitive play uses fixed rules and separate 1v1/2v2 Elo.",
+      },
+      {
+        title: "Let practice explain the table",
+        detail:
+          "Truquito has three rule-based difficulty levels and cannot inspect the rival’s hand. Explanations, pause, undo/redo and locally saved practice let players explore decisions without affecting competitive rankings.",
+      },
+      {
+        title: "Validate identity and concurrent moves",
+        detail:
+          "Next.js APIs verify Supabase identities and use parameterized PostgreSQL queries. Room revisions and command IDs guard concurrent or repeated moves; clients poll for updates. The current Vercel implementation is separate from the older GPT Sites/D1 build.",
       },
     ],
   },

@@ -19,9 +19,9 @@ test("reduced-motion preference takes precedence over saved and linked Studio vi
   assert.equal(resolveInitialView({ reducedMotion: true, explicitView: "studio", savedView: "studio" }), "index");
 });
 
-test("both portfolio views share seven unique projects with complete stories", () => {
-  assert.equal(primaryProjects.length, 7);
-  assert.equal(new Set(primaryProjects.map(({ id }) => id)).size, 7);
+test("both portfolio views share eight unique projects with complete stories", () => {
+  assert.equal(primaryProjects.length, 8);
+  assert.equal(new Set(primaryProjects.map(({ id }) => id)).size, 8);
   assert.deepEqual(Object.keys(projectStories).sort(), Object.keys(projectById).sort());
   for (const project of primaryProjects) {
     assert.ok(project.role && project.date && project.status && project.station);
@@ -78,7 +78,7 @@ test("storefront and game carousels use current artifacts and publish supplied d
   assert.equal(games.links.find((link) => link.label === "Play Stack Rush").href, "https://stack-rush-pi.vercel.app/");
   assert.match(games.summary, /Codex.*GPT Sites/);
   for (const url of ["https://ghost-prototype-mu.vercel.app/", "https://koe-usa-website.vercel.app/", "https://truco-ve.vercel.app/", "https://binaryrush.gga.chatgpt.site/"]) {
-    assert.ok([...storefronts.links, ...games.links].some((link) => link.href === url));
+    assert.ok([...storefronts.links, ...games.links, ...projectById["truco-venezolano"].links].some((link) => link.href === url));
   }
   assert.ok(!games.links.some((link) => link.href.startsWith("https://github.com/Giampiga/truco-venezolano")));
 });
@@ -93,14 +93,16 @@ test("the requested archive is retained and source links are public URL shapes",
 test("Games presents four projects with explicit WIP labels and shared evidence", async () => {
   assert.deepEqual(games.map((game) => game.id), ["truco-venezolano", "stack-rush", "binaryrush", "circle-accuracy"]);
   const lab = projectById["realtime-multiplayer-lab"];
+  const truco = projectById["truco-venezolano"];
   for (const game of games) {
     assert.ok(game.date && game.description && game.access && game.stack.length);
   }
   for (const game of games.slice(0, 3)) {
     assert.equal(game.status, game.id === "stack-rush" ? "Live prototype" : "Work in progress");
-    assert.ok(lab.images.includes(game.image));
+    const owner = game.id === truco.id ? truco : lab;
+    assert.ok(owner.images.includes(game.image));
     await access(new URL(`../public${game.image.src}`, import.meta.url));
-    for (const link of game.links) assert.ok(lab.links.includes(link));
+    for (const link of game.links) assert.ok(owner.links.includes(link));
   }
   assert.match(games[0].description, /full-stack.*server-authoritative.*rule-based/);
   assert.match(games[0].detail, /Elo rankings, profiles, friendships, chat and match history/);
@@ -112,7 +114,8 @@ test("Games presents four projects with explicit WIP labels and shared evidence"
   assert.equal(games[0].images.length, 4);
   assert.equal(games[0].image, games[0].images[0]);
   for (const image of games[0].images) {
-    assert.ok(image.alt && image.label && lab.images.includes(image));
+    assert.ok(image.alt && image.label && truco.images.includes(image));
+    assert.ok(!lab.images.includes(image));
     for (const directory of ["public", "dist/client"]) await access(new URL(`../${directory}${image.src}`, import.meta.url));
   }
   assert.match(games[2].detail, /Codex.*GPT Sites/);

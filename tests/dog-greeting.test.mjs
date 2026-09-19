@@ -1,0 +1,64 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { createDogBehavior } from "../src/useWanderingDog.js";
+import { dogHouseGraph } from "../src/studio-navigation.js";
+
+test("petting waits for a safe node, repeats safely, resumes and cleans up", (t) => {
+  const previousWindow = globalThis.window;
+  globalThis.window = globalThis;
+  t.after(() => { globalThis.window = previousWindow; });
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  t.mock.method(Math, "random", () => 0);
+  let state = { position: dogHouseGraph.rugNorthWest };
+  const route = { current: "rugNorthWest", previous: null };
+  const map = { current: { getBoundingClientRect: () => ({ width: 900, height: 600 }) } };
+  const dog = createDogBehavior("left", map, true, route, (patch) => { state = { ...state, ...patch }; });
+  t.mock.timers.tick(500);
+  t.mock.timers.tick(100);
+  assert.equal(state.walking, true);
+  const safeDestination = state.position;
+  dog.pet();
+  dog.pet();
+  assert.equal(state.walking, true, "petting cannot cancel a furniture-safe segment midway");
+  assert.equal(state.isGreeting, false);
+  t.mock.timers.tick(state.duration);
+  assert.equal(state.walking, false);
+  assert.equal(state.isGreeting, true);
+  assert.equal(state.activity, "greeting");
+  assert.equal(state.position, safeDestination);
+  t.mock.timers.tick(1200);
+  dog.pet();
+  t.mock.timers.tick(1200);
+  assert.equal(state.isGreeting, true, "a repeated pet renews the same pause");
+  t.mock.timers.tick(1000);
+  assert.equal(state.isGreeting, false);
+  t.mock.timers.tick(500);
+  t.mock.timers.tick(100);
+  assert.equal(state.walking, true, "independent roaming resumes");
+  dog.dispose();
+  const disposedState = state;
+  t.mock.timers.tick(10000);
+  dog.pet();
+  assert.equal(state, disposedState, "unmount cancels every callback and pet handler");
+});
+
+test("mobile and reduced motion greetings stay still without a hidden roaming loop", (t) => {
+  const previousWindow = globalThis.window;
+  globalThis.window = globalThis;
+  t.after(() => { globalThis.window = previousWindow; });
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  const route = { current: "rugSouthWest", previous: null };
+  let state = { position: dogHouseGraph.rugSouthWest };
+  const dog = createDogBehavior("right", { current: null }, false, route,
+    (patch) => { state = { ...state, ...patch }; });
+  dog.pet();
+  assert.equal(state.isGreeting, true);
+  assert.equal(state.walking, false);
+  t.mock.timers.tick(2200);
+  assert.equal(state.isGreeting, false);
+  const restedState = state;
+  t.mock.timers.tick(60000);
+  assert.equal(state, restedState);
+  assert.equal(route.current, "rugSouthWest");
+  dog.dispose();
+});

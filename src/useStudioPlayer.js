@@ -7,16 +7,16 @@ const movementKeys = {
 };
 const isControl = (target) => target?.closest?.("a, button, input, textarea, select, [contenteditable='true']");
 
-export function useStudioPlayer({ mapRef, canWalk, routeTo, reducedMotion }) {
+export function useStudioPlayer({ mapRef, canWalk, routeTo, reducedMotion, enabled = true }) {
   const stateRef = useRef(createPlayerState());
   const [state, setState] = useState(stateRef.current);
   const keysRef = useRef(new Map());
   const animationRef = useRef(0);
   const lastTickRef = useRef(null);
   const aspectRef = useRef(0.78);
-  const configRef = useRef({ canWalk, routeTo, reducedMotion });
+  const configRef = useRef({ canWalk, routeTo, reducedMotion, enabled });
   const arrivalFacingRef = useRef(null);
-  configRef.current = { canWalk, routeTo, reducedMotion };
+  configRef.current = { canWalk, routeTo, reducedMotion, enabled };
 
   const publish = (next) => { stateRef.current = next; setState(next); };
   const stop = () => {
@@ -73,7 +73,7 @@ export function useStudioPlayer({ mapRef, canWalk, routeTo, reducedMotion }) {
     const down = (event) => {
       const key = event.key.toLowerCase();
       const direction = movementKeys[key];
-      if (!direction || event.altKey || event.ctrlKey || event.metaKey || isControl(event.target) || document.querySelector("dialog[open]")) return;
+      if (!configRef.current.enabled || !direction || event.altKey || event.ctrlKey || event.metaKey || isControl(event.target) || document.querySelector("dialog[open]")) return;
       if (!mapRef.current?.getBoundingClientRect().width) return;
       event.preventDefault();
       if (keysRef.current.has(key)) return; // Ignore operating-system repeats.
@@ -113,9 +113,10 @@ export function useStudioPlayer({ mapRef, canWalk, routeTo, reducedMotion }) {
     };
   }, [mapRef]);
 
-  useEffect(() => { if (reducedMotion) stop(); }, [reducedMotion]);
+  useEffect(() => { if (reducedMotion || !enabled) stop(); }, [reducedMotion, enabled]);
 
   const walkTo = (destination) => {
+    if (!configRef.current.enabled) return;
     if (lastTickRef.current !== null) advanceTo(performance.now());
     keysRef.current.clear();
     const route = configRef.current.routeTo(stateRef.current.position, destination);

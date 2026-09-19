@@ -11,7 +11,7 @@ const introductions = {
     proof: "Two distinct brands share one reusable ordering foundation.",
   },
   "realtime-multiplayer-lab": {
-    description: "Developed three browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
+    description: "Developed two browser games with AI assistance, connecting player interactions to server-owned rules and shared state.",
     proof: "Stack Rush’s two-client tests cover competitive play and reconnects.",
   },
   arkollab: {
@@ -110,8 +110,9 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
                 <p>{gameIntroductions[game.id]}</p>
                 {game.status === "Work in progress" && <p className="game-entry__access">{game.access}</p>}
                 <ProjectLinks links={game.links} />
+                {projectById[game.id] && <a className="text-action" href={`#project=${game.id}`} onClick={(event) => { event.preventDefault(); onOpen(projectById[game.id]); }}>Read case study <ArrowRight size={18} aria-hidden="true" /></a>}
               </div>
-              <details className="game-entry__details"><summary>Build details<span className="sr-only"> for {game.title}</span></summary><p className="work-feature__role">{game.role ?? "Product direction · AI-assisted engineering"} · {game.date}</p><p>{game.description}</p><p>{game.detail}</p><p className="work-stack">{game.stack.join(" / ")}</p>{game.images?.length > 0 && <ProjectCarousel project={{ ...game, shortTitle: game.title }} />}{projectById[game.id] && <a className="text-action" href={`#project=${game.id}`} onClick={(event) => { event.preventDefault(); onOpen(projectById[game.id]); }}>Read case study <ArrowRight size={18} aria-hidden="true" /></a>}</details>
+              <details className="game-entry__details"><summary>Build details<span className="sr-only"> for {game.title}</span></summary><p className="work-feature__role">{game.role ?? "Product direction · AI-assisted engineering"} · {game.date}</p><p>{game.description}</p><p>{game.detail}</p><p className="work-stack">{game.stack.join(" / ")}</p>{game.images?.length > 0 && <ProjectCarousel project={{ ...game, shortTitle: game.title }} />}</details>
             </article>
           ))}
         </div>
@@ -120,7 +121,7 @@ export function RecruiterPortfolio({ selectedId, onOpen, onStudio, archive, cabi
 
       <section className="engineering-work" aria-labelledby="engineering-heading">
         <div className="section-heading"><h2 id="engineering-heading">Under the hood<span>06—07</span></h2><p>Backend systems & computer-science foundations.</p></div>
-        <div className="engineering-list">{primaryProjects.slice(5).map((project) => (
+        <div className="engineering-list">{[projectById["revature-architectures"], projectById["algorithms-lab"]].map((project) => (
           <article className="engineering-entry" key={project.id}><a href={`#project=${project.id}`} onClick={(event) => { event.preventDefault(); onOpen(project); }}>
             <span className="engineering-number">{project.number}</span>
             <div><h3>{project.title}</h3><p className="work-feature__role">{project.role}</p><span className="work-stack">{projectStories[project.id].stack.slice(0, 4).join(" / ")}</span></div>

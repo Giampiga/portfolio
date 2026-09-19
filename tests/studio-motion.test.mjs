@@ -1,74 +1,95 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { advancePlayer, createPlayerState, integrateSpeed, PLAYER_SPEED, PLAYER_ACCELERATION, PLAYER_BRAKING, PLAYER_TURN_SPEED, roomDistance, walkingFrame, WALK_FRAME_DISTANCE } from "../src/studio-motion.js";
-import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches, walkableFloor } from "../src/studio-navigation.js";
+import { canPlayerWalk, dogHouseGraph, isClearSegment, routePlayerTo, stationApproaches, walkableFloor } from "../src/studio-navigation.js";
 import { primaryProjects } from "../src/projects.js";
-import { personFrames, PERSON_WIDTH, SIDE_WALK_DISTANCE, sideLegPose, northLegPose } from "../src/sprite-frames.js";
+import { personFrames, PERSON_WIDTH, SIDE_WALK_DISTANCE, authoredWalkPose, DOG_GAIT_FRAMES, DOG_SIDE_STEP_DISTANCE, dogSidePose } from "../src/sprite-frames.js";
 
-test("side walk keeps intact legs anchored and planted shoes level", () => {
-  const rotate = (point, joint) => {
-    const r = joint.angle * Math.PI / 180;
-    const dx = (point[0] - joint.origin[0]) * joint.scale, dy = (point[1] - joint.origin[1]) * joint.scale;
-    return [joint.origin[0] + joint.x + dx * Math.cos(r) - dy * Math.sin(r), joint.origin[1] + joint.y + dx * Math.sin(r) + dy * Math.cos(r)];
-  };
+test("dog side paws stay planted through stance, lift on recovery and wrap without an idle twitch", () => {
+  assert.equal(DOG_GAIT_FRAMES.length, 8);
+  assert.ok(DOG_GAIT_FRAMES.every((frame) => [0, 1, 2].includes(frame)));
+  for (let step = 0; step < 8; step++) {
+    const pose = dogSidePose(step, true);
+    assert.equal(pose.lift > 0, step > 4);
+    if (step > 0 && step <= 4) {
+      assert.equal(pose.travel - dogSidePose(step - 1, true).travel, 11);
+      approximately(-step * DOG_SIDE_STEP_DISTANCE + pose.travel / 128 * 4.7, dogSidePose(0, true).travel / 128 * 4.7);
+    }
+    for (const offset of [0, 2, 4, 6]) {
+      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step + offset, true));
+      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step + 8, true, offset));
+      assert.deepEqual(dogSidePose(step, true, offset), dogSidePose(step - 8, true, offset));
+      assert.deepEqual(dogSidePose(step, false, offset), { travel: 0, lift: 0 });
+    }
+  }
+});
+
+test("authored walk keeps contact feet planted, opposite recovery and a level foot anchor", () => {
   const samePoint = (a, b) => a.forEach((value, i) => approximately(value, b[i]));
   for (const far of [false, true]) {
-    assert.deepEqual(sideLegPose(0, false, far), sideLegPose(50, false, far));
-    samePoint(sideLegPose(0, true, far).foot, sideLegPose(SIDE_WALK_DISTANCE, true, far).foot);
-    const sourceHip = [63, 194], sourceAnkle = [46, 258], sourceFoot = [46, 272];
+    for (const property of ["hip", "knee", "ankle"]) {
+      samePoint(authoredWalkPose(0, false, far)[property], authoredWalkPose(50, false, far)[property]);
+      samePoint(authoredWalkPose(0, true, far)[property], authoredWalkPose(SIDE_WALK_DISTANCE, true, far)[property]);
+    }
     for (const stride of [0, 0.25, 0.5, 1]) {
       for (let distance = 0; distance < SIDE_WALK_DISTANCE; distance += 0.04) {
-        const pose = sideLegPose(distance, true, far, stride);
-        samePoint(rotate(sourceHip, pose.leg), pose.hip);
-        samePoint(rotate(sourceAnkle, pose.leg), pose.ankle);
-        samePoint(rotate(sourceAnkle, pose.shoe), pose.ankle);
-        samePoint(rotate(sourceFoot, pose.shoe), pose.foot);
-        samePoint(rotate([24, 272], pose.shoe), [pose.foot[0] - 22, pose.foot[1]]);
-        assert.equal(pose.shoe.angle, 0);
-        assert.equal(pose.shoe.scale, 1);
-        assert.ok(Math.abs(pose.leg.angle) < 40);
-        assert.ok(pose.leg.scale >= 0.7 && pose.leg.scale <= 1.06);
-        approximately(pose.hip[1], sourceHip[1] + pose.bodyY);
-        assert.ok(pose.foot[1] <= sourceFoot[1] - (far ? 3 : 0) + 1e-8);
+        const pose = authoredWalkPose(distance, true, far, stride);
+        assert.equal(pose.hip[1], 190);
+        assert.ok(pose.knee[1] >= 216 && pose.knee[1] <= 228);
+        assert.ok(pose.ankle[1] + 14 <= 272 - (far ? 3 : 0));
+        assert.ok(pose.lift >= 0 && pose.lift <= 12);
+        assert.ok([3, 4, 5].includes(pose.torsoFrame));
+        approximately(pose.lift, authoredWalkPose(distance + SIDE_WALK_DISTANCE / 2, true, !far, stride).lift);
       }
     }
     const start = (far ? 0.6 : 0.1) * SIDE_WALK_DISTANCE;
     const end = start + SIDE_WALK_DISTANCE * 0.2;
-    const plantedX = (distance) => -distance + sideLegPose(distance, true, far).foot[0] / 128 * PERSON_WIDTH;
+    const plantedX = (distance) => -distance + authoredWalkPose(distance, true, far).ankle[0] / 128 * PERSON_WIDTH;
     approximately(plantedX(start), plantedX(end));
-    assert.deepEqual(sideLegPose(2, true, far, 0), sideLegPose(2, false, far));
+    for (const contact of [0, 0.5, 1]) {
+      const distance = contact * SIDE_WALK_DISTANCE, epsilon = 0.00001;
+      const before = authoredWalkPose(distance - epsilon, true, far).ankle;
+      const at = authoredWalkPose(distance, true, far).ankle;
+      const after = authoredWalkPose(distance + epsilon, true, far).ankle;
+      for (let axis = 0; axis < 2; axis += 1) assert.ok(Math.abs((at[axis] - before[axis]) / epsilon - (after[axis] - at[axis]) / epsilon) < 0.01);
+    }
+    assert.deepEqual(authoredWalkPose(2, true, far, 0), authoredWalkPose(2, false, far));
   }
-  approximately(sideLegPose(0, true).foot[1], 272);
-  assert.ok(sideLegPose(SIDE_WALK_DISTANCE * 0.75, true).foot[1] < 272);
-  approximately(sideLegPose(SIDE_WALK_DISTANCE * 0.75, true, true).foot[1], 269);
+  approximately(authoredWalkPose(0, true).ankle[1] + 14, 272);
+  assert.ok(authoredWalkPose(SIDE_WALK_DISTANCE * 0.75, true).ankle[1] + 14 < 272);
+  approximately(authoredWalkPose(SIDE_WALK_DISTANCE * 0.75, true, true).ankle[1] + 14, 269);
 });
 
-test("north walk alternates equal foot lifts without changing the idle pose", () => {
-  for (const right of [false, true]) {
-    assert.deepEqual(northLegPose(0, false, right), { scaleY: 1, lift: 0 });
-    assert.deepEqual(northLegPose(50, false, right), northLegPose(0, false, right));
-    assert.deepEqual(northLegPose(2, true, right, 0), northLegPose(2, false, right));
-    for (let distance = 0; distance < SIDE_WALK_DISTANCE; distance += 0.04) {
-      const pose = northLegPose(distance, true, right);
-      const opposite = northLegPose(distance + SIDE_WALK_DISTANCE / 2, true, !right);
-      approximately(pose.lift, opposite.lift);
-      approximately(pose.scaleY, opposite.scaleY);
-      assert.ok(pose.scaleY >= 0.75 && pose.scaleY <= 1);
-      assert.ok(pose.lift >= 0 && pose.lift <= 20);
-      approximately(northLegPose(distance, true, right, 0.5).lift, pose.lift / 2);
+test("jacket poses oppose the leg and passing knees bend without stretching the sprite", () => {
+  const contact = authoredWalkPose(0, true);
+  const reverse = authoredWalkPose(SIDE_WALK_DISTANCE / 2, true);
+  const passing = authoredWalkPose(SIDE_WALK_DISTANCE * 0.75, true);
+  assert.equal(contact.torsoFrame, 3);
+  assert.equal(reverse.torsoFrame, 5);
+  assert.ok(contact.ankle[0] < contact.hip[0] && contact.arm > 0);
+  assert.ok(reverse.ankle[0] > reverse.hip[0] && reverse.arm < 0);
+  assert.ok(passing.knee[1] < contact.knee[1]);
+  assert.equal(authoredWalkPose(2, false).torsoFrame, 3);
+});
+
+test("both dogs can explore the loft and every route clears furniture in both directions", () => {
+  const reached = new Set(), pending = ["rugNorthWest"];
+  while (pending.length) {
+    const name = pending.pop();
+    if (reached.has(name)) continue;
+    reached.add(name);
+    const from = dogHouseGraph[name];
+    for (const link of from.links) {
+      const to = dogHouseGraph[link];
+      assert.ok(to?.links.includes(name), `${name} ↔ ${link}`);
+      for (const [dx, dy] of [[0, 0], [-1, -1], [-1, 1], [1, -1], [1, 1]]) {
+        assert.ok(isClearSegment({ x: from.x + dx, y: from.y + dy }, { x: to.x + dx, y: to.y + dy }), `${name} → ${link}`);
+      }
+      pending.push(link);
     }
   }
-  approximately(northLegPose(SIDE_WALK_DISTANCE / 4, true).lift, 20);
-  approximately(northLegPose(SIDE_WALK_DISTANCE / 4, true, true).lift, 0);
-  approximately(northLegPose(SIDE_WALK_DISTANCE * 3 / 4, true, true).lift, 20);
-});
-
-test("the dogs' room-to-room corridor clears the furniture in both directions", () => {
-  const corridor = [{ x: 56, y: 48.5 }, { x: 56, y: 58.5 }, { x: 65, y: 58.5 }, { x: 65, y: 49 }, { x: 68, y: 49 }];
-  for (let i = 1; i < corridor.length; i += 1) {
-    assert.ok(isClearSegment(corridor[i - 1], corridor[i]));
-    assert.ok(isClearSegment(corridor[i], corridor[i - 1]));
-  }
+  assert.equal(reached.size, Object.keys(dogHouseGraph).length);
+  assert.ok(reached.has("rugSouthWest") && reached.has("workshopSouthEast"));
 });
 
 const approximately = (actual, expected) => assert.ok(Math.abs(actual - expected) < 0.00001, `${actual} != ${expected}`);
@@ -120,7 +141,7 @@ test("long suspended frames cannot teleport through the room", () => {
   assert.ok(state.distance <= PLAYER_SPEED * 0.05);
 });
 
-test("acceleration builds over roughly 110ms instead of jumping to full speed", () => {
+test("acceleration builds over roughly 100ms instead of jumping to full speed", () => {
   let state = createPlayerState();
   const speeds = [];
   for (let i = 0; i < 8; i += 1) {
@@ -225,8 +246,16 @@ test("manual movement interrupts travel, and an arbitrary floor position can rej
 });
 
 test("furniture and outside-room points are not walkable", () => {
-  for (const point of [{ x: 42, y: 41 }, { x: 45, y: 65 }, { x: 76, y: 62 }, { x: 87, y: 58 }, { x: 70, y: 20 }, { x: 0, y: 0 }, { x: 31, y: 65 }, { x: 29, y: 81 }, { x: 20, y: 89 }, { x: 66.5, y: 59 }, { x: 80, y: 82 }, { x: 57, y: 90.5 }]) assert.equal(canPlayerWalk(point), false, JSON.stringify(point));
-  assert.deepEqual(routePlayerTo(createPlayerState().position, { x: 42, y: 41 }), []);
+  for (const point of [{ x: 19, y: 23 }, { x: 42, y: 23 }, { x: 18, y: 43 }, { x: 17, y: 55 }, { x: 16, y: 81 }, { x: 42, y: 82 }, { x: 75, y: 24 }, { x: 90, y: 23 }, { x: 93, y: 50 }, { x: 81, y: 82 }, { x: 62, y: 28 }, { x: 62, y: 75 }, { x: 0, y: 0 }, { x: 97, y: 97 }]) assert.equal(canPlayerWalk(point), false, JSON.stringify(point));
+  assert.deepEqual(routePlayerTo(createPlayerState().position, { x: 18, y: 43 }), []);
+});
+
+test("the open living floor and wide workshop passage have no invisible corridor walls", () => {
+  for (const [left, top, right, bottom] of [[31.5, 35, 58, 68], [58, 37, 65, 61], [65, 35, 89, 67]]) {
+    for (let x = left; x <= right; x += 1) {
+      for (let y = top; y <= bottom; y += 1) assert.ok(canPlayerWalk({ x, y }), `${x}, ${y}`);
+    }
+  }
 });
 
 test("all existing person frames have a consistent 272px foot anchor and isolated source crop", () => {

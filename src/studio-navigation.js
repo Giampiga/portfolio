@@ -2,30 +2,59 @@ import { roomDistance } from "./studio-motion.js";
 
 // Ground contact coordinates, separate from labels pinned onto the furniture.
 export const stationApproaches = {
-  "restaurant-menu-pos": { x: 26, y: 46, facing: "left" },
-  "realtime-multiplayer-lab": { x: 26, y: 70, facing: "left" },
-  arkollab: { x: 56, y: 65, facing: "left" },
-  "cognitive-load-mvp": { x: 56, y: 85, facing: "left" },
-  "circle-accuracy": { x: 72, y: 46.5, facing: "up" },
-  "revature-architectures": { x: 81.25, y: 64, facing: "left" },
-  "algorithms-lab": { x: 81.25, y: 58, facing: "right" },
+  "restaurant-menu-pos": { x: 19, y: 34, facing: "up" },
+  "realtime-multiplayer-lab": { x: 16, y: 64, facing: "down" },
+  arkollab: { x: 42, y: 34, facing: "up" },
+  "cognitive-load-mvp": { x: 42, y: 67, facing: "down" },
+  "circle-accuracy": { x: 75, y: 37, facing: "up" },
+  "revature-architectures": { x: 81, y: 67, facing: "down" },
+  "algorithms-lab": { x: 90, y: 35, facing: "up" },
+  "truco-venezolano": { x: 29, y: 58, facing: "left" },
 };
 
-// Connected floor strips around the existing, painted furniture. Bounds are
-// for feet, not the full upright sprite (which can overlap objects behind it).
+// Open loft floor plus the aisles around the furniture. Bounds are for feet,
+// not the upright sprite, which naturally overlaps objects behind it.
 export const walkableFloor = [
-  [25, 29, 27.5, 85],
-  [26, 28.5, 56, 32],
-  [26, 49.5, 56, 54],
-  [51, 29, 58.2, 51],
-  [53, 49.5, 58.2, 87],
-  [56, 57, 65.5, 60.3],
-  [64.4, 46.5, 81.25, 52],
-  [64.4, 49, 65.5, 60.3],
-  [79.5, 49, 83, 76],
-  [65.5, 75, 81.25, 76],
-  [65.5, 75, 76, 83],
+  [7, 33, 58, 35],
+  [28, 33, 58, 69],
+  [26, 51, 58, 62],
+  [7, 62, 58, 66],
+  [27, 64, 30, 93],
+  [7, 91.5, 58, 93],
+  [58, 37, 65, 61],
+  [65, 35, 90, 67],
+  [90, 35, 94, 43],
+  [90, 59, 94, 67],
 ];
+
+// Both dogs share an open, connected house, but choose their own routes and
+// pauses. Keep their bodies farther from furniture than player foot contacts.
+export const dogHouseGraph = {
+  rugNorthWest: { x: 34, y: 40, links: ["rugNorth", "rugWest", "loungeNorth"] },
+  rugNorth: { x: 45, y: 40, links: ["rugNorthWest", "rugNorthEast", "rugCenter"] },
+  rugNorthEast: { x: 55, y: 40, links: ["rugNorth", "rugEast"] },
+  rugWest: { x: 34, y: 49, links: ["rugNorthWest", "rugSouthWest", "rugCenter", "loungeEast"] },
+  rugCenter: { x: 45, y: 49, links: ["rugNorth", "rugWest", "rugEast", "rugSouth"] },
+  rugEast: { x: 55, y: 49, links: ["rugNorthEast", "rugCenter", "rugSouthEast", "doorwayWest"] },
+  rugSouthWest: { x: 34, y: 58, links: ["rugWest", "rugSouth"] },
+  rugSouth: { x: 45, y: 58, links: ["rugSouthWest", "rugCenter", "rugSouthEast"] },
+  rugSouthEast: { x: 55, y: 58, links: ["rugSouth", "rugEast"] },
+  loungeNorth: { x: 29, y: 40, links: ["rugNorthWest", "loungeEast"] },
+  loungeEast: { x: 29, y: 49, links: ["loungeNorth", "rugWest", "loungeSouth"] },
+  loungeSouth: { x: 29, y: 64, links: ["loungeEast", "loungeTurn"] },
+  loungeTurn: { x: 16, y: 64, links: ["loungeSouth"] },
+  doorwayWest: { x: 58, y: 49, links: ["rugEast", "doorwayEast"] },
+  doorwayEast: { x: 65, y: 49, links: ["doorwayWest", "workshopEntry"] },
+  workshopEntry: { x: 71, y: 49, links: ["doorwayEast", "workshopNorthWest", "workshopCenter", "workshopSouthWest"] },
+  workshopNorthWest: { x: 71, y: 39, links: ["workshopEntry", "workshopNorth"] },
+  workshopNorth: { x: 80, y: 39, links: ["workshopNorthWest", "workshopNorthEast", "workshopCenter"] },
+  workshopNorthEast: { x: 88, y: 39, links: ["workshopNorth", "workshopEast"] },
+  workshopCenter: { x: 80, y: 49, links: ["workshopEntry", "workshopNorth", "workshopEast", "workshopSouth"] },
+  workshopEast: { x: 88, y: 49, links: ["workshopNorthEast", "workshopCenter", "workshopSouthEast"] },
+  workshopSouthWest: { x: 71, y: 63, links: ["workshopEntry", "workshopSouth"] },
+  workshopSouth: { x: 80, y: 63, links: ["workshopSouthWest", "workshopCenter", "workshopSouthEast"] },
+  workshopSouthEast: { x: 88, y: 63, links: ["workshopSouth", "workshopEast"] },
+};
 
 export function canPlayerWalk({ x, y }) {
   const epsilon = 0.0000001; // Keep floating-point interpolation on a floor edge valid.

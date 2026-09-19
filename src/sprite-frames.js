@@ -7,36 +7,60 @@ export const personFrames = [
   { x: 1156, y: 132 }, { x: 1280, y: 135 }, { x: 1401, y: 135 },
 ];
 
-export const SIDE_WALK_DISTANCE = 4.2;
+export const SIDE_WALK_DISTANCE = 5.2;
 export const PERSON_WIDTH = 5.5; // Room-width percent; also sets the rendered sprite width.
 
-// Keep each trouser leg intact; cutting this small atlas at the knee leaves
-// visible seams. A separate shoe keeps the sole level throughout the step.
-export function sideLegPose(distance, walking, far = false, stride = 1) {
-  const amount = walking ? Math.max(0, Math.min(1, stride)) : 0;
-  const cycle = ((distance / SIDE_WALK_DISTANCE) % 1 + 1) % 1;
-  const phase = (cycle + (far ? 0.5 : 0)) % 1;
-  const swing = Math.max(0, (phase - 0.5) * 2);
-  const sourceHip = [63, 194];
-  const sourceAnkle = [46, 258];
-  const bodyY = amount * 2 * Math.sin(cycle * Math.PI * 2) ** 2;
-  const hip = [far ? 72 : 63, sourceHip[1] + bodyY];
-  // Match the ground covered during half a cycle to avoid skating at full pace.
-  const reach = SIDE_WALK_DISTANCE * 128 / PERSON_WIDTH / 4;
-  const travel = phase < 0.5 ? phase * 4 - 1 : Math.cos(swing * Math.PI);
-  const ankle = [hip[0] + (far ? 3 : -3) + amount * reach * travel, sourceAnkle[1] - (far ? 3 : 0) - amount * 12 * Math.sin(swing * Math.PI) ** 2];
-  const dx = ankle[0] - hip[0], dy = ankle[1] - hip[1];
-  const leg = { origin: sourceHip, x: hip[0] - sourceHip[0], y: bodyY,
-    angle: (Math.atan2(dy, dx) - Math.atan2(64, -17)) * 180 / Math.PI,
-    scale: Math.hypot(dx, dy) / Math.hypot(17, 64) };
-  return { bodyY, hip, ankle, foot: [ankle[0], ankle[1] + 14], leg, shoe: { origin: sourceAnkle, x: ankle[0] - sourceAnkle[0], y: ankle[1] - sourceAnkle[1], angle: 0, scale: 1 } };
+// Step fabric and fur contours on the same source-pixel grid as the atlas.
+export const pixelContour = (values) => {
+  const corners = values.map((point) => point.map((value) => Math.round(value / 4) * 4));
+  return corners.flatMap(([x, y], index) => {
+    const [endX, endY] = corners[(index + 1) % corners.length];
+    const steps = Math.max(1, Math.abs(endX - x) / 4, Math.abs(endY - y) / 4);
+    return Array.from({ length: steps }, (_, step) => {
+      const nextX = x + Math.round((endX - x) * (step + 1) / steps / 4) * 4;
+      const nextY = y + Math.round((endY - y) * (step + 1) / steps / 4) * 4;
+      const previousY = y + Math.round((endY - y) * step / steps / 4) * 4;
+      return `${nextX},${previousY} ${nextX},${nextY}`;
+    });
+  }).join(" ");
+};
+
+export const DOG_GAIT_FRAMES = [0, 0, 1, 1, 2, 2, 1, 1];
+export const DOG_SIDE_STEP_DISTANCE = 44 / 128 * 4.7 / 4;
+export function dogSidePose(step, walking, offset = 0) {
+  const phase = ((step + offset) % 8 + 8) % 8;
+  return {
+    travel: walking ? [-22, -11, 0, 11, 22, 16, 0, -16][phase] : 0,
+    lift: walking ? [0, 0, 0, 0, 0, 8, 12, 8][phase] : 0,
+  };
 }
 
-// The rear atlas has two left-foot contacts, not a neutral middle frame.
-// A fixed torso and mirrored planted-leg pixels give both feet an equal turn.
-export function northLegPose(distance, walking, right = false, stride = 1) {
+// Contact, recoil, passing and reach. The lower body is drawn in each pose,
+// rather than stretching one diagonal trouser crop through the whole cycle.
+const SIDE_KNEES = [[-13, 0], [-9, 2], [1, 0], [13, -2], [16, -2], [17, -6], [1, -10], [-17, -4]];
+const samplePose = (poses, cycle) => {
+  const offset = cycle * poses.length;
+  const index = Math.floor(offset), mix = offset - index;
+  return poses[index].map((value, axis) => value + (poses[(index + 1) % poses.length][axis] - value) * mix);
+};
+
+export function authoredWalkPose(distance, walking, opposite = false, stride = 1) {
   const amount = walking ? Math.max(0, Math.min(1, stride)) : 0;
-  const phase = distance / SIDE_WALK_DISTANCE * Math.PI * 2 + (right ? Math.PI : 0);
-  const lift = amount * 20 * Math.max(0, Math.sin(phase)) ** 2;
-  return { scaleY: 1 - lift / 82, lift };
+  const cycle = ((distance / SIDE_WALK_DISTANCE) % 1 + 1) % 1;
+  const phase = (cycle + (opposite ? 0.5 : 0)) % 1;
+  const swing = Math.max(0, (phase - 0.5) * 2);
+  const travel = phase < 0.5 ? phase * 4 - 1 : 8 * swing ** 3 - 12 * swing ** 2 + 2 * swing + 1;
+  const reach = SIDE_WALK_DISTANCE * 128 / PERSON_WIDTH / 4;
+  const [kneeX, kneeY] = samplePose(SIDE_KNEES, phase);
+  const lift = amount * 12 * Math.sin(swing * Math.PI) ** 2;
+  return {
+    phase,
+    hip: [opposite ? 70 : 62, 190],
+    knee: [(opposite ? 70 : 62) + amount * kneeX, 226 + amount * kneeY],
+    ankle: [(opposite ? 70 : 62) + amount * reach * travel, 258 - (opposite ? 3 : 0) - lift],
+    lift,
+    // Retain the original jacket/cuff poses and hold the original head still.
+    torsoFrame: amount < 0.15 ? 3 : [3, 3, 4, 5, 5, 5, 4, 3][Math.floor(cycle * 8)],
+    arm: -amount * travel,
+  };
 }

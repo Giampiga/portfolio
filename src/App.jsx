@@ -20,9 +20,12 @@ import { RecruiterPortfolio, resumeUrl, ProjectCarousel, ProjectLinks as LinkRow
 import { projectStories } from "./project-stories.js";
 import { resolveInitialView } from "./portfolio-view.js";
 import { useStudioPlayer } from "./useStudioPlayer.js";
-import { canPlayerWalk, isClearSegment, routePlayerTo, stationApproaches } from "./studio-navigation.js";
-import { personFrames, PERSON_WIDTH, sideLegPose, northLegPose } from "./sprite-frames.js";
-import { facingBetween, PLAYER_SPEED, roomDistance } from "./studio-motion.js";
+import { useWanderingDog } from "./useWanderingDog.js";
+import { canPlayerWalk, routePlayerTo, stationApproaches } from "./studio-navigation.js";
+import { personFrames, PERSON_WIDTH } from "./sprite-frames.js";
+import { PlayerArtwork } from "./PlayerArtwork.jsx";
+import { DogArtwork } from "./DogArtwork.jsx";
+import { PLAYER_SPEED } from "./studio-motion.js";
 
 const directions = {
   down: 0,
@@ -31,122 +34,7 @@ const directions = {
   up: 9,
 };
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 const projectHref = (project) => `#project=${project.id}`;
-
-const dogNavigationGraphs = {
-  left: {
-    rugNorthWest: { x: 31.5, y: 30.5, links: ["rugNorth", "rugWest"] },
-    rugNorth: { x: 40.5, y: 30.5, links: ["rugNorthWest", "rugNorthEast"] },
-    rugNorthEast: { x: 52, y: 30.5, links: ["rugNorth", "rugEastUpper", "corridorNorth"] },
-    rugEastUpper: { x: 52, y: 39, links: ["rugNorthEast", "rugEastLower"] },
-    rugEastLower: { x: 52, y: 48.5, links: ["rugEastUpper", "rugSouth", "corridorSouth"] },
-    rugSouth: { x: 40.5, y: 48.5, links: ["rugEastLower", "rugSouthWest"] },
-    rugSouthWest: { x: 31.5, y: 48.5, links: ["rugSouth", "rugWest"] },
-    rugWest: { x: 31.5, y: 39, links: ["rugSouthWest", "rugNorthWest"] },
-    corridorNorth: { x: 56, y: 30.5, links: ["rugNorthEast", "corridorMiddle"] },
-    corridorMiddle: { x: 56, y: 39, links: ["corridorNorth", "corridorSouth"] },
-    corridorSouth: { x: 56, y: 48.5, links: ["corridorMiddle", "rugEastLower"] },
-  },
-  right: {
-    hallLeft: { x: 68, y: 49, links: ["hallMiddle"] },
-    hallMiddle: { x: 74, y: 49, links: ["hallLeft", "hallTurn"] },
-    hallTurn: { x: 81.25, y: 49, links: ["hallMiddle", "aisleUpper"] },
-    aisleUpper: { x: 81.25, y: 58, links: ["hallTurn", "aisleMiddle"] },
-    aisleMiddle: { x: 81.25, y: 68, links: ["aisleUpper", "aisleLower"] },
-    aisleLower: { x: 81.25, y: 76, links: ["aisleMiddle", "rugTurn"] },
-    rugTurn: { x: 75.25, y: 76, links: ["aisleLower", "rugNorth"] },
-    rugNorth: { x: 75.25, y: 82, links: ["rugTurn", "rugMiddle"] },
-    rugMiddle: { x: 70, y: 82, links: ["rugNorth", "rugWest"] },
-    rugWest: { x: 66, y: 82, links: ["rugMiddle", "rugExit"] },
-    rugExit: { x: 66, y: 78, links: ["rugWest"] },
-  },
-};
-
-const dogPersonalities = {
-  left: {
-    cadence: 132,
-    travelMsPerUnit: 70,
-    paceVariance: 0.12,
-    pauseMin: 500,
-    pauseMax: 1750,
-    burstMin: 2,
-    burstMax: 4,
-    anticipationMin: 100,
-    anticipationMax: 170,
-    cornerMin: 80,
-    cornerMax: 135,
-    settleDuration: 140,
-    observeChance: 0.34,
-    reverseChance: 0.12,
-    idleDuration: 2100,
-    idleDelay: -320,
-  },
-  right: {
-    cadence: 164,
-    travelMsPerUnit: 90,
-    paceVariance: 0.1,
-    pauseMin: 1300,
-    pauseMax: 3400,
-    burstMin: 1,
-    burstMax: 3,
-    anticipationMin: 155,
-    anticipationMax: 245,
-    cornerMin: 120,
-    cornerMax: 190,
-    settleDuration: 190,
-    observeChance: 0.62,
-    reverseChance: 0.38,
-    idleDuration: 2700,
-    idleDelay: -940,
-  },
-};
-
-// Both companions can use the doorway; personality no longer confines a dog
-// to a disconnected room. Prefix the workshop's repeated waypoint names.
-const dogHouseGraph = {
-  ...dogNavigationGraphs.left,
-  ...Object.fromEntries(Object.entries(dogNavigationGraphs.right).map(([name, node]) =>
-    [`workshop-${name}`, { ...node, links: node.links.map((link) => `workshop-${link}`) }])),
-  doorwayWest: { x: 56, y: 58.5, links: ["corridorSouth", "doorwayEast"] },
-  doorwayEast: { x: 65, y: 58.5, links: ["doorwayWest", "workshopEntry"] },
-  workshopEntry: { x: 65, y: 49, links: ["doorwayEast", "workshop-hallLeft"] },
-};
-dogHouseGraph.corridorSouth = { ...dogHouseGraph.corridorSouth, links: [...dogHouseGraph.corridorSouth.links, "doorwayWest"] };
-dogHouseGraph["workshop-hallLeft"] = { ...dogHouseGraph["workshop-hallLeft"], links: ["workshop-hallMiddle", "workshopEntry"] };
-
-function validateDogNavigationGraphs() {
-  Object.entries({ house: dogHouseGraph }).forEach(([zone, graph]) => {
-    Object.entries(graph).forEach(([nodeName, node]) => {
-      node.links.forEach((linkedName) => {
-        const linkedNode = graph[linkedName];
-        if (!linkedNode) throw new Error(`Missing ${zone} dog waypoint: ${linkedName}`);
-        if (!linkedNode.links.includes(nodeName)) throw new Error(`Dog route must be reciprocal: ${nodeName} → ${linkedName}`);
-        if (node.x !== linkedNode.x && node.y !== linkedNode.y) throw new Error(`Dog route must be axis-aligned: ${nodeName} → ${linkedName}`);
-      });
-    });
-    const reached = new Set();
-    const pending = ["rugNorthWest"];
-    while (pending.length) {
-      const name = pending.pop();
-      if (reached.has(name)) continue;
-      reached.add(name);
-      pending.push(...graph[name].links);
-    }
-    if (reached.size !== Object.keys(graph).length) throw new Error("A dog is confined to a disconnected room");
-    for (const name of ["doorwayWest", "doorwayEast", "workshopEntry"]) {
-      for (const link of graph[name].links) {
-        if (!isClearSegment(graph[name], graph[link])) throw new Error(`Blocked dog doorway: ${name} → ${link}`);
-      }
-    }
-  });
-}
-
-if (import.meta.env.DEV) validateDogNavigationGraphs();
-
-const gaitFrames = [0, 1, 2, 1];
-const randomBetween = (min, max) => min + Math.random() * (max - min);
-const randomInteger = (min, max) => Math.floor(randomBetween(min, max + 1));
 
 function useReducedMotionPreference() {
   const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false);
@@ -160,167 +48,6 @@ function useReducedMotionPreference() {
   }, []);
 
   return reducedMotion;
-}
-
-function useWanderingDog(zone, mapRef) {
-  const graph = dogHouseGraph;
-  const personality = dogPersonalities[zone];
-  const reducedMotion = useReducedMotionPreference();
-  const [roomVisible, setRoomVisible] = useState(() => !document.hidden && window.matchMedia("(min-width: 861px)").matches);
-  const initialNodeRef = useRef(null);
-  if (initialNodeRef.current === null) {
-    initialNodeRef.current = zone === "left" ? "rugNorthWest" : "rugSouthWest";
-  }
-  const [position, setPosition] = useState(graph[initialNodeRef.current]);
-  const [direction, setDirection] = useState(zone === "right" ? "left" : "right");
-  const [gaitStep, setGaitStep] = useState(1);
-  const [walking, setWalking] = useState(false);
-  const [duration, setDuration] = useState(1200);
-  const [activity, setActivity] = useState("idle");
-  const currentNodeRef = useRef(initialNodeRef.current);
-  const previousNodeRef = useRef(null);
-  const [cadence, setCadence] = useState(personality.cadence);
-
-  useEffect(() => {
-    const desktop = window.matchMedia("(min-width: 861px)");
-    const update = () => setRoomVisible(!document.hidden && desktop.matches);
-    document.addEventListener("visibilitychange", update);
-    desktop.addEventListener("change", update);
-    return () => {
-      document.removeEventListener("visibilitychange", update);
-      desktop.removeEventListener("change", update);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (reducedMotion) {
-      const authoredNodeName = zone === "left" ? "rugNorthWest" : "rugSouthWest";
-      currentNodeRef.current = authoredNodeName;
-      previousNodeRef.current = null;
-      setPosition(graph[authoredNodeName]);
-      setDirection(zone === "left" ? "right" : "left");
-      setWalking(false);
-      setGaitStep(1);
-      setActivity("idle");
-      return undefined;
-    }
-    if (!roomVisible) {
-      // CSS travel completes at its destination while hidden; resume from that
-      // same graph node rather than starting an invisible random-walk loop.
-      setWalking(false);
-      setGaitStep(1);
-      setActivity("idle");
-      return undefined;
-    }
-
-    let cancelled = false;
-    const timers = new Set();
-
-    const schedule = (callback, delay) => {
-      const timer = window.setTimeout(() => {
-        timers.delete(timer);
-        if (!cancelled) callback();
-      }, delay);
-      timers.add(timer);
-    };
-
-    const faceRandomExit = () => {
-      const node = graph[currentNodeRef.current];
-      const lookName = node.links[Math.floor(Math.random() * node.links.length)];
-      setDirection(facingBetween(node, graph[lookName]));
-    };
-
-    const chooseNextNode = () => {
-      const current = graph[currentNodeRef.current];
-      const previousName = previousNodeRef.current;
-      const alternatives = current.links.filter((name) => name !== previousName);
-      const canReverse = previousName && current.links.includes(previousName);
-      if (canReverse && (!alternatives.length || Math.random() < personality.reverseChance)) return previousName;
-      const candidates = alternatives.length ? alternatives : current.links;
-      return candidates[Math.floor(Math.random() * candidates.length)];
-    };
-
-    const restAtNode = () => {
-      setWalking(false);
-      setActivity(Math.random() < personality.observeChance ? "observing" : "idle");
-      const pause = randomBetween(personality.pauseMin, personality.pauseMax);
-
-      if (pause > 1000) {
-        schedule(() => {
-          faceRandomExit();
-          setActivity("alert");
-        }, pause * randomBetween(0.42, 0.64));
-      }
-
-      schedule(() => {
-        beginLeg(randomInteger(personality.burstMin, personality.burstMax));
-      }, pause);
-    };
-
-    const beginLeg = (legsRemaining) => {
-      const currentName = currentNodeRef.current;
-      const current = graph[currentName];
-      const targetName = chooseNextNode();
-      const target = graph[targetName];
-      const nextDirection = facingBetween(current, target);
-      const room = mapRef.current?.getBoundingClientRect();
-      const distance = roomDistance(current, target, room?.width ? room.height / room.width : 0.78);
-      const pace = personality.travelMsPerUnit * randomBetween(1 - personality.paceVariance, 1 + personality.paceVariance);
-      const travelTime = clamp(distance * pace, 520, 2100);
-
-      setDirection(nextDirection);
-      setActivity("anticipating");
-      schedule(() => {
-        setDuration(travelTime);
-        setCadence(personality.cadence * (travelTime / distance) / personality.travelMsPerUnit);
-        setWalking(true);
-        setActivity("walking");
-        previousNodeRef.current = currentName;
-        currentNodeRef.current = targetName;
-        setPosition(target);
-
-        schedule(() => {
-          previousNodeRef.current = currentName;
-          currentNodeRef.current = targetName;
-          setWalking(false);
-          setGaitStep(1);
-
-          if (legsRemaining > 1) {
-            setActivity("cornering");
-            schedule(() => beginLeg(legsRemaining - 1), randomBetween(personality.cornerMin, personality.cornerMax));
-          } else {
-            setActivity("settling");
-            schedule(restAtNode, personality.settleDuration);
-          }
-        }, travelTime);
-      }, randomBetween(personality.anticipationMin, personality.anticipationMax));
-    };
-
-    restAtNode();
-    return () => {
-      cancelled = true;
-      timers.forEach((timer) => window.clearTimeout(timer));
-      timers.clear();
-    };
-  }, [graph, mapRef, personality, reducedMotion, roomVisible, zone]);
-
-  useEffect(() => {
-    if (!walking) return undefined;
-    const frameTimer = window.setInterval(() => setGaitStep((value) => (value + 1) % gaitFrames.length), cadence);
-    return () => window.clearInterval(frameTimer);
-  }, [cadence, walking]);
-
-  return {
-    position,
-    direction,
-    frame: gaitFrames[gaitStep],
-    walking,
-    traveling: walking,
-    duration,
-    activity,
-    idleDuration: personality.idleDuration,
-    idleDelay: personality.idleDelay,
-  };
 }
 
 function getInitialView() {
@@ -360,15 +87,18 @@ function ProjectInspector({ project, onOpenCaseStudy }) {
   const hero = project.images[0];
 
   return (
-    <aside className="project-inspector" style={{ "--project-accent": project.accent }} aria-live="polite">
+    <aside className="project-inspector" style={{ "--project-accent": project.accent }} aria-label="Selected project preview">
       <div className="inspector-heading">
-        <p className="eyebrow">{project.number} / 07 · {project.group}</p>
-        <h2>{project.title}</h2>
-        <p className="project-meta">{project.role} · {project.date} · {project.status}</p>
+        <p className="eyebrow">Selected work · {project.number} / {String(primaryProjects.length).padStart(2, "0")}</p>
+        <h2 aria-live="polite" aria-atomic="true">{project.shortTitle}</h2>
+        <p className="inspector-status">{project.date}<span>{project.status}</span></p>
       </div>
-
-      <p className="inspector-summary">{project.summary}</p>
-
+      <div className="inspector-actions">
+        <button type="button" onClick={onOpenCaseStudy}>
+          Open full case study
+          <ArrowUpRight size={18} weight="bold" aria-hidden="true" />
+        </button>
+      </div>
       {project.carousel ? <ProjectCarousel key={project.id} project={project} onOpen={onOpenCaseStudy} /> : hero ? (
         <div className="inspector-artifacts">
           <figure className="inspector-hero">
@@ -378,18 +108,13 @@ function ProjectInspector({ project, onOpenCaseStudy }) {
         </div>
       ) : (
         <div className="evidence-slate" aria-label="Verified project evidence">
-          <span>Evidence, not decoration</span>
-          <ul>{project.evidence.map((item) => <li key={item}>{item}</li>)}</ul>
+          <span>Inside the case study</span>
+          <ul>{project.evidence.slice(0, 2).map((item) => <li key={item}>{item}</li>)}</ul>
         </div>
       )}
-
-      <div className="inspector-actions">
-        <button type="button" onClick={onOpenCaseStudy}>
-          Inspect case study
-          <ArrowRight size={18} weight="bold" aria-hidden="true" />
-        </button>
-        <LinkRow links={project.links} />
-      </div>
+      <p className="inspector-summary">{project.summary}</p>
+      <p className="inspector-role"><span>Role</span>{project.role}</p>
+      <LinkRow links={project.links} />
     </aside>
   );
 }
@@ -427,20 +152,21 @@ function ProjectDialog({ project, open, onClose }) {
   );
 }
 
-export function Sprite({ kind, position, direction, frame, walking, distance = 0, speed = 0, traveling = false, duration = 120, activity, idleDuration, idleDelay, className = "" }) {
+export function Sprite({ kind, position, direction, frame, walking, gaitStep = 0, distance = 0, speed = 0, traveling = false, duration = 120, activity, idleDuration, idleDelay, name, onPet, className = "" }) {
   const row = kind === "person" ? 0 : kind === "pomsky-white" ? 1 : 2;
   const column = directions[direction] + (walking ? frame : 1);
   const isDog = kind.startsWith("pomsky-");
+  const dogSideView = isDog && (direction === "left" || direction === "right");
   const idleDog = isDog && !walking && (!activity || activity === "idle");
   const activityClass = isDog && activity ? `is-${activity}` : "";
   const gaitClass = isDog ? `gait-frame-${walking ? frame : 1}` : "";
   const personCrop = kind === "person" ? personFrames[column] : null;
   const sideView = kind === "person" && (direction === "left" || direction === "right");
   const northView = kind === "person" && direction === "up";
-  const sidePoses = sideView ? [true, false].map((far) => sideLegPose(distance, walking, far, speed / PLAYER_SPEED)) : [];
+  const Element = onPet ? "button" : "span";
   return (
-    <span
-      className={`game-sprite game-sprite--${kind} ${sideView ? "is-side-view" : ""} ${northView ? "is-north-view" : ""} ${walking ? "is-walking" : ""} ${idleDog ? "is-idle" : ""} ${activityClass} ${gaitClass} ${traveling ? "is-traveling" : ""} ${className}`}
+    <Element
+      className={`game-sprite game-sprite--${kind} ${sideView ? "is-side-view" : ""} ${northView ? "is-north-view" : ""} ${dogSideView ? "is-dog-side-view" : ""} ${walking ? "is-walking" : ""} ${idleDog ? "is-idle" : ""} ${activityClass} ${gaitClass} ${traveling ? "is-traveling" : ""} ${className}`}
       style={{
         left: `${position.x}%`,
         top: `${position.y}%`,
@@ -451,35 +177,32 @@ export function Sprite({ kind, position, direction, frame, walking, distance = 0
         "--dog-idle-duration": idleDuration ? `${idleDuration}ms` : undefined,
         "--dog-idle-delay": idleDelay ? `${idleDelay}ms` : undefined,
       }}
-      aria-hidden="true"
+      aria-hidden={onPet ? undefined : true}
+      aria-label={onPet ? `Pet ${name}` : undefined}
+      type={onPet ? "button" : undefined}
+      onClick={onPet}
     >
-      {sideView && <span className="side-walk" style={{ transform: direction === "right" ? "scaleX(-1)" : undefined }}>
-        {sidePoses.map((pose, index) => ["leg", "shoe"].map((part) => {
-          const joint = pose[part];
-          return <span key={`${index}-${part}`} className={`side-walk__segment side-walk__segment--${part}`} style={{ transformOrigin: `${joint.origin[0] / 128 * 100}% ${joint.origin[1] / 288 * 100}%`, transform: `translate(${joint.x / 128 * 100}%, ${joint.y / 288 * 100}%) rotate(${joint.angle}deg) scale(${joint.scale})` }}>
-            <span className="side-walk__pixels side-walk__leg--near" />
-          </span>;
-        }))}
-        <span className="side-walk__body" style={{ transform: `translateY(${sidePoses[0].bodyY / 288 * 100}%)` }}>
-          <span className="side-walk__pixels side-walk__pelvis" />
-          <span className="side-walk__pixels side-walk__torso" />
-        </span>
-      </span>}
-      {northView && <span className="north-walk">
-        {[false, true].map((right) => <span key={String(right)} className="north-walk__leg" style={{ transform: `scale(${right ? -1 : 1}, ${northLegPose(distance, walking, right, speed / PLAYER_SPEED).scaleY})` }}><span className="north-walk__pixels north-walk__leg-pixels" /></span>)}
-        <span className="north-walk__pixels north-walk__torso" />
-      </span>}
-    </span>
+      {(sideView || northView) && <PlayerArtwork direction={direction} distance={distance} walking={walking} stride={speed / PLAYER_SPEED} />}
+      {dogSideView && <DogArtwork kind={kind} direction={direction} gaitStep={gaitStep} walking={walking} />}
+      {onPet && <span className="dog-greeting" aria-hidden="true">{name}{activity === "greeting" && <span> ♥</span>}</span>}
+    </Element>
   );
 }
 
 function StudioView({ project, onSelect, onInspect, onShowIndex }) {
   const mapRef = useRef(null);
   const reducedMotion = useReducedMotionPreference();
-  const player = useStudioPlayer({ mapRef, canWalk: canPlayerWalk, routeTo: routePlayerTo, reducedMotion });
+  const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 860px)").matches);
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 860px)");
+    const update = () => setCompact(query.matches);
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+  const player = useStudioPlayer({ mapRef, canWalk: canPlayerWalk, routeTo: routePlayerTo, reducedMotion, enabled: !compact });
   const { position } = player;
-  const whitePomsky = useWanderingDog("left", mapRef);
-  const blackPomsky = useWanderingDog("right", mapRef);
+  const whitePomsky = useWanderingDog("left", mapRef, reducedMotion);
+  const blackPomsky = useWanderingDog("right", mapRef, reducedMotion);
 
   const nearestProject = useMemo(() => {
     return primaryProjects.reduce((best, candidate) => {
@@ -491,6 +214,7 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
 
   useEffect(() => {
     const onKeyDown = (event) => {
+      if (compact) return;
       if (document.querySelector("dialog[open]") || ["INPUT", "TEXTAREA", "BUTTON", "A"].includes(document.activeElement?.tagName)) return;
       if (!mapRef.current?.getBoundingClientRect().width) return;
       if (event.key === "Enter" && nearestProject?.distance < 9) {
@@ -503,18 +227,31 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [nearestProject, onInspect, onSelect]);
+  }, [compact, nearestProject, onInspect, onSelect]);
 
   const walkToStation = (nextProject) => {
+    if (compact) { onSelect(nextProject); return; }
+    if (nearestProject?.project.id === nextProject.id && nearestProject.distance < 5) {
+      onInspect(nextProject);
+      return;
+    }
     player.walkTo(stationApproaches[nextProject.id]);
     onSelect(nextProject);
+  };
+
+  const walkToFloor = (event) => {
+    if (compact || event.target.closest("button, a")) return;
+    const bounds = mapRef.current.getBoundingClientRect();
+    const destination = { x: (event.clientX - bounds.left) / bounds.width * 100, y: (event.clientY - bounds.top) / bounds.height * 100 };
+    if (canPlayerWalk(destination)) player.walkTo(destination);
   };
 
   return (
     <section className="studio-view" aria-label="Walkable portfolio studio">
       <div className="studio-map-wrap">
-        <div className="studio-map" ref={mapRef} tabIndex="0" aria-label="Use W A S D or arrow keys to walk between project stations">
-          <img className="studio-room" src="/assets/portfolio-house-room-v2.png" alt="Two-room pixel-art working studio with project stations and an open connecting doorway" />
+        <div className="studio-map-heading"><h1>The working studio</h1><span>{compact ? "Tap a numbered station" : "Living room / Workshop"}</span></div>
+        <div className="studio-map" ref={mapRef} tabIndex={compact ? undefined : 0} onClick={walkToFloor} aria-label={compact ? "Tap a numbered station to preview a project" : "Click the floor or use W A S D or arrow keys to walk between project stations"}>
+          <img className="studio-room" src="/assets/portfolio-studio-loft.png" alt="Open-plan pixel-art studio: a living-room lounge, project desks along the walls, and a wide passage into the workshop" draggable="false" />
 
           {primaryProjects.map((candidate) => candidate.station.screen && candidate.images[0] ? (
             <img
@@ -534,7 +271,7 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
 
           {primaryProjects.map((candidate) => {
             const selected = candidate.id === project.id;
-            const nearby = nearestProject?.project.id === candidate.id && nearestProject.distance < 9;
+            const nearby = !compact && nearestProject?.project.id === candidate.id && nearestProject.distance < 9;
             return (
               <button
                 key={candidate.id}
@@ -547,51 +284,25 @@ function StudioView({ project, onSelect, onInspect, onShowIndex }) {
                 }}
                 type="button"
                 onClick={() => walkToStation(candidate)}
-                onDoubleClick={() => onInspect(candidate)}
-                aria-label={`Walk to ${candidate.title}`}
+                aria-current={selected ? "true" : undefined}
+                aria-label={`${compact ? "Preview" : nearby && nearestProject.distance < 5 ? "Inspect" : "Walk to"} ${candidate.title}`}
               >
                 <span>{candidate.number}</span>
-                <strong>{candidate.shortTitle}</strong>
+                <strong className={candidate.station.x > 80 ? "station-label--left" : candidate.station.x < 25 ? "station-label--right" : ""}>{candidate.shortTitle}</strong>
               </button>
             );
           })}
 
-          <Sprite kind="pomsky-white" {...whitePomsky} />
-          <Sprite kind="pomsky-black" {...blackPomsky} />
+          <a className="station-pin station-pin--archive" href="?view=index#archive" style={{ left: compact ? "65%" : "68.5%", top: "88%" }} aria-label="Open the project archive in Index"><span><ArrowUpRight size={14} aria-hidden="true" /></span><strong>Archive</strong></a>
+
+          <Sprite kind="pomsky-white" {...whitePomsky} position={compact ? { x: 34, y: 40 } : whitePomsky.position} name="Jojo" onPet={whitePomsky.pet} />
+          <Sprite kind="pomsky-black" {...blackPomsky} position={compact ? { x: 45, y: 58 } : blackPomsky.position} name="Maui" onPet={blackPomsky.pet} />
           <Sprite kind="person" {...player} />
-
-          <div className="room-prompt" aria-live="polite">
-            {nearestProject?.distance < 9 ? <><kbd>Enter</kbd> inspect {nearestProject.project.shortTitle}</> : <>Walk to an object · Enter to inspect</>}
-          </div>
+          {player.route.length > 0 && <span className="floor-destination" aria-hidden="true" style={{ left: `${player.route.at(-1).x}%`, top: `${player.route.at(-1).y}%` }} />}
         </div>
-      </div>
-
-      <div className="mobile-studio-list" aria-label="Studio project stations">
-        <div className="mobile-studio-list__intro">
-          <div className="mobile-party" aria-hidden="true">
-            <Sprite kind="pomsky-white" position={{ x: 28, y: 50 }} direction="right" frame={1} walking={false} activity="mobile-white" />
-            <Sprite kind="person" position={{ x: 50, y: 42 }} direction="down" frame={1} walking={false} />
-            <Sprite kind="pomsky-black" position={{ x: 72, y: 52 }} direction="left" frame={1} walking={false} activity="mobile-black" />
-          </div>
-          <p className="eyebrow">Portfolio House · touch edition</p>
-          <h2>Choose a station.</h2>
-          <p>The same seven case studies, recomposed for a smaller screen—no tiny fake game controls required.</p>
-        </div>
-        <div className="mobile-stations">
-          {primaryProjects.map((candidate) => (
-            <button
-              key={`${candidate.id}-mobile`}
-              className={candidate.id === project.id ? "is-selected" : ""}
-              style={{ "--mobile-accent": candidate.accent }}
-              type="button"
-              onClick={() => onSelect(candidate)}
-            >
-              {candidate.images[0] && <img src={candidate.images[0].src} alt="" />}
-              <span>{candidate.number}</span>
-              <strong>{candidate.shortTitle}</strong>
-              <small>{candidate.date}</small>
-            </button>
-          ))}
+        <span className="sr-only" role="status">{whitePomsky.isGreeting ? "Jojo says hello. " : ""}{blackPomsky.isGreeting ? "Maui says hello." : ""}</span>
+        <div className="room-prompt" aria-live="polite">
+          {compact ? <>Station {project.number} · {project.shortTitle}</> : nearestProject?.distance < 9 ? <><kbd>Enter</kbd> inspect {nearestProject.project.shortTitle}</> : <>Click the floor to walk · Choose a station · Say hello to a Pomsky</>}
         </div>
       </div>
 
@@ -735,7 +446,7 @@ export function App() {
     <div className={`site-shell view-${view}`} id="top">
       <a className="skip-link" href={view === "index" ? "#main-content" : "#studio-content"}>Skip to content</a>
       <Header view={view} onViewChange={changeView} theme={theme} onThemeChange={changeTheme} />
-      {view === "studio" && <p className="studio-status">Studio · Work in progress <span>Movement and room interactions are still being refined. All projects are also available in Index.</span></p>}
+      {view === "studio" && <p className="studio-status">Studio · Work in progress <span>An optional way to explore. Every project is also in Index.</span></p>}
       {view === "studio" ? (
         <main id="studio-content" tabIndex={-1}><StudioView
           project={project}
@@ -749,7 +460,7 @@ export function App() {
       <ProjectDialog project={project} open={caseOpen} onClose={closeProject} />
       <div className="mobile-project-nav" aria-label="Project navigation">
         <button type="button" onClick={() => selectProject(primaryProjects[(primaryProjects.indexOf(project) - 1 + primaryProjects.length) % primaryProjects.length])}><CaretLeft size={18} /> Previous</button>
-        <span>{project.number} / 07</span>
+        <span>{project.number} / {String(primaryProjects.length).padStart(2, "0")}</span>
         <button type="button" onClick={() => selectProject(primaryProjects[(primaryProjects.indexOf(project) + 1) % primaryProjects.length])}>Next <CaretRight size={18} /></button>
       </div>
     </div>
